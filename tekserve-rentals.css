@@ -1,0 +1,144 @@
+.tekserverentals-cart-container {
+	position: fixed;
+	right: 100px;
+	top: 100px;
+	width: 400px;
+	max-height: 80%;
+	background: #fff;
+	color: #004d72;
+	padding: 1em;
+	box-shadow: 1px 1px 10px #334;
+	z-index: 50;
+}
+
+.tekserverentals-cart-container .tekserverentals-cart-hidebutton.button,
+.tekserverentals-cart-container .tekserverentals-cart-showbutton.button {
+	display: block;
+	width: 126px;
+	margin-left: 225px;
+}
+
+.tekserverentals-cart-container .tekserverentals-cart-showbutton.button {
+	width: 146px;
+	margin-left: 200px;
+	background-color: rgba(243, 111, 55,.6);
+}
+
+.tekserverentals-cart-container .simpleCart_items div div {
+	display: table-header-group;
+}
+.tekserverentals-cart-container .simpleCart_items div .headerRow {
+	display: table-row;
+}
+
+.tekserverentals-cart-container .simpleCart_items .headerRow div {
+	display: table-cell;
+}
+
+.tekserverentals-cart-container .simpleCart_items .itemRow {
+	padding: .5em;
+	display: table-row;
+}
+
+.tekserverentals-cart-container .simpleCart_items .itemRow div {
+	display: table-cell;
+}
+
+.tekserverentals-cart-container .simpleCart_items .headerRow div {
+	font-weight: 900;
+	padding: .5em;
+}
+
+.tekserverentals-cart-container .simpleCart_items .itemRow div {
+	padding: .5em;
+}
+
+.tekserverentals-cart-duration {
+	display: inline;
+	line-height: 2em;
+}
+
+.tekserverentals-cart-long-term h3 {
+	color: #f36f37;
+}
+
+.tekserverentals-cart-container .simpleCart_items .itemRow .item-name {
+	display: inline-block;
+	width: 100px;
+}
+
+.tekserverentals-cart-container .simpleCart_items .headerRow .item-increment,
+.tekserverentals-cart-container .simpleCart_items .headerRow .item-decrement {
+	display: none;
+}
+
+.tekserverentals-cart-container .simpleCart_items .itemRow .item-decrement {
+	display: inline;
+	margin: 0;
+	padding: 0;
+	padding-left: .5em;
+	font-weight: 900;
+	color: #40a8c9;
+}
+
+.tekserverentals-cart-container .simpleCart_items .itemRow .item-increment {
+	display: inline;
+	margin: 0;
+	padding: 0;
+	padding-right: .5em;
+	font-weight: 900;
+	color: #40a8c9;
+}
+
+.tekserverentals-cart-container .simpleCart_items .itemRow .item-quantity {
+	margin: 0 .1em;
+	display: inline;
+	padding: .1em .25em;
+	outline: 1px solid #40a8c9;
+	background: #fff;
+	color: #004d72;
+}
+
+.tekserverentals-cart-container .simpleCart_items .itemRow .item-decrement a,
+.tekserverentals-cart-container .simpleCart_items .itemRow .item-decrement a:visited,
+.tekserverentals-cart-container .simpleCart_items .itemRow .item-increment a,
+.tekserverentals-cart-container .simpleCart_items .itemRow .item-increment a:visited,
+.tekserverentals-cart-container .simpleCart_items .itemRow .item-remove a:visited,
+.tekserverentals-cart-container .simpleCart_items .itemRow .item-remove a {
+	color: #40a8c9;
+}
+
+.tekserverentals-cart-container .simpleCart_items .itemRow .item-decrement a:hover,
+.tekserverentals-cart-container .simpleCart_items .itemRow .item-increment a:hover,
+.tekserverentals-cart-container .simpleCart_items .itemRow .item-remove a:hover {
+	color: #004d72;
+}
+
+.tekserverentals-cart-container .simpleCart_items .itemRow.even .item-decrement a,
+.tekserverentals-cart-container .simpleCart_items .itemRow.even .item-decrement a:visited,
+.tekserverentals-cart-container .simpleCart_items .itemRow.even .item-increment a,
+.tekserverentals-cart-container .simpleCart_items .itemRow.even .item-increment a:visited,
+.tekserverentals-cart-container .simpleCart_items .itemRow.even .item-remove a:visited,
+.tekserverentals-cart-container .simpleCart_items .itemRow.even .item-remove a {
+	color: #004972;
+}
+
+.tekserverentals-cart-container .simpleCart_items .itemRow.even .item-decrement a:hover,
+.tekserverentals-cart-container .simpleCart_items .itemRow.even .item-increment a:hover,
+.tekserverentals-cart-container .simpleCart_items .itemRow.even .item-remove a:hover {
+	color: #40a8c9;
+}
+
+.tekserverentals-cart-totals {
+	display: table;
+}
+
+.tekserverentals-cart-totals>div {
+	display: table-row;
+}
+
+.tekserverentals-cart-totals>div>div, 
+.tekserverentals-cart-totals>div>span {
+	display: table-cell;
+	padding: .5em;
+}
