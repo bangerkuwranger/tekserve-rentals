@@ -424,12 +424,10 @@ function tekserverental_checkout( $atts ) {
 	$custinfo = '<div class="tekserverental-checkout-custinfo">';
 	$custinfo .= '<div id="tekserverental-name">
 	<label class="required" for="entry_0" style="width: 6em;">Name </label>
-	<span><input id="entry_0" name="firstname" class="required" title="We need to know your name." maxlength="255" size="25" value="">
-			<label class="lower">First</label>
+	<span><label class="lower">First</label><input id="entry_0" name="firstname" class="required" title="We need to know your name." maxlength="255" size="25" value="">
 		</span>
 		<span>
-			<input id="entry_1" name="lastname" class="required" title="We need to know your name." maxlength="255" size="25" value="">
-			<label class="lower">Last</label>
+			<label class="lower">Last</label><input id="entry_1" name="lastname" class="required" title="We need to know your name." maxlength="255" size="25" value="">
 		</span>
 		</div>';
 	$custinfo .= '<div id="tekserverental-company-name">
@@ -447,12 +445,12 @@ function tekserverental_checkout( $atts ) {
 	$custinfo .= '<div id="tekserverental-phone-number">
 		<label class="req" for="entry_7" style="width: 35px;">Phone</label>
 		<span>
-			<input id="entry_7" name="phonenumber" class=" digits required" size="14" maxlength="14" value="" type="tel"> -
+			<input id="entry_7" name="phonenumber" class=" digits required" size="14" maxlength="14" value="" type="tel">
 			<label for="entry_7" class="lower">(###) ###-####</label>
 		</span>
 		</div>';
 	$custinfo .= '<div id="tekserverental-">
-		<label class="req" for="element_5" style="width: 9em;">Address </label>
+		<label class="req" for="element_5" style="width: 9em;">Billing Address </label>
 		<div>
 			<input id="entry_9" name="addressone" class="large required" value="" type="text">
 			<label for="entry_9" class="lower">Street Address</label>
@@ -479,12 +477,21 @@ function tekserverental_checkout( $atts ) {
 		</div>
 	</div>';
 	$custinfo .= '</div>';
+	$shipping = '<div class="tekserverental-shipping">';
+	$shipping .= '<div class="tekserverental-delivery"><label for="tekserverentals-delivery">Would you like messenger delivery? </label><input type="checkbox" name="tekserverentals-delivery" id="tekserverentals-delivery" value="true"> Yes, bring it to me.';
+	$shipping .= '<label for="tekserverentals-delivery-loc">Where you like messenger delivery? </label><input type="radio" name="tekserverentals-delivery-loc" value="manhattan" checked="checked"> Manhattan <input type="radio" name="tekserverentals-delivery-loc" value="borough"> Bronx, Brooklyn, Queens, or Staten Island</div>';
+	$shipping .= '<div class="tekserverental-pickup"><label for="tekserverentals-pickup">Would you like messenger pickup at the end of your rental? </label><input type="checkbox" name="tekserverentals-pickup" id="tekserverentals-pickup" value="true"> Yes, pick it up for me.';
+	$shipping .= '<label for="tekserverentals-pickup-loc">Where you like messenger pickup? </label><input type="radio" name="tekserverentals-pickup-loc" value="manhattan" checked="checked"> Manhattan <input type="radio" name="tekserverentals-pickup-loc" value="borough"> Bronx, Brooklyn, Queens, or Staten Island</div>';
+	$shipping .= '</div>';
 	$form = '<div class="tekserverental-checkout-form"><form id="tekserverentals-checkout-form">';
 	$form .= $custinfo;
-	$form .= '<div><label for="entry_14">Enter any additional requests </label><textarea name="additionalinfo" id="entry_14"></textarea></div>';
+	$form .= '<div><label for="entry_14">Enter any additional requests </label><textarea name="additionalinfo" id="entry_14">&nbsp;</textarea></div>';
 	$form .= '</form></div>';
+	$button = '<a href="javascript:;" class="simpleCart_checkout">Checkout</a>';
 	$out = '<div class="tekserverental-checkout">';
+	$out .= $shipping;
 	$out .= $form;
+	$out .= $button;
 	$out .= '</div>';
 	return $out;
 }
@@ -499,7 +506,6 @@ function tekserverental_date_form( $atts ) {
 	$button = '<a class="button tekserverentals-dates-button" href="javascript:;">Set Dates</a>';
 	$out = '<div class="tekserverental-dates">';
 	$out .= $form;
-	$out .= $button;
 	$out .= '</div>';
 	return $out;
 }

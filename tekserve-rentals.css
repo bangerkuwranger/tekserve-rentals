@@ -58,7 +58,13 @@
 	line-height: 2em;
 }
 
-.tekserverentals-cart-long-term h3 {
+.tekserverentals-cart-shipnote p,
+.tekserverentals-cart-long-term p {
+	color: #004d72;
+}
+
+.tekserverentals-cart-long-term h3,
+.tekserverentals-cart-shipnote h3 {
 	color: #f36f37;
 }
 
@@ -77,6 +83,7 @@
 	margin: 0;
 	padding: 0;
 	padding-left: .5em;
+	padding-right: .1em;
 	font-weight: 900;
 	color: #40a8c9;
 }
@@ -86,6 +93,7 @@
 	margin: 0;
 	padding: 0;
 	padding-right: .5em;
+	padding-left: .1em;
 	font-weight: 900;
 	color: #40a8c9;
 }
