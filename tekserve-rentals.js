@@ -47,7 +47,9 @@ simpleCart({
 			city: document.getElementById("entry_11").value,
 			state: document.getElementById("entry_12").value,
 			zip: document.getElementById("entry_13").value,
-			comments: document.getElementById("entry_14").value
+			comments: document.getElementById("entry_14").value,
+			total_due: jQuery('.tekserverentals-cart-grand-total').html(),
+			total_price: jQuery('.simpleCart_grandTotal').html()
         }
     },
     cartStyle: "div",
@@ -407,7 +409,9 @@ function updateExtraData( data ){
 	data.city = document.getElementById("entry_11").value,
 	data.state = document.getElementById("entry_12").value,
 	data.zip = document.getElementById("entry_13").value,
-	data.comments = document.getElementById("entry_14").value
+	data.comments = document.getElementById("entry_14").value,
+	data.total_due = jQuery('.tekserverentals-cart-grand-total').html(),
+	data.total_price = jQuery('.simpleCart_grandTotal').html()
 }
 
 //bind after add date calculation

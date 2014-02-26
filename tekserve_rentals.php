@@ -318,50 +318,159 @@ function add_tekserverentals_product_rate_fields( $tekserverentals_product_id, $
 
 
 	// Register Custom Post Type for rental requests
-	function tekserverentals_rental_request() {
+if ( ! function_exists('tekserverentals_rental_request') ) {
 
-		$labels = array(
-			'name'                => 'Rental Requests',
-			'singular_name'       => 'Rental Request',
-			'menu_name'           => 'Rental Requests',
-			'parent_item_colon'   => 'Parent Rental Request:',
-			'all_items'           => 'All Rental Requests',
-			'view_item'           => 'View Rental Request',
-			'add_new_item'        => 'Add New Rental Request',
-			'add_new'             => 'Add Rental Request',
-			'edit_item'           => 'Edit Rental Request',
-			'update_item'         => 'Update Rental Request',
-			'search_items'        => 'Search Rental Request',
-			'not_found'           => 'Rental Request Not found',
-			'not_found_in_trash'  => 'Rental Request Not found in Trash',
-		);
-		$args = array(
-			'label'               => 'tekserverentals_rental_request',
-			'description'         => 'Requests from customers for rental',
-			'labels'              => $labels,
-			'supports'            => array( 'title', 'editor', 'comments' ),
-			'hierarchical'        => false,
-			'public'              => true,
-			'show_ui'             => true,
-			'show_in_menu'        => true,
-			'show_in_nav_menus'   => true,
-			'show_in_admin_bar'   => true,
-			'menu_position'       => 5,
-			'menu_icon'           => 'dashicons-cart',
-			'can_export'          => true,
-			'has_archive'         => false,
-			'exclude_from_search' => true,
-			'publicly_queryable'  => true,
-			'query_var'           => 'rentalrequest',
-			'rewrite'             => false,
-			'capability_type'     => 'page',
-		);
-		register_post_type( 'tekserverentals_rental_request', $args );
+// Register Custom Post Type
+function tekserverentals_rental_request() {
+
+	$labels = array(
+		'name'                => 'Rental Requests',
+		'singular_name'       => 'Rental Request',
+		'menu_name'           => 'Rental Request',
+		'parent_item_colon'   => 'Parent Rental Request:',
+		'all_items'           => 'All Rental Requests',
+		'view_item'           => 'View Rental Request',
+		'add_new_item'        => 'Add New Rental Request',
+		'add_new'             => 'New Rental Request',
+		'edit_item'           => 'Edit Rental Request',
+		'update_item'         => 'Update Rental Request',
+		'search_items'        => 'Search Rental Requests',
+		'not_found'           => 'No Rental Requests found',
+		'not_found_in_trash'  => 'No Rental Requests found in Trash',
+	);
+	$rewrite = array(
+		'slug'                => 'rental-request',
+		'with_front'          => true,
+		'pages'               => true,
+		'feeds'               => true,
+	);
+	$args = array(
+		'label'               => 'rentalrequest',
+		'description'         => 'Requests for rentals',
+		'labels'              => $labels,
+		'supports'            => array( 'title' ),
+		'taxonomies'          => array( '' ),
+		'hierarchical'        => false,
+		'public'              => true,
+		'show_ui'             => true,
+		'show_in_menu'        => true,
+		'show_in_nav_menus'   => true,
+		'show_in_admin_bar'   => true,
+		'menu_position'       => 5,
+		'menu_icon'           => '',
+		'can_export'          => true,
+		'has_archive'         => true,
+		'exclude_from_search' => false,
+		'publicly_queryable'  => true,
+		'query_var'           => 'rentalrequest',
+		'rewrite'             => $rewrite,
+		'capability_type'     => 'page',
+		'menu_icon'			  => 'dashicons-testimonial',
+	);
+	register_post_type( 'rentalrequest', $args );
 
 	}
 
-	// Hook into the 'init' action
-	add_action( 'init', 'tekserverentals_rental_request', 0 );
+}
+
+// Hook into the 'init' action
+add_action( 'init', 'tekserverentals_rental_request', 0 );
+
+
+//create custom fields for Requests
+add_action( 'admin_init', 'tekserverentals_requests_custom_fields' );
+function tekserverentals_sku_custom_fields() {
+    add_meta_box( 'tekserverentals_requests_meta_box', 'Request Details', 'display_tekserverentals_request_meta_box', 'rentalrequest', 'normal', 'core' );
+}
+
+// Retrieve current details based on request ID
+function display_tekserverentals_request_meta_box( $rentalrequest ) {
+    $tekserverentals_request_firstname = esc_html( get_post_meta( $rentalrequest->ID, 'tekserverentals_request_firstname', true ) );
+    $tekserverentals_request_lastname = esc_html( get_post_meta( $rentalrequest->ID, 'tekserverentals_request_lastname', true ) );
+	$tekserverentals_request_email = esc_html( get_post_meta( $rentalrequest->ID, 'tekserverentals_request_email', true ) );
+	$tekserverentals_request_phone = esc_html( get_post_meta( $rentalrequest->ID, 'tekserverentals_request_phone', true ) );
+	$tekserverentals_request_address = esc_html( get_post_meta( $rentalrequest->ID, 'tekserverentals_request_address', true ) );
+	$tekserverentals_request_city = esc_html( get_post_meta( $rentalrequest->ID, 'tekserverentals_request_city', true ) );
+	$tekserverentals_request_state = esc_html( get_post_meta( $rentalrequest->ID, 'tekserverentals_request_state', true ) );
+	$tekserverentals_request_zip = esc_html( get_post_meta( $rentalrequest->ID, 'tekserverentals_request_zip', true ) );
+	$tekserverentals_request_start = esc_html( get_post_meta( $rentalrequest->ID, 'tekserverentals_request_start', true ) );
+	$tekserverentals_request_end = esc_html( get_post_meta( $rentalrequest->ID, 'tekserverentals_request_end', true ) );
+	$tekserverentals_request_shipping = esc_html( get_post_meta( $rentalrequest->ID, 'tekserverentals_request_shipping', true ) );
+	$tekserverentals_request_delivery = esc_html( get_post_meta( $rentalrequest->ID, 'tekserverentals_request_delivery', true ) );
+	$tekserverentals_request_delivery_loc = esc_html( get_post_meta( $rentalrequest->ID, 'tekserverentals_request_delivery_loc', true ) );
+	$tekserverentals_request_pickup = esc_html( get_post_meta( $rentalrequest->ID, 'tekserverentals_request_pickup', true ) );
+	$tekserverentals_request_pickup_loc = esc_html( get_post_meta( $rentalrequest->ID, 'tekserverentals_request_pickup_loc', true ) );
+	$tekserverentals_request_tax = esc_html( get_post_meta( $rentalrequest->ID, 'tekserverentals_request_tax', true ) );
+	$tekserverentals_request_deposits = esc_html( get_post_meta( $rentalrequest->ID, 'tekserverentals_request_deposits', true ) );
+	$tekserverentals_request_total = esc_html( get_post_meta( $rentalrequest->ID, 'tekserverentals_request_total', true ) );
+	$tekserverentals_request_total_wdeposits = esc_html( get_post_meta( $rentalrequest->ID, 'tekserverentals_request_total_wdeposits', true ) );
+	wp_nonce_field( 'tekserverentals_meta_box', 'tekserverentals_nonce' );
+	
+	
+	
+	
+	//STILL NEED TO FINISH THIS SECTION; also need a way to handle line items.
+	
+	
+	
+	?>
+    <table>
+        <tr>
+            <td style="width: 100%">SKU</td>
+        </tr>
+        <tr>
+            <td><input type="text" size="30" name="tekserverentals_request_sku" value="<?php echo $tekserverentals_request_sku; ?>" /></td>
+        </tr>
+        <tr>
+            <td style="width: 100%">Serial Number</td>
+        </tr>
+        <tr>
+            <td><input type="text" size="30" name="tekserverentals_request_serial" value="<?php echo $tekserverentals_request_serial; ?>" /></td>
+        </tr>
+        <tr>
+            <td style="width: 100%">Current Status</td>
+        </tr>
+        <tr>
+        <td>
+        	<input type="radio" name="tekserverentals_request_status" value="available" <?php checked( 'tekserverentals_request_status', 'available' ); ?> /> Available<br/>
+			<input type="radio" name="tekserverentals_request_status" value="rented" <?php checked( 'tekserverentals_request_status', 'rented' ); ?> /> Rented<br/>
+			<input type="radio" name="tekserverentals_request_status" value="unavailable-service" <?php checked( 'tekserverentals_request_status', 'unavailable-service' ); ?> /> Being Serviced<br/>
+			<input type="radio" name="tekserverentals_request_status" value="unavailable-other" <?php checked( 'tekserverentals_request_status', 'unavailable-other' ); ?> /> Unavailable
+		</td>
+		</tr>
+    </table>
+    <?php
+}
+
+//store custom field data
+add_action( 'save_post', 'add_tekserverentals_request_fields', 5, 2 );
+function add_tekserverentals_request_fields( $tekserverentals_request_id, $rentalrequest ) {
+	if ( ! isset( $_POST['tekserverentals_nonce'] ) ) {
+    	return $tekserverentals_request_id;
+    }
+    $nonce = $_POST['tekserverentals_nonce'];
+	if ( ! wp_verify_nonce( $nonce, 'tekserverentals_meta_box' ) )
+	  return $tekserverentals_request_id;
+
+	// If this is an autosave, our form has not been submitted, so we don't want to do anything.
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) 
+	  return $tekserverentals_request_id;
+    // Check post type for 'rentalrequest'
+    if ( $rentalrequest->post_type == 'rentalrequest' ) {
+        // Store data in post meta table if present in post data
+        if ( isset( $_POST['tekserverentals_request_sku'] ) && $_POST['tekserverentals_request_sku'] != '' ) {
+            update_post_meta( $tekserverentals_request_id, 'tekserverentals_request_sku', sanitize_text_field( $_REQUEST['tekserverentals_request_sku'] ) );
+        }
+        if ( isset( $_POST['tekserverentals_request_serial'] ) && $_POST['tekserverentals_request_serial'] != '' ) {
+            update_post_meta( $tekserverentals_request_id, 'tekserverentals_request_serial', sanitize_text_field( $_REQUEST['tekserverentals_request_serial'] ) );
+    	}
+    	if ( isset( $_POST['tekserverentals_request_status'] ) ) {
+            update_post_meta( $tekserverentals_request_id, 'tekserverentals_request_status', $_REQUEST['tekserverentals_request_status'] );
+        }
+    }
+}
+
+//END OF UNFINISHED CODE
 
 // Add Shortcode for Generating rental item by ID
 function tekserverental_item( $atts ) {
