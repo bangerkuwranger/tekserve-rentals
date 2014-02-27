@@ -1166,12 +1166,12 @@
 								if (field_name === attr) { send = false; }
 							});
 							if (send) {
-								options_list.push(attr + ": " + val);
+								options_list.push('"'+ attr + '":"' + val +'"'); //added proper json encode here!!!!!!
 							}
 						});
 
 						// add the options to the description
-						data['item_options_' + counter] = options_list.join(", ");
+						data['item_options_' + counter] = '{' + options_list.join(", ") + '}'; //enclosed json object here. can be decoded to assoc. array now.
 					});
 
 
@@ -1186,7 +1186,6 @@
 					if (opts.extra_data) {
 						data = simpleCart.extend(data,opts.extra_data);
 					}
-
 					// return the data for the checkout form
 					return {
 						  action	: action

@@ -45,17 +45,20 @@ $lineitems = array();
 $line_item_qty = intval($content["itemCount"]);
 for ($i=1; $i<=$line_item_qty; $i++) {
 	$price_list = $content["item_options_".$i];
-	$pricing = str_replace(": ", " => ", $price_list);
+	$price_list = stripcslashes($price_list);
+	$pricing = json_decode($price_list, true);
 	$lineitems[$i] = array (
 		"name" => $content["item_name_".$i],
 		"qty" => $content["item_quantity_".$i],
 		"price" => $content["item_price_".$i],
-		"pricing" => array ( $pricing ),
+		"pricing" => $pricing
 	);
 }
 $orderinfo["start"] = strtotime($orderinfo["start"]);
 $orderinfo["end"] = strtotime($orderinfo["end"]);
 //output strings
+echo "<h1>Debug</h1>";
+var_dump($lineitems);
 echo "<br/><br/><h1>Customer Info</h1>";
 echo "<div class='tekserverentals-customer-info'>";
 echo "<p><b>Name:</b> ".$custinfo["first_name"]." ".$custinfo["last_name"]."</p>";
@@ -91,7 +94,7 @@ echo "<p><b>Amount Due for Reservation:</b> (includes deposit) ".$orderinfo["tot
 echo "<p><b>Additional Notes:</b> ".$orderinfo["notes_from_cust"]."</p>";
 echo "</div>";
 echo "<br/><br/><h1>Line Items</h1>";
-echo "<div class='tekserverentals-order-info'><table>";
+echo "<div class='tekserverentals-line-items'><table>";
 echo "<thead><tr><td>Item</td><td>Qty</td><td>Price</td></tr></thead><tbody>";
 foreach($lineitems as $item){
 	echo "<tr>";
@@ -180,7 +183,7 @@ foreach($lineitems as $item){
 	$item_ewprice = $item["pricing"]["ewprice"];
 	$new_line_item_obj = array(
 		'post_title'    =>   $item_name,
-		'post_content'	=>	 '',
+		'post_content'	=>	 "deposit: ".print_r($item),
 		'post_category' =>   '',  // Usable for custom taxonomies too
 		'tags_input'    =>   '',
 		'post_status'   =>   'publish',           // Choose: publish, preview, future, draft, etc.
