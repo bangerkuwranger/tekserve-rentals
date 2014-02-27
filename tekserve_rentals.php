@@ -598,7 +598,7 @@ if ( ! function_exists('tekserverentals_line_items') ) {
 			'label'               => 'lineitem',
 			'description'         => 'Line Items in Rental Requests',
 			'labels'              => $labels,
-			'supports'            => array( 'title', 'editor' ),
+			'supports'            => array( 'title' ),
 			'taxonomies'          => array( '' ),
 			'hierarchical'        => false,
 			'public'              => true,

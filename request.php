@@ -183,7 +183,6 @@ foreach($lineitems as $item){
 	$item_ewprice = $item["pricing"]["ewprice"];
 	$new_line_item_obj = array(
 		'post_title'    =>   $item_name,
-		'post_content'	=>	 "deposit: ".print_r($item),
 		'post_category' =>   '',  // Usable for custom taxonomies too
 		'tags_input'    =>   '',
 		'post_status'   =>   'publish',           // Choose: publish, preview, future, draft, etc.
