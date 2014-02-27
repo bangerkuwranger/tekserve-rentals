@@ -1,8 +1,20 @@
 <?php 
 /* Form handler for checkout data. Accepts postdata from simplecart.js and translates to an array that creates a Rental Request entry in wpdb
 */
+//start WP
+$wp_load = realpath("../../../wp-load.php");
+if(!file_exists($wp_load)) {
+  $wp_config = realpath("../../../wp-config.php");
+  if (!file_exists($wp_config)) {
+      exit("Can't find wp-config.php or wp-load.php");
+  } else {
+      require_once($wp_config);
+  }
+} else {
+  require_once($wp_load);
+}
+//arrange postdata into usable arrays
 $content = $_POST;
-var_dump($content);
 $custinfo = array(
 	"first_name" 	=> $content["first_name"],
 	"last_name" 	=> $content["last_name"],
@@ -32,14 +44,18 @@ $orderinfo = array(
 $lineitems = array();
 $line_item_qty = intval($content["itemCount"]);
 for ($i=1; $i<=$line_item_qty; $i++) {
+	$price_list = $content["item_options_".$i];
+	$pricing = str_replace(": ", " => ", $price_list);
 	$lineitems[$i] = array (
 		"name" => $content["item_name_".$i],
 		"qty" => $content["item_quantity_".$i],
 		"price" => $content["item_price_".$i],
+		"pricing" => array ( $pricing ),
 	);
 }
 $orderinfo["start"] = strtotime($orderinfo["start"]);
 $orderinfo["end"] = strtotime($orderinfo["end"]);
+//output strings
 echo "<br/><br/><h1>Customer Info</h1>";
 echo "<div class='tekserverentals-customer-info'>";
 echo "<p><b>Name:</b> ".$custinfo["first_name"]." ".$custinfo["last_name"]."</p>";
@@ -92,3 +108,97 @@ foreach($lineitems as $item){
 }
 unset($item);
 echo "</tbody></table></div>";
+//end output
+
+//check for and create user if user !already exists. All paths end with $user_name containing user object for this request.
+$user_name = get_user_by('email', $custinfo['email']);
+if(!$user_name) {
+	$user_name = $custinfo['email'];
+	$user_id = username_exists( $user_name );
+	if ( !$user_id and email_exists($user_email) == false ) {
+		$random_password = wp_generate_password( $length=12, $include_standard_special_chars=false );
+		$user_id = wp_create_user( $user_name, $random_password, $custinfo['email'] );
+		$user_name = get_user_by('ID', $user_id);
+	} else {
+		$random_password = __('User already exists.  Password inherited.');
+		$user_name = get_user_by('ID', $user_id);
+	}
+}
+
+//Set Values for new Request
+$title = sanitize_text_field( $custinfo["first_name"] )." ".sanitize_text_field( $custinfo["last_name"] )."'s request for ".date('l, F jS, Y' , sanitize_text_field($orderinfo['start']))." - ".date('l, F jS, Y' , sanitize_text_field($orderinfo['end']));
+
+// ADD THE FORM INPUT TO $new_post ARRAY
+$new_post = array(
+'post_title'    =>   $title,
+'post_content'	=>	 $orderinfo['notes_from_cust']."<br/>-<b>Original Notes from Customer",
+'post_category' =>   '',  // Usable for custom taxonomies too
+'tags_input'    =>   '',
+'post_status'   =>   'publish',           // Choose: publish, preview, future, draft, etc.
+'post_type' =>   'rentalrequest'  //'post',page' or use a custom post type if you want to
+    );
+//SAVE THE POST
+$new_rental_request = wp_insert_post($new_post);
+//add wp user id to this record
+add_post_meta( $new_rental_request, '_wpuserid', $user_name->ID );
+//update all of the order data
+update_post_meta( $new_rental_request, 'tekserverentals_request_firstname', sanitize_text_field( $custinfo["first_name"] ) );
+update_post_meta( $new_rental_request, 'tekserverentals_request_lastname', sanitize_text_field( $custinfo["last_name"] ) );
+update_post_meta( $new_rental_request, 'tekserverentals_request_email', sanitize_text_field( $custinfo["email"] ) );
+update_post_meta( $new_rental_request, 'tekserverentals_request_phone', sanitize_text_field( $custinfo["phone"] ) );
+update_post_meta( $new_rental_request, 'tekserverentals_request_address', sanitize_text_field( $custinfo["address"] ) );
+update_post_meta( $new_rental_request, 'tekserverentals_request_city', sanitize_text_field( $custinfo["city"] ) );
+update_post_meta( $new_rental_request, 'tekserverentals_request_state', sanitize_text_field( $custinfo["state"] ) );
+update_post_meta( $new_rental_request, 'tekserverentals_request_zip', sanitize_text_field( $custinfo["zip"] ) );
+update_post_meta( $new_rental_request, 'tekserverentals_request_company', sanitize_text_field( $custinfo["company"] ) );
+update_post_meta( $new_rental_request, 'tekserverentals_request_start', sanitize_text_field( $orderinfo["start"] ) );
+update_post_meta( $new_rental_request, 'tekserverentals_request_end', sanitize_text_field( $orderinfo["end"] ) );
+update_post_meta( $new_rental_request, 'tekserverentals_request_duration', absint( $orderinfo["durationdays"] ) );
+if($orderinfo["delivery"] == 1) {
+	update_post_meta( $new_rental_request, 'tekserverentals_request_delivery', "delivery" );
+}
+if($orderinfo["pickup"] == 1) {
+	update_post_meta( $new_rental_request, 'tekserverentals_request_pickup', "pickup" );
+}
+update_post_meta( $new_rental_request, 'tekserverentals_delivery_loc', $orderinfo["where_deliver"] );
+update_post_meta( $new_rental_request, 'tekserverentals_pickup_loc', $orderinfo["where_pickup"] );
+update_post_meta( $new_rental_request, 'tekserverentals_request_deposits', round( ltrim( sanitize_text_field( $orderinfo["deposit_total"] ), "$" ), 2 ) );
+update_post_meta( $new_rental_request, 'tekserverentals_request_shipping', round( ltrim( sanitize_text_field( $orderinfo["shipping_total"] ), "$" ), 2 ) );
+update_post_meta( $new_rental_request, 'tekserverentals_request_tax', round( ltrim( sanitize_text_field( $orderinfo["tax_total"] ), "$" ), 2 ) );
+update_post_meta( $new_rental_request, 'tekserverentals_request_total', round( ltrim( sanitize_text_field( $orderinfo["total"] ), "$" ), 2 ) );
+update_post_meta( $new_rental_request, 'tekserverentals_request_total_wdeposits', round( ltrim( sanitize_text_field( $orderinfo["total_with_deposit"] ), "$" ), 2 ) );
+
+//create line items and connect to request
+foreach($lineitems as $item){
+	$item_name = $item["name"];
+	$item_qty = $item["qty"];
+	$item_price = $item["price"];
+	$item_deposit = $item["pricing"]["deposit"];
+	$item_dprice = $item["pricing"]["dprice"];
+	$item_edprice = $item["pricing"]["edprice"];
+	$item_wprice = $item["pricing"]["wprice"];
+	$item_ewprice = $item["pricing"]["ewprice"];
+	$new_line_item_obj = array(
+		'post_title'    =>   $item_name,
+		'post_content'	=>	 '',
+		'post_category' =>   '',  // Usable for custom taxonomies too
+		'tags_input'    =>   '',
+		'post_status'   =>   'publish',           // Choose: publish, preview, future, draft, etc.
+		'post_type' 	=>   'lineitem'  //'post',page' or use a custom post type if you want to
+	);
+	$new_line_item = wp_insert_post($new_line_item_obj);
+	update_post_meta( $new_line_item, 'tekserverentals_line_item_qty', intval( ltrim($item_qty, "0" ) ) );
+	update_post_meta( $new_line_item, 'tekserverentals_line_item_price', round( ltrim( $item_price, "$" ), 2 ) );
+	update_post_meta( $new_line_item, '_tekserverentals_line_item_deposit', round( ltrim( $item_deposit, "$" ), 2 ) );
+	update_post_meta( $new_line_item, '_tekserverentals_line_item_dprice', round( ltrim( $item_dprice, "$" ), 2 ) );
+	update_post_meta( $new_line_item, '_tekserverentals_line_item_edprice', round( ltrim( $item_edprice, "$" ), 2 ) );
+	update_post_meta( $new_line_item, '_tekserverentals_line_item_wprice', round( ltrim( $item_wprice, "$" ), 2 ) );
+	update_post_meta( $new_line_item, '_tekserverentals_line_item_ewprice', round( ltrim( $item_ewprice, "$" ), 2 ) );
+	p2p_type( 'line_items_to_rental_requests' )->connect( $new_line_item, $new_rental_request, array() );
+	unset($new_line_item);
+}
+unset($item);
+$link = get_permalink( $new_rental_request );
+wp_redirect( $link );
+//create post
+do_action('wp_insert_post', 'wp_insert_post');
