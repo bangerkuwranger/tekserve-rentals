@@ -632,7 +632,7 @@ function tekserverentals_line_item_fields() {
     add_meta_box( 'tekserverentals_line_items', 'Request Details', 'display_tekserverentals_line_item_fields', 'lineitem', 'normal', 'core' );
 }
 
-// Retrieve current details based on SKU ID
+// Retrieve current details based on Line Item ID
 function display_tekserverentals_line_item_fields( $lineitem ) {
     $tekserverentals_line_item_qty = absint( get_post_meta( $lineitem->ID, 'tekserverentals_line_item_qty', true ) );
 	$tekserverentals_line_item_price = round( ltrim( get_post_meta( $lineitem->ID, 'tekserverentals_line_item_price', true ), "$" ), 2 );
@@ -673,14 +673,114 @@ function add_tekserverentals_line_item_fields( $lineitem_id, $lineitem ) {
 	  return $lineitem_id;
     // Check post type for 'lineitem'
     if ( $lineitem->post_type == 'lineitem' ) {
+    	$currentprice = get_post_meta( $lineitem_id, 'tekserverentals_line_item_price', true );
+    	//get latest info from parent request before saving
+		$request = p2p_type( 'line_items_to_rental_requests' )->get_connected($lineitem_id);
+		while ( $request->have_posts() ) : $request->the_post();
+			$parent_id = get_the_ID();
+			$duration = get_post_meta( $parent_id, 'tekserverentals_request_duration', true );
+		endwhile;
+		//calculate new price based on entered qty and possibly updated duration; array stores price and values of days, weeks, etc.
+		$dprice = get_post_meta( $lineitem_id, '_tekserverentals_line_item_dprice', true );
+		$edprice = get_post_meta( $lineitem_id, '_tekserverentals_line_item_edprice', true );
+		$wprice = get_post_meta( $lineitem_id, '_tekserverentals_line_item_wprice', true );
+		$ewprice = get_post_meta( $lineitem_id, '_tekserverentals_line_item_ewprice', true );
+		$deposit = get_post_meta( $lineitem_id, '_tekserverentals_line_item_deposit', true );
+		$current_qty = get_post_meta( $lineitem_id, 'tekserverentals_line_item_qty', true );
+		$new_qty = absint(sanitize_text_field( $_REQUEST['tekserverentals_line_item_qty'] ) );
+		$new_price_duration = calculate_duration_price($duration, $dprice, $edprice, $wprice, $ewprice );
+		$new_price = $new_price_duration["price"] * $new_qty;
+		//compare, and update line item price, tax, grand total, deposit, and total w/ deposits if the line item price changes
+		if( $currentprice != $new_price ) {
+			$shipping = get_post_meta( $parent_id, 'tekserverentals_request_shipping', true );//from parent
+			$tax = get_post_meta( $parent_id, 'tekserverentals_request_tax', true );//from parent
+			$old_total = get_post_meta( $parent_id, 'tekserverentals_request_total', true ) - $tax - $shipping; //parent total - tax - shipping
+			$new_total = $old_total - $currentprice + $new_price; 
+			$old_deposit = get_post_meta( $parent_id, 'tekserverentals_request_deposits', true ) - ( $current_qty * $deposit );
+			$new_deposit = $old_deposit + ( $new_qty * $deposit );
+			$new_tax = $tax - ( /*global_tax_rate*/ .00885 * $currentprice )  + ( /*global_tax_rate*/ .00885 * $new_price );
+			$new_total = $new_total + $new_tax + $shipping;
+			$new_total_wdeposits = $new_total + $new_deposit;
+			//update tax
+			//update deposit
+			//update total
+			//update total+deposit
+		}
+		else {
+			$new_price = round( ltrim( sanitize_text_field( $_REQUEST['tekserverentals_line_item_price'] ), "$" ), 2 )
+		}
         // Store data in post meta table if present in post data
         if ( isset( $_POST['tekserverentals_line_item_qty'] ) && $_POST['tekserverentals_line_item_qty'] != '' ) {
-            update_post_meta( $lineitem_id, 'tekserverentals_line_item_qty', absint(sanitize_text_field( $_REQUEST['tekserverentals_line_item_qty'] ) ) );
+            update_post_meta( $lineitem_id, 'tekserverentals_line_item_qty', $new_qty );
         }
         if ( isset( $_POST['tekserverentals_line_item_price'] ) && $_POST['tekserverentals_line_item_price'] != '' ) {
-            update_post_meta( $lineitem_id, 'tekserverentals_line_item_price', round( ltrim( sanitize_text_field( $_REQUEST['tekserverentals_line_item_price'] ), "$" ), 2 ) );
+            update_post_meta( $lineitem_id, 'tekserverentals_line_item_price', $new_price );
         }
     }
+}
+
+//here's a php version of the front-end calcs we did with simplecart.js for charged weeks, extra days, extra weeks, and final line item price. Could've made that an AJAX call, I suppose. At least this didn't take as long as the JS date approximations...
+function calculate_duration_price($days, $dprice, $edprice, $wprice, $ewprice ) {
+	$edays = 0;
+	$week = 0;
+	$eweeks = 0;
+	$dprice = intval( $dprice );
+	$edprice = intval( $edprice );
+	$wprice = intval( $wprice );
+	$ewprice = intval( $ewprice );
+	if ( $days == 1 ) {
+		$price = round( $dprice, 2 );
+	}
+	else {
+		if ( $days > 6 ) {
+			$week = 1;
+			$edays = intval( $days - 7 );
+			if ( $days > 13 ) {
+				$eweeks = floor( ( $days - 7 ) / 7 );
+				$edays = intval( $days - ( ( $eweeks + 1 ) * 7 ) );
+				if ( $edays > 0 ) {
+					$dtot = intval( $wprice ) + intval( $edprice * $edays ) + intval( $ewprice * $eweeks );
+					$wtot = intval( $wprice ) + intval( $ewprice ) + intval( $ewprice * $eweeks );
+					if ( $wtot < $dtot ) {
+						$price = round( $wtot, 2 );
+					}
+					else {
+						$price = round( $dtot, 2 );
+					}
+				}
+				else {
+					$price = round( intval( $wprice ) + intval( $ewprice * $eweeks ), 2 );
+				}
+			}
+			else {
+				$dtot = intval( $wprice ) + intval( $edprice * $edays );
+				$wtot = intval( $wprice ) + intval( $ewprice );
+				if ( $wtot < $dtot ) {
+					$price = round( $wtot, 2 );
+				}
+				else {
+					$price = round( $dtot, 2 );
+				}
+			}
+		}
+		else {
+			$dtot = intval( $wprice ) + intval( $edprice * $edays );
+			if ( $wprice < $dtot ) {
+				$price = round( $wprice, 2 );
+			}
+			else {
+				$price = round( $dtot, 2 );
+			}
+		}
+	}
+	$price_durations = array (
+		"price" 	=>	$price,
+		"days"		=>	$days,
+		"edays"		=>	$edays,
+		"week"		=>	$week,
+		"eweeks"	=>	$eweeks
+	);
+	return $price_durations;
 }
 
 // Connect Line Items to Requests
