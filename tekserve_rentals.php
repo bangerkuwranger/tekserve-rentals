@@ -731,7 +731,7 @@ function update_rental_request_shipping($request_id, $new_shipping) {
 	$shipping = get_post_meta( $request_id, 'tekserverentals_request_shipping', true );//from parent
 	$tax = get_post_meta( $request_id, 'tekserverentals_request_tax', true );//from parent
 	$old_total = get_post_meta( $request_id, 'tekserverentals_request_total', true ) - $tax - $shipping; //parent total - tax - shipping      
-	$new_tax = $tax - ( /*$global_tax_rate*/ .00885 * $shipping )  + ( /*$global_tax_rate*/ .00885 * $new_shipping );
+	$new_tax = $tax - ( /*$global_tax_rate*/ .08875 * $shipping )  + ( /*$global_tax_rate*/ .08875 * $new_shipping );
 	$new_total = $old_total + $new_tax + $new_shipping;
 	update_post_meta( $request_id, 'tekserverentals_request_shipping', $new_shipping, $shipping );//update shipping
 	$deposit = get_post_meta( $parent_id, 'tekserverentals_request_deposits', true );
@@ -755,7 +755,7 @@ function update_line_item_parent_totals ( $lineitem, $new_price, $old_price, $ne
 	$new_total = $old_total - $old_price + $new_price; 
 	$old_deposit = get_post_meta( $parent_id, 'tekserverentals_request_deposits', true ) - ( $old_qty * $deposit );
 	$new_deposit = $old_deposit + ( $new_qty * $deposit );
-	$new_tax = $tax - ( /*global_tax_rate*/ .00885 * $old_price )  + ( /*global_tax_rate*/ .00885 * $new_price );
+	$new_tax = $tax - ( /*global_tax_rate*/ .08875 * $old_price )  + ( /*global_tax_rate*/ .08875 * $new_price );
 	$new_total = $new_total + $new_tax + $shipping;
 	$new_total_wdeposits = $new_total + $new_deposit;
 	update_post_meta( $parent_id, 'tekserverentals_request_tax', $new_tax, $tax );//update tax
