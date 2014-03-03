@@ -412,9 +412,9 @@ function display_tekserverentals_request_meta_box( $rentalrequest ) {
 	<table>
 		<tr>
 		<td>Rental Starts: </td>
-		<td><input type="text" size="12" name="tekserverentals_request_start" value="<?php echo $tekserverentals_request_start; ?>" /></td>
+		<td><input type="text" size="12" name="tekserverentals_request_start" class="hasDatepicker" value="<?php echo $tekserverentals_request_start; ?>" /></td>
 		<td>Rental Ends: </td>
-		<td><input type="text" size="12" name="tekserverentals_request_end" value="<?php echo $tekserverentals_request_end; ?>" /></td>
+		<td><input type="text" size="12" name="tekserverentals_request_end" class="hasDatepicker" value="<?php echo $tekserverentals_request_end; ?>" /></td>
 		</tr>
 		<tr>
 		<td>Duration: </td>
@@ -422,10 +422,10 @@ function display_tekserverentals_request_meta_box( $rentalrequest ) {
 		</tr>
 		<tr>
 		<td>Delivery Requested? </td>
-		<td><input type="checkbox" name="tekserverentals_request_delivery" value="delivery" <?php checked( $tekserverentals_request_delivery, 'delivery' ); ?> /></td>
+		<td><input type="checkbox" readonly name="tekserverentals_request_delivery" value="delivery" <?php checked( $tekserverentals_request_delivery, 'delivery' ); ?> /></td>
 		<td>Where to?</td>
 		<td>
-		<select name="tekserverentals_delivery_loc">
+		<select disabled name="tekserverentals_delivery_loc">
 			<option value="manhattan" <?php selected( $tekserverentals_delivery_loc, 'manhattan' ); ?>>Manhattan below 96th</option>
 			<option value="borough" <?php selected( $tekserverentals_delivery_loc, 'borough' ); ?>>Bronx, Brooklyn, Manhattan above 96th, Queens, or SI</option>
 		</select>
@@ -433,10 +433,10 @@ function display_tekserverentals_request_meta_box( $rentalrequest ) {
 		</tr>
 		<tr>
 		<td>Pickup Requested? </td>
-		<td><input type="checkbox" name="tekserverentals_request_pickup" value="pickup" <?php checked( $tekserverentals_request_pickup, 'pickup' ); ?> /></td>
+		<td><input type="checkbox" readonly name="tekserverentals_request_pickup" value="pickup" <?php checked( $tekserverentals_request_pickup, 'pickup' ); ?> /></td>
 		<td>Where to?</td>
 		<td>
-		<select name="tekserverentals_request_pickup_loc">
+		<select disabled name="tekserverentals_request_pickup_loc">
 			<option value="manhattan" <?php selected( $tekserverentals_request_pickup_loc, 'manhattan' ); ?>>Manhattan below 96th</option>
 			<option value="borough" <?php selected( $tekserverentals_request_pickup_loc, 'borough' ); ?>>Bronx, Brooklyn, Manhattan above 96th, Queens, or SI</option>
 		</select>
@@ -446,15 +446,19 @@ function display_tekserverentals_request_meta_box( $rentalrequest ) {
 		<td>Shipping: </td>
 		<td>$<input type="number" size="12" name="tekserverentals_request_shipping" value="<?php echo $tekserverentals_request_shipping; ?>" /></td>
 		<td>Tax: </td>
-		<td>$<input type="number" size="12" name="tekserverentals_request_tax" value="<?php echo $tekserverentals_request_tax; ?>" /></td>
+		<td>$<input type="number" readonly size="12" name="tekserverentals_request_tax" value="<?php echo $tekserverentals_request_tax; ?>" /></td>
 		</tr>
 		<td>Total Deposits: </td>
-		<td colspan="3">$<input type="number" size="12" name="tekserverentals_request_deposits" value="<?php echo $tekserverentals_request_deposits; ?>" /></td>
+		<td colspan="3">$<input readonly type="number" size="12" name="tekserverentals_request_deposits" value="<?php echo $tekserverentals_request_deposits; ?>" /></td>
 		<tr>
-		<td>Total with Deposits: </td>
+		
+		<!-- not useful... for now.
+<td>Total with Deposits: </td>
 		<td>$<input type="number" size="12" name="tekserverentals_request_total_wdeposits" value="<?php echo $tekserverentals_request_total_wdeposits; ?>" /></td>
+ -->
+ 
 		<td>Total: </td>
-		<td>$<input type="number" size="12" name="tekserverentals_request_total" value="<?php echo $tekserverentals_request_total; ?>" /></td>
+		<td colspan="3">$<input type="number" readonly size="12" name="tekserverentals_request_total" value="<?php echo $tekserverentals_request_total; ?>" /></td>
 		</tr>
 	</table>
 	<h2>Customer Info</h2>
@@ -503,7 +507,48 @@ function add_tekserverentals_request_fields( $tekserverentals_request_id, $renta
 	  return $tekserverentals_request_id;
     // Check post type for 'rentalrequest'
     if ( $rentalrequest->post_type == 'rentalrequest' ) {
-        // Store data in post meta table if present in post data
+    	$current_duration = floor(((get_post_meta( $rentalrequest->ID, 'tekserverentals_request_end', true )) - (get_post_meta( $rentalrequest->ID, 'tekserverentals_request_start', true )))/86400);
+    	if ( isset( $_POST['tekserverentals_request_start'] ) && $_POST['tekserverentals_request_start'] != '' ) {
+            update_post_meta( $tekserverentals_request_id, 'tekserverentals_request_start', sanitize_text_field( strtotime( $_REQUEST['tekserverentals_request_start'] ) ) );
+    	}
+    	if ( isset( $_POST['tekserverentals_request_end'] ) && $_POST['tekserverentals_request_end'] != '' ) {
+            update_post_meta( $tekserverentals_request_id, 'tekserverentals_request_end', sanitize_text_field( strtotime( $_REQUEST['tekserverentals_request_end'] ) ) );
+    	}
+    	update_post_meta($tekserverentals_request_id, 'tekserverentals_request_duration', floor(((get_post_meta( $rentalrequest->ID, 'tekserverentals_request_end', true )) - (get_post_meta( $rentalrequest->ID, 'tekserverentals_request_start', true )))/86400));
+    	$new_duration = get_post_meta($tekserverentals_request_id, 'tekserverentals_request_duration', true);
+    	//additional calcs for changing fields:
+    	// if duration has changed
+    		//recalculate line item prices
+    		//recalculate tax
+    		//recaculate totals based on line item price changes
+    	if ( $current_duration != $new_duration ) {
+    		$request = p2p_type( 'line_items_to_rental_requests' )->get_connected($tekserverentals_request_id);
+    		while ( $request->have_posts() ) : $request->the_post();
+    			$child_id = get_the_ID();
+    			//get current qty & price
+    			$current_qty = get_post_meta( $child_id, 'tekserverentals_line_item_qty', true );
+    			$current_price = get_post_meta( $child_id, 'tekserverentals_line_item_price', true );
+    			//update lineitem price
+				$new_price = update_line_item_price($child_id, $new_duration, $current_qty);
+				update_post_meta( $child_id, 'tekserverentals_line_item_price', $new_price );
+				//update totals
+				update_line_item_parent_totals ( $child_id, $new_price, $current_price, $current_qty, $current_qty );
+			endwhile;
+    	}
+    	if ( isset( $_POST['tekserverentals_request_shipping'] ) && $_POST['tekserverentals_request_shipping'] != '' ) {
+			$new_shipping = round( ltrim( sanitize_text_field( $_REQUEST['tekserverentals_request_shipping'] ), "$" ), 2 );
+			// if shipping price has changed
+			if (  $new_shipping != ( get_post_meta($tekserverentals_request_id, 'tekserverentals_request_shipping', true ) ) ) {
+				//update tax and total
+				update_rental_request_shipping($tekserverentals_request_id, $new_shipping);
+			}
+			//otherwise, accept input as is
+			else {
+				update_post_meta( $tekserverentals_request_id, 'tekserverentals_request_shipping', round( ltrim( sanitize_text_field( $_REQUEST['tekserverentals_request_shipping'] ), "$" ), 2 ) );
+			}
+    	}
+    	
+        // Store non-calculated data in post meta table if present in post data
         if ( isset( $_POST['tekserverentals_request_firstname'] ) && $_POST['tekserverentals_request_firstname'] != '' ) {
             update_post_meta( $tekserverentals_request_id, 'tekserverentals_request_firstname', sanitize_text_field( $_REQUEST['tekserverentals_request_firstname'] ) );
         }
@@ -531,13 +576,6 @@ function add_tekserverentals_request_fields( $tekserverentals_request_id, $renta
     	if ( isset( $_POST['tekserverentals_request_company'] ) && $_POST['tekserverentals_request_company'] != '' ) {
             update_post_meta( $tekserverentals_request_id, 'tekserverentals_request_company', sanitize_text_field( $_REQUEST['tekserverentals_request_company'] ) );
     	}
-    	if ( isset( $_POST['tekserverentals_request_start'] ) && $_POST['tekserverentals_request_start'] != '' ) {
-            update_post_meta( $tekserverentals_request_id, 'tekserverentals_request_start', sanitize_text_field( strtotime( $_REQUEST['tekserverentals_request_start'] ) ) );
-    	}
-    	if ( isset( $_POST['tekserverentals_request_end'] ) && $_POST['tekserverentals_request_end'] != '' ) {
-            update_post_meta( $tekserverentals_request_id, 'tekserverentals_request_end', sanitize_text_field( strtotime( $_REQUEST['tekserverentals_request_end'] ) ) );
-    	}
-    	update_post_meta($tekserverentals_request_id, 'tekserverentals_request_duration', floor(((get_post_meta( $rentalrequest->ID, 'tekserverentals_request_end', true )) - (get_post_meta( $rentalrequest->ID, 'tekserverentals_request_start', true )))/86400));
     	if ( isset( $_POST['tekserverentals_request_delivery'] ) ) {
             update_post_meta( $tekserverentals_request_id, 'tekserverentals_request_delivery', $_REQUEST['tekserverentals_request_delivery'] );
         }
@@ -550,21 +588,6 @@ function add_tekserverentals_request_fields( $tekserverentals_request_id, $renta
         if ( isset( $_POST['tekserverentals_request_pickup_loc'] ) ) {
             update_post_meta( $tekserverentals_request_id, 'tekserverentals_pickup_loc', $_REQUEST['tekserverentals_request_pickup_loc'] );
         }
-        if ( isset( $_POST['tekserverentals_request_shipping'] ) && $_POST['tekserverentals_request_shipping'] != '' ) {
-            update_post_meta( $tekserverentals_request_id, 'tekserverentals_request_shipping', round( ltrim( sanitize_text_field( $_REQUEST['tekserverentals_request_shipping'] ), "$" ), 2 ) );
-    	}
-    	if ( isset( $_POST['tekserverentals_request_tax'] ) && $_POST['tekserverentals_request_tax'] != '' ) {
-            update_post_meta( $tekserverentals_request_id, 'tekserverentals_request_tax', round( ltrim( sanitize_text_field( $_REQUEST['tekserverentals_request_tax'] ), "$" ), 2 ) );
-    	}
-    	if ( isset( $_POST['tekserverentals_request_deposits'] ) && $_POST['tekserverentals_request_deposits'] != '' ) {
-            update_post_meta( $tekserverentals_request_id, 'tekserverentals_request_deposits', round( ltrim( sanitize_text_field( $_REQUEST['tekserverentals_request_deposits'] ), "$" ), 2 ) );
-    	}
-    	if ( isset( $_POST['tekserverentals_request_total'] ) && $_POST['tekserverentals_request_total'] != '' ) {
-            update_post_meta( $tekserverentals_request_id, 'tekserverentals_request_total', round( ltrim( sanitize_text_field( $_REQUEST['tekserverentals_request_total'] ), "$" ), 2 ) );
-    	}
-    	if ( isset( $_POST['tekserverentals_request_total_wdeposits'] ) && $_POST['tekserverentals_request_total_wdeposits'] != '' ) {
-            update_post_meta( $tekserverentals_request_id, 'tekserverentals_request_total_wdeposits', round( ltrim( sanitize_text_field( $_REQUEST['tekserverentals_request_total_wdeposits'] ), "$" ), 2 ) );
-    	}
     }
 }
 
@@ -674,42 +697,26 @@ function add_tekserverentals_line_item_fields( $lineitem_id, $lineitem ) {
     // Check post type for 'lineitem'
     if ( $lineitem->post_type == 'lineitem' ) {
     	$currentprice = get_post_meta( $lineitem_id, 'tekserverentals_line_item_price', true );
+    	$current_qty = get_post_meta( $lineitem_id, 'tekserverentals_line_item_qty', true );
     	//get latest info from parent request before saving
 		$request = p2p_type( 'line_items_to_rental_requests' )->get_connected($lineitem_id);
 		while ( $request->have_posts() ) : $request->the_post();
 			$parent_id = get_the_ID();
 			$duration = get_post_meta( $parent_id, 'tekserverentals_request_duration', true );
 		endwhile;
-		//calculate new price based on entered qty and possibly updated duration; array stores price and values of days, weeks, etc.
-		$dprice = get_post_meta( $lineitem_id, '_tekserverentals_line_item_dprice', true );
-		$edprice = get_post_meta( $lineitem_id, '_tekserverentals_line_item_edprice', true );
-		$wprice = get_post_meta( $lineitem_id, '_tekserverentals_line_item_wprice', true );
-		$ewprice = get_post_meta( $lineitem_id, '_tekserverentals_line_item_ewprice', true );
-		$deposit = get_post_meta( $lineitem_id, '_tekserverentals_line_item_deposit', true );
-		$current_qty = get_post_meta( $lineitem_id, 'tekserverentals_line_item_qty', true );
+		//calculate new price based on entered qty and returned duration
 		$new_qty = absint(sanitize_text_field( $_REQUEST['tekserverentals_line_item_qty'] ) );
-		$new_price_duration = calculate_duration_price($duration, $dprice, $edprice, $wprice, $ewprice );
-		$new_price = $new_price_duration["price"] * $new_qty;
+		$new_price = update_line_item_price( $lineitem_id, $duration, $new_qty );
 		//compare, and update line item price, tax, grand total, deposit, and total w/ deposits if the line item price changes
 		if( $currentprice != $new_price ) {
-			$shipping = get_post_meta( $parent_id, 'tekserverentals_request_shipping', true );//from parent
-			$tax = get_post_meta( $parent_id, 'tekserverentals_request_tax', true );//from parent
-			$old_total = get_post_meta( $parent_id, 'tekserverentals_request_total', true ) - $tax - $shipping; //parent total - tax - shipping
-			$new_total = $old_total - $currentprice + $new_price; 
-			$old_deposit = get_post_meta( $parent_id, 'tekserverentals_request_deposits', true ) - ( $current_qty * $deposit );
-			$new_deposit = $old_deposit + ( $new_qty * $deposit );
-			$new_tax = $tax - ( /*global_tax_rate*/ .00885 * $currentprice )  + ( /*global_tax_rate*/ .00885 * $new_price );
-			$new_total = $new_total + $new_tax + $shipping;
-			$new_total_wdeposits = $new_total + $new_deposit;
-			update_post_meta( $parent_id, 'tekserverentals_request_tax', $new_tax, $tax );//update tax
-			update_post_meta( $parent_id, 'tekserverentals_request_deposits', $new_deposit );//update deposit
-			update_post_meta( $parent_id, 'tekserverentals_request_total', $new_total);//update total
-			update_post_meta( $parent_id, 'tekserverentals_request_total_wdeposits', $new_total_wdeposits );//update total+deposit
+			//update parent totals, keeping the new lineitem price
+			update_line_item_parent_totals( $lineitem_id, $new_price, $currentprice, $new_qty, $current_qty );
 		}
 		else {
+			//otherwise, just accept new input
 			$new_price = round( ltrim( sanitize_text_field( $_REQUEST['tekserverentals_line_item_price'] ), "$" ), 2 );
 		}
-        // Store data in post meta table if present in post data
+        // Store data in post meta table if present in post data. Uses calculated price or entered price.
         if ( isset( $_POST['tekserverentals_line_item_qty'] ) && $_POST['tekserverentals_line_item_qty'] != '' ) {
             update_post_meta( $lineitem_id, 'tekserverentals_line_item_qty', $new_qty );
         }
@@ -717,6 +724,55 @@ function add_tekserverentals_line_item_fields( $lineitem_id, $lineitem ) {
             update_post_meta( $lineitem_id, 'tekserverentals_line_item_price', $new_price );
         }
     }
+}
+
+//function updates totals for rental request given a request ID, and new shipping value
+function update_rental_request_shipping($request_id, $new_shipping) {
+	$shipping = get_post_meta( $request_id, 'tekserverentals_request_shipping', true );//from parent
+	$tax = get_post_meta( $request_id, 'tekserverentals_request_tax', true );//from parent
+	$old_total = get_post_meta( $request_id, 'tekserverentals_request_total', true ) - $tax - $shipping; //parent total - tax - shipping      
+	$new_tax = $tax - ( /*$global_tax_rate*/ .00885 * $shipping )  + ( /*$global_tax_rate*/ .00885 * $new_shipping );
+	$new_total = $old_total + $new_tax + $new_shipping;
+	update_post_meta( $request_id, 'tekserverentals_request_shipping', $new_shipping, $shipping );//update shipping
+	$deposit = get_post_meta( $parent_id, 'tekserverentals_request_deposits', true );
+	$new_total_wdeposits = $new_total + $deposit;
+	update_post_meta( $request_id, 'tekserverentals_request_tax', $new_tax, $tax );//update tax
+	update_post_meta( $request_id, 'tekserverentals_request_total', $new_total);//update total
+	update_post_meta( $request_id, 'tekserverentals_request_total_wdeposits', $new_total_wdeposits );//update total+deposit
+}
+
+//function updates parent request's totals given a old & new price & qty
+function update_line_item_parent_totals ( $lineitem, $new_price, $old_price, $new_qty, $old_qty ) {
+	$deposit = get_post_meta( $lineitem, '_tekserverentals_line_item_deposit', true );
+	//get parent id
+	$request = p2p_type( 'line_items_to_rental_requests' )->get_connected($lineitem);
+	while ( $request->have_posts() ) : $request->the_post();
+		$parent_id = get_the_ID();
+	endwhile;
+	$shipping = get_post_meta( $parent_id, 'tekserverentals_request_shipping', true );//from parent
+	$tax = get_post_meta( $parent_id, 'tekserverentals_request_tax', true );//from parent
+	$old_total = get_post_meta( $parent_id, 'tekserverentals_request_total', true ) - $tax - $shipping; //parent total - tax - shipping
+	$new_total = $old_total - $old_price + $new_price; 
+	$old_deposit = get_post_meta( $parent_id, 'tekserverentals_request_deposits', true ) - ( $old_qty * $deposit );
+	$new_deposit = $old_deposit + ( $new_qty * $deposit );
+	$new_tax = $tax - ( /*global_tax_rate*/ .00885 * $old_price )  + ( /*global_tax_rate*/ .00885 * $new_price );
+	$new_total = $new_total + $new_tax + $shipping;
+	$new_total_wdeposits = $new_total + $new_deposit;
+	update_post_meta( $parent_id, 'tekserverentals_request_tax', $new_tax, $tax );//update tax
+	update_post_meta( $parent_id, 'tekserverentals_request_deposits', $new_deposit );//update deposit
+	update_post_meta( $parent_id, 'tekserverentals_request_total', $new_total);//update total
+	update_post_meta( $parent_id, 'tekserverentals_request_total_wdeposits', $new_total_wdeposits );//update total+deposit
+}
+
+//function calculates new line item price after duration or quantity change
+function update_line_item_price($lineitem, $new_duration, $new_qty) {
+	$dprice = get_post_meta( $lineitem, '_tekserverentals_line_item_dprice', true );
+	$edprice = get_post_meta( $lineitem, '_tekserverentals_line_item_edprice', true );
+	$wprice = get_post_meta( $lineitem, '_tekserverentals_line_item_wprice', true );
+	$ewprice = get_post_meta( $lineitem, '_tekserverentals_line_item_ewprice', true );
+	$new_price_duration = calculate_duration_price($new_duration, $dprice, $edprice, $wprice, $ewprice );
+	$new_price = $new_price_duration["price"] * $new_qty;
+	return $new_price;
 }
 
 //here's a php version of the front-end calcs we did with simplecart.js for charged weeks, extra days, extra weeks, and final line item price. Could've made that an AJAX call, I suppose. At least this didn't take as long as the JS date approximations...
