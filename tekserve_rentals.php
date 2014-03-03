@@ -380,7 +380,7 @@ add_action( 'init', 'tekserverentals_rental_request', 0 );
 //create custom fields for Requests
 add_action( 'admin_init', 'tekserverentals_requests_custom_fields' );
 function tekserverentals_requests_custom_fields() {
-    add_meta_box( 'tekserverentals_requests_meta_box', 'Request Details', 'display_tekserverentals_request_meta_box', 'rentalrequest', 'normal', 'high' );
+    add_meta_box( 'tekserverentals_requests_meta_box', 'Rental Details', 'display_tekserverentals_request_meta_box', 'rentalrequest', 'normal', 'high' );
 }
 
 // Retrieve current details based on request ID
@@ -452,9 +452,9 @@ function display_tekserverentals_request_meta_box( $rentalrequest ) {
 		<td colspan="3">$<input type="number" size="12" name="tekserverentals_request_deposits" value="<?php echo $tekserverentals_request_deposits; ?>" /></td>
 		<tr>
 		<td>Total with Deposits: </td>
-		<td>$<input type="number" size="12" name="tekserverentals_request_total" value="<?php echo $tekserverentals_request_total; ?>" /></td>
-		<td>Total: </td>
 		<td>$<input type="number" size="12" name="tekserverentals_request_total_wdeposits" value="<?php echo $tekserverentals_request_total_wdeposits; ?>" /></td>
+		<td>Total: </td>
+		<td>$<input type="number" size="12" name="tekserverentals_request_total" value="<?php echo $tekserverentals_request_total; ?>" /></td>
 		</tr>
 	</table>
 	<h2>Customer Info</h2>
@@ -629,7 +629,7 @@ if ( ! function_exists('tekserverentals_line_items') ) {
 //create custom fields for Line Items
 add_action( 'admin_init', 'tekserverentals_line_item_fields' );
 function tekserverentals_line_item_fields() {
-    add_meta_box( 'tekserverentals_line_items', 'Request Details', 'display_tekserverentals_line_item_fields', 'lineitem', 'normal', 'core' );
+    add_meta_box( 'tekserverentals_line_items', 'Rental Line Item', 'display_tekserverentals_line_item_fields', 'lineitem', 'normal', 'core' );
 }
 
 // Retrieve current details based on Line Item ID
@@ -701,13 +701,13 @@ function add_tekserverentals_line_item_fields( $lineitem_id, $lineitem ) {
 			$new_tax = $tax - ( /*global_tax_rate*/ .00885 * $currentprice )  + ( /*global_tax_rate*/ .00885 * $new_price );
 			$new_total = $new_total + $new_tax + $shipping;
 			$new_total_wdeposits = $new_total + $new_deposit;
-			//update tax
-			//update deposit
-			//update total
-			//update total+deposit
+			update_post_meta( $parent_id, 'tekserverentals_request_tax', $new_tax, $tax );//update tax
+			update_post_meta( $parent_id, 'tekserverentals_request_deposits', $new_deposit );//update deposit
+			update_post_meta( $parent_id, 'tekserverentals_request_total', $new_total);//update total
+			update_post_meta( $parent_id, 'tekserverentals_request_total_wdeposits', $new_total_wdeposits );//update total+deposit
 		}
 		else {
-			$new_price = round( ltrim( sanitize_text_field( $_REQUEST['tekserverentals_line_item_price'] ), "$" ), 2 )
+			$new_price = round( ltrim( sanitize_text_field( $_REQUEST['tekserverentals_line_item_price'] ), "$" ), 2 );
 		}
         // Store data in post meta table if present in post data
         if ( isset( $_POST['tekserverentals_line_item_qty'] ) && $_POST['tekserverentals_line_item_qty'] != '' ) {
@@ -795,8 +795,8 @@ function connect_line_items_to_request() {
 			'context' => 'advanced'
 		),
 		'title' => array(
-			'from' => __( 'Line Items', 'tekserve-rentals' ),
-			'to' => __( 'Rental Request', 'tekserve-rentals' )
+			'from' => __( 'Return to Rental', 'tekserve-rentals' ),
+			'to' => __( 'Line Items', 'tekserve-rentals' )
 		), 
 			'from_labels' => array(
 			'singular_name' => __( 'Line Item', 'tekserve-rentals' ),
@@ -816,7 +816,7 @@ add_action( 'p2p_init', 'connect_line_items_to_request' );
 
 add_action( 'admin_init', 'tekserverentals_requests_line_items' );
 function tekserverentals_requests_line_items() {
-    add_meta_box( 'tekserverentals_requests_line_items', 'Request Line Items', 'display_tekserverentals_request_line_items', 'rentalrequest', 'normal', 'high' );
+    add_meta_box( 'tekserverentals_requests_line_items', 'Rental Line Items', 'display_tekserverentals_request_line_items', 'rentalrequest', 'normal', 'high' );
 }
 function display_tekserverentals_request_line_items($post) {
 	$line_items = p2p_type( 'line_items_to_rental_requests' )->get_connected($post);
