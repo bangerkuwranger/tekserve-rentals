@@ -9,6 +9,8 @@
 	padding: 1em;
 	box-shadow: 1px 1px 10px #334;
 	z-index: 50;
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
 }
 
 .tekserverentals-cart-container .tekserverentals-cart-hidebutton.button,
@@ -24,32 +26,39 @@
 	background-color: rgba(243, 111, 55,.6);
 }
 
-.tekserverentals-cart-container .simpleCart_items div div {
+.tekserverentals-cart-container .simpleCart_items div div,
+#addDialog div div {
 	display: table-header-group;
 }
-.tekserverentals-cart-container .simpleCart_items div .headerRow {
+.tekserverentals-cart-container .simpleCart_items div .headerRow,
+#addDialog div .headerRow {
 	display: table-row;
 }
 
-.tekserverentals-cart-container .simpleCart_items .headerRow div {
+.tekserverentals-cart-container .simpleCart_items .headerRow div,
+#addDialog .headerRow div {
 	display: table-cell;
 }
 
-.tekserverentals-cart-container .simpleCart_items .itemRow {
+.tekserverentals-cart-container .simpleCart_items .itemRow
+#addDialog .itemRow {
 	padding: .5em;
 	display: table-row;
 }
 
-.tekserverentals-cart-container .simpleCart_items .itemRow div {
+.tekserverentals-cart-container .simpleCart_items .itemRow div,
+#addDialog .itemRow div {
 	display: table-cell;
 }
 
-.tekserverentals-cart-container .simpleCart_items .headerRow div {
+.tekserverentals-cart-container .simpleCart_items .headerRow div,
+#addDialog .headerRow.div {
 	font-weight: 900;
 	padding: .5em;
 }
 
-.tekserverentals-cart-container .simpleCart_items .itemRow div {
+.tekserverentals-cart-container .simpleCart_items .itemRow div,
+#addDialog .itemRow div {
 	padding: .5em;
 }
 
@@ -68,7 +77,8 @@
 	color: #f36f37;
 }
 
-.tekserverentals-cart-container .simpleCart_items .itemRow .item-name {
+.tekserverentals-cart-container .simpleCart_items .itemRow .item-name,
+#addDialog .itemRow .item-name {
 	display: inline-block;
 	width: 100px;
 }
