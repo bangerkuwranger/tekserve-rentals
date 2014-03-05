@@ -160,3 +160,8 @@
 	display: table-cell;
 	padding: .5em;
 }
+
+.emptyCart-button {
+	cursor: pointer;
+	font-weight: 900;
+}

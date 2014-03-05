@@ -65,7 +65,7 @@ simpleCart({
 
 jQuery(function() {
 	//output the checkout box and Add Item Dialog
-	jQuery('.tekserverental-checkout').after('<div class="tekserverentals-cart-container" style="display: none;"><div class="tekserverentals-cart-showbutton button" style="display: none;">Show Cart</div><div class="tekserverentals-cart" style="display:none;"><div class="tekserverentals-cart-long-term" style="display: none;"><h3>Important Note</h3><p>This quote is for a long term rental. The actual price of this rental will be lower than the estimate below. Please contact us directly at 212.929.3645 or rentals@tekserve.com to get the lowest price for this rental.</p></div><div class="tekserverentals-cart-shipnote" style="display: none;"><h3>Important Note</h3><p>This order has too many items to provide an accurate shipping estimate. Please contact us directly at rentals@tekserve.com or 212.929.3645 to get the price for shipping this rental.</p></div><span style="font-weight: 900">Rental Duration: </span><div class="tekserverentals-cart-duration"></div><span> days.</span><div class="simpleCart_items"></div><hr style="height:1px; color: #004f72; background: #004d72;"><div class="tekserverentals-cart-totals"><div><span>Subtotal</span><div class="simpleCart_total"></div></div><div><span>Shipping</span><div class="simpleCart_shipping"></div></div><div><span>Tax</span><div class="simpleCart_tax"></div></div><div><span>Total Deposit</span><div class="tekserverentals-cart-deposits"></div></div><div><span style="font-weight: 900;">Total Cost</span><div class="simpleCart_grandTotal" style="font-weight: 900;"></div></div></div><div class="tekserverentals-cart-hidebutton button" style="">Hide Cart</div></div></div><div id="addDialog" title="Item Added"></div>');
+	jQuery('.tekserverental-checkout').after('<div class="tekserverentals-cart-container" style="display: none;"><div class="tekserverentals-cart-showbutton button" style="display: none;">Show Cart</div><div class="tekserverentals-cart" style="display:none;"><div class="tekserverentals-cart-long-term" style="display: none;"><h3>Important Note</h3><p>This quote is for a long term rental. The actual price of this rental will be lower than the estimate below. Please contact us directly at 212.929.3645 or rentals@tekserve.com to get the lowest price for this rental.</p></div><div class="tekserverentals-cart-shipnote" style="display: none;"><h3>Important Note</h3><p>This order has too many items to provide an accurate shipping estimate. Please contact us directly at rentals@tekserve.com or 212.929.3645 to get the price for shipping this rental.</p></div><span style="font-weight: 900">Rental Duration: </span><div class="tekserverentals-cart-duration"></div><span> days.</span><div class="simpleCart_items"></div><hr style="height:1px; color: #004f72; background: #004d72;"><div class="tekserverentals-cart-totals"><div><span>Subtotal</span><div class="simpleCart_total"></div></div><div><span>Shipping</span><div class="simpleCart_shipping"></div></div><div><span>Tax</span><div class="simpleCart_tax"></div></div><div><span>Total Deposit</span><div class="tekserverentals-cart-deposits"></div></div><div><span style="font-weight: 900;">Total Cost</span><div class="simpleCart_grandTotal" style="font-weight: 900;"></div></div></div><div class="button emptyCart-button">Clear All Items</div><div class="tekserverentals-cart-hidebutton button" style="">Hide Cart</div></div></div><div id="addDialog" title="Item Added"></div>');
 	jQuery( "#addDialog" ).dialog({ autoOpen: false });
 	//bind show/click buttons for cart
 	jQuery('.tekserverentals-cart-showbutton').click(function() {
@@ -86,6 +86,15 @@ jQuery(function() {
     
     //set old value to zero (keeps user from being nagged when entering date for the first time)
     jQuery('#tekserverental-end-date').data('old', 0);
+    
+    //bind empty cart button
+	jQuery('.emptyCart-button').click(function() {
+		simpleCart.update();
+		simpleCart.empty();
+		simpleCart.update();
+		updateTotals();
+	});
+
 
 });
 
@@ -419,10 +428,11 @@ simpleCart.bind( "afterAdd" , function( item ){
 // 	alert( item.get("name") + " has been added to the cart!");
 	updateTotals();
 	var cartItems = jQuery( ".simpleCart_items" ).html();
-	var addAlert = '<br/><b style="font-size: 1.25em; text-transform: uppercase; margin-bottom: 1.5em;">Current items:</b></br>'+cartItems;
+	var addAlert = '<br/><b style="font-size: 1.25em; text-transform: uppercase; margin-bottom: 1.5em;">Current items:</b></br>'+cartItems+'<div class="button emptyCart-button">Clear All Items</div>';
 	jQuery( "#addDialog" ).html( addAlert );
 	jQuery( "#addDialog" ).dialog( "option", "title", "Added: " + item.get("name") );
 	jQuery( "#addDialog" ).dialog( "open" );
+	jQuery( "#addDialog" ).dialog( "option", "position", { my: "center", at: "center", of: window } );
 });
 
 //bind update to increment click
@@ -471,4 +481,3 @@ jQuery('.tekserverental-shipping input').change(function() {
 simpleCart.bind( 'beforeCheckout' , function( data ){
 	updateExtraData( data );
 });
-
