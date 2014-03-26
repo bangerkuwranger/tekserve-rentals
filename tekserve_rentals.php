@@ -674,18 +674,21 @@ function display_tekserverentals_line_item_fields( $lineitem ) {
 
 //make sure internal comments aren't shown to cust
 function private_rental_notes($content){
-$old_content = get_post();
-$old_content = $old_content->post_content;
-$old_value = explode( '-<b>Original Notes from Customer</b>', $old_content );
-$new_content = $_REQUEST['content'];
-$new_value = explode( '-<b>Original Notes from Customer</b>', $new_content );
-$need_privacy = strpos( $new_content, '-<b>Original Notes from Customer</b>' );
-if ( $need_privacy === false ) {
-	return htmlspecialchars( $old_value[0] ) . '-<b>Original Notes from Customer</b><br/>' . htmlspecialchars( $new_value[0] );
-}
-else {
-	return htmlspecialchars( $old_value[0] ) . '-<b>Original Notes from Customer</b><br/>' . htmlspecialchars( $new_value[1] );
-}
+	$old_content = get_post();
+	if ( $old_content->post_type == 'rentalrequest' ) {
+		$old_content = $old_content->post_content;
+		$old_value = explode( '-<b>Original Notes from Customer</b>', $old_content );
+		$new_content = $_REQUEST['content'];
+		$new_value = explode( '-<b>Original Notes from Customer</b>', $new_content );
+		$need_privacy = strpos( $new_content, '-<b>Original Notes from Customer</b>' );
+		if ( $need_privacy === false ) {
+			return htmlspecialchars( $old_value[0] ) . '-<b>Original Notes from Customer</b><br/>' . htmlspecialchars( $new_value[0] );
+		}
+		else {
+			return htmlspecialchars( $old_value[0] ) . '-<b>Original Notes from Customer</b><br/>' . htmlspecialchars( $new_value[1] );
+		}
+	}
+	else { return $content; }
 }
 add_filter('content_save_pre','private_rental_notes');
 
