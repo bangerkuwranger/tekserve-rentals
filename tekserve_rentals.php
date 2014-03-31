@@ -687,6 +687,8 @@ function private_rental_notes($content){
 		else {
 			return htmlspecialchars( $old_value[0] ) . '-<b>Original Notes from Customer</b><br/>' . htmlspecialchars( $new_value[1] );
 		}
+		$headers = 'From: Rental Site <rentals@tekserve.com>' . "\r\n";
+   		wp_mail('rentals@tekserve.com', 'New Rental request', $body , $headers );
 	}
 	else { return $content; }
 }
