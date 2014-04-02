@@ -59,7 +59,7 @@ $orderinfo["end"] = strtotime($orderinfo["end"]);
 //output strings
 echo "<h1>Debug</h1>";
 var_dump($lineitems);
-echo "<br/><br/><h1>Customer Info</h1>";
+echo "<br /><br /><h1>Customer Info</h1>";
 echo "<div class='tekserverentals-customer-info'>";
 echo "<p><b>Name:</b> ".$custinfo["first_name"]." ".$custinfo["last_name"]."</p>";
 if ($custinfo["company"]) {
@@ -67,9 +67,9 @@ if ($custinfo["company"]) {
 }
 echo "<p><b>Email:</b> ".$custinfo["email"]."</p>";
 echo "<p><b>Phone:</b> ".$custinfo["phone"]."</p>";
-echo "<p><b>Address:</b><br/>".$custinfo["address"]."<br/>".$custinfo["city"].", ".$custinfo["state"]." ".$custinfo["zip"]."</p>";
+echo "<p><b>Address:</b><br />".$custinfo["address"]."<br />".$custinfo["city"].", ".$custinfo["state"]." ".$custinfo["zip"]."</p>";
 echo "</div>";
-echo "<br/><br/><h1>Order Info</h1>";
+echo "<br /><br /><h1>Order Info</h1>";
 echo "<div class='tekserverentals-order-info'>";
 echo "<p><b>Rental Starts:</b> ".date('l, F jS, Y' , $orderinfo["start"])." <b>Rental Ends:</b> ".date('l, F jS, Y', $orderinfo["end"])."</p>";
 if (($orderinfo["delivery"] == 1) && ($orderinfo["where_deliver"] == "manhattan")) {
@@ -93,7 +93,7 @@ echo "<p><b>Total Cost:</b> ".$orderinfo["total"]."</p>";
 echo "<p><b>Amount Due for Reservation:</b> (includes deposit) ".$orderinfo["total_with_deposit"]."</p>";
 echo "<p><b>Additional Notes:</b> ".$orderinfo["notes_from_cust"]."</p>";
 echo "</div>";
-echo "<br/><br/><h1>Line Items</h1>";
+echo "<br /><br /><h1>Line Items</h1>";
 echo "<div class='tekserverentals-line-items'><table>";
 echo "<thead><tr><td>Item</td><td>Qty</td><td>Price</td></tr></thead><tbody>";
 foreach($lineitems as $item){
@@ -134,16 +134,25 @@ $title = sanitize_text_field( $custinfo["first_name"] )." ".sanitize_text_field(
 // ADD THE FORM INPUT TO $new_post ARRAY
 $new_post = array(
 'post_title'    =>   $title,
-'post_content'	=>	 $orderinfo['notes_from_cust']."<br/>-<b>Original Notes from Customer",
+'post_content'	=>	 $orderinfo['notes_from_cust']."-<b>Original Notes from Customer</b>",
 'post_category' =>   '',  // Usable for custom taxonomies too
 'tags_input'    =>   '',
 'post_status'   =>   'publish',           // Choose: publish, preview, future, draft, etc.
 'post_type' =>   'rentalrequest'  //'post',page' or use a custom post type if you want to
     );
+
 //SAVE THE POST
 $new_rental_request = wp_insert_post($new_post);
+
 //add wp user id to this record
 add_post_meta( $new_rental_request, '_wpuserid', $user_name->ID );
+
+//notify rentals via email
+add_filter('wp_mail_content_type','set_content_type');
+function set_content_type($content_type){return 'text/html';}
+$headers = 'From: Rental Site <rentals@tekserve.com>' . "\r\n";
+wp_mail('rentals@tekserve.com', 'New Rental Request: '.$new_post['post_title'], 'Go to : <a href="'.get_permalink( $new_rental_request ).'">'.$new_post['post_title'].'</a>' , $headers );
+
 //update all of the order data
 update_post_meta( $new_rental_request, 'tekserverentals_request_firstname', sanitize_text_field( $custinfo["first_name"] ) );
 update_post_meta( $new_rental_request, 'tekserverentals_request_lastname', sanitize_text_field( $custinfo["last_name"] ) );

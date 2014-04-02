@@ -682,13 +682,11 @@ function private_rental_notes($content){
 		$new_value = explode( '-<b>Original Notes from Customer</b>', $new_content );
 		$need_privacy = strpos( $new_content, '-<b>Original Notes from Customer</b>' );
 		if ( $need_privacy === false ) {
-			return htmlspecialchars( $old_value[0] ) . '-<b>Original Notes from Customer</b><br/>' . htmlspecialchars( $new_value[0] );
+			return htmlspecialchars( $old_value[0] ) . '-<b>Original Notes from Customer</b><br />' . htmlspecialchars( $new_value[0] );
 		}
 		else {
 			return htmlspecialchars( $old_value[0] ) . '-<b>Original Notes from Customer</b><br/>' . htmlspecialchars( $new_value[1] );
 		}
-		$headers = 'From: Rental Site <rentals@tekserve.com>' . "\r\n";
-   		wp_mail('rentals@tekserve.com', 'New Rental request', $body , $headers );
 	}
 	else { return $content; }
 }
@@ -980,6 +978,61 @@ function tekserverental_item( $atts ) {
 }
 add_shortcode( 'rentalitem', 'tekserverental_item' );
 
+// Add Shortcode for Generating rental category by slug
+function tekserverental_item_category( $atts ) {
+
+	// Attributes
+	extract( shortcode_atts(
+		array(
+			'slug'		=>	'',
+			'drawer'	=>	'',
+			'expanded'	=>	'false',
+			'id'		=>	'',
+		), $atts )
+	);
+	//get rental items using category slug
+	$args = array( 'category_name' => $slug, 'post_status'	=>	'publish', 'post_type'	=>	'rentalproduct', 'numberposts'	=>	50 );
+	$products = get_posts( $args );
+	// Code to create output; includes class names to create items for simplecart checkout
+	//format rental items into vc rows
+	$cat_out = '';
+	$cat_content = '';
+	if (function_exists('vc_map')) {
+		$i = 0;
+		foreach( $products as $product ) {
+			if ( $i == 0 ) {
+				$cat_content .= '[vc_row_inner]';
+			}
+			$cat_content .= '[vc_column_inner width="1/3"][rentalitem id="';
+			$cat_content .= $product->ID;
+			$cat_content .= '" /][/vc_column_inner]';
+			if ( $i == 2 ) {
+				$cat_content .= '[/vc_row_inner]';
+				$i = 0;
+			}
+			else {
+				$i++;
+			}
+		}
+		//add drawer shortcode if drawer is selected
+		if ( $drawer != '' ) {
+			if ( !$id ) {
+				$id = 'drawer' . rand(8,8);
+			}
+			$cat_content = '[drawer id="'. $id . '" expanded="' . $expanded . '"]' . $cat_content . '[/drawer]';
+		}
+// 		/get code from all of the shortcodes in the content 
+		$cat_out .= do_shortcode($cat_content);
+	}
+// 	kinda useless if not used w/vc. but if not, will just output formatted array contents.
+	else {
+		$cat_out .= print_r( $products, true );
+	}
+	return $cat_out;
+}
+add_shortcode( 'rentalitemcategory', 'tekserverental_item_category' );
+
+
 // Add Shortcode for Checkout Form
 function tekserverental_checkout( $atts ) {
 	$custinfo = '<div class="tekserverental-checkout-custinfo">';
@@ -1095,10 +1148,74 @@ if (function_exists('vc_map')) { //check for vc_map function before mapping butt
 		)
 	)	);
 	
+	$args = array (
+		'title_li'	=> '',
+		'echo'		=> 0
+	);
+	$category_list = get_categories($args);
+	$slug_array = array();
+	$i = 0;
+	foreach($category_list as $category) {
+		$slug_array[$i] = $category->slug;
+		$i++;
+	}
+	$cat_array = print_r($slug_array, 'true');
+	
+	vc_map( array(
+	   "name" => __("Rental Item Category Drawer"),
+	   "base" => "rentalitemcategory",
+	   "class" => "",
+	   "icon" => "icon-wpb-rentalitemcat",
+	   "category" => __('Content'),
+	   "params" => array(
+		   array(
+				 "type" => "dropdown",
+				 "holder" => "div",
+				 "class" => "",
+				 "heading" => __("Category "),
+				 "param_name" => "slug",
+				 "value" => $slug_array,
+				 "description" => __("Select the slug of the Rental Item Category to display. Required."),
+				 "admin_label" => TRUE
+			  ),
+			array(
+				 "type" => "textfield",
+				 "holder" => "div",
+				 "class" => "",
+				 "heading" => __("ID"),
+				 "param_name" => "id",
+				 "value" => "",
+				 "description" => __("Unique ID of this drawer."),
+				 "admin_label" => TRUE
+			),
+			array(
+			 "type" => "dropdown",
+			 "holder" => "div",
+			 "class" => "",
+			 "heading" => __("Open on Page Load"),
+			 "param_name" => "expanded",
+			 "value" => array("false", "true"),
+			 "description" => __("Select whether this drawer will be opened or closed when the page loads. False (closed) is default."),
+			 "admin_label" => True
+		  ),
+			array(
+				 "type" => "textfield",
+				 "holder" => "div",
+				 "class" => "noSe",
+				 "heading" => __("drawer"),
+				 "param_name" => "drawer",
+				 "value" => "yes",
+				 "description" => __("It's a drawer. Leave this alone."),
+				 "admin_label" => FALSE
+			)
+		)
+	)	);
+	
 	vc_map( array(
 	   "name" => __("Rental Checkout Form"),
 	   "base" => "rentalcheckout",
 	   "class" => "",
+	   "show_settings_on_create" => false,
 	   "icon" => "icon-wpb-rentalcheckout",
 	   "category" => __('Content')
 	)	);
@@ -1107,7 +1224,8 @@ if (function_exists('vc_map')) { //check for vc_map function before mapping butt
 	   "name" => __("Rental Dates Form"),
 	   "base" => "rentaldateform",
 	   "class" => "",
-	   "icon" => "icon-wpb-rentaldates",
+	   "show_settings_on_create" => false,
+	   "icon" => "icon-wpb-rentaldateform",
 	   "category" => __('Content')
 	)	);
 }

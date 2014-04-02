@@ -14,34 +14,34 @@ $delivery = get_post_meta($postid, 'tekserverentals_request_delivery', true );
 $pickup = get_post_meta($postid, 'tekserverentals_request_pickup', true );
 $cust_data = '<div class="tekserve_rental_request_customer">';
 if ( $company = get_post_meta($postid, 'tekserverentals_request_company', true) ) {
-	$cust_data .= "<div><b>COMPANY</b><br/>" . $company . "</div>";
+	$cust_data .= "<div><b>COMPANY</b><br />" . $company . "</div>";
 }
-$cust_data .= "<div><b>ADDRESS</b><br/>". get_post_meta($postid, 'tekserverentals_request_address', true) . "<br/>";
+$cust_data .= "<div><b>ADDRESS</b><br />". get_post_meta($postid, 'tekserverentals_request_address', true) . "<br />";
 $cust_data .= get_post_meta($postid, 'tekserverentals_request_city', true) . ", " . get_post_meta($postid, 'tekserverentals_request_state', true) . " " . get_post_meta($postid, 'tekserverentals_request_zip', true);
 $cust_data .= "</div>";
 if ( $phone = get_post_meta($postid, 'tekserverentals_request_phone', true) ) {
-	$cust_data .= "<div><b>PHONE</b><br/>" . $phone . "</div>";
+	$cust_data .= "<div><b>PHONE</b><br />" . $phone . "</div>";
 }
 if ( $email = get_post_meta($postid, 'tekserverentals_request_email', true) ) {
-	$cust_data .= "<div><b>EMAIL</b><br/>" . $email . "</div>";
+	$cust_data .= "<div><b>EMAIL</b><br />" . $email . "</div>";
 }
 $cust_data .= "</div>";
 $delivery_data = "";
 if ( ( $delivery ) OR ( $pickup ) ) {
 	$delivery_data = '<div class="tekserve_rental_request_delivery"><h3>Messenger Requested:</h3>';
 	if ( $delivery ) {
-		$delivery_data .= '<b>DELIVERED TO</b><br/>' . get_post_meta($postid, 'tekserverentals_delivery_loc', true ) . '<br/>';
+		$delivery_data .= '<b>DELIVERED TO</b><br />' . get_post_meta($postid, 'tekserverentals_delivery_loc', true ) . '<br />';
 	}
 	if ( $pickup ) {
-		$delivery_data .= '<b>PICKED UP IN</b><br/>' . get_post_meta($postid, 'tekserverentals_pickup_loc', true ) . '<br/>';
+		$delivery_data .= '<b>PICKED UP IN</b><br />' . get_post_meta($postid, 'tekserverentals_pickup_loc', true ) . '<br />';
 	}
 	$delivery_data .= '</div>';
 }
 $totals = '<div class="tekserve_rental_request_delivery"><h3>Totals:</h3>';
-$totals .= '<b>SHIPPING</b><br/>$' . esc_html( round( ltrim( get_post_meta($postid, 'tekserverentals_request_shipping', true), "$" ), 2 ) ) . '<br/>';
-$totals .= '<b>TAX</b><br/>$' . esc_html( round( ltrim( get_post_meta($postid, 'tekserverentals_request_tax', true), "$" ), 2 ) ) . '<br/>';
-$totals .= '<b>DEPOSIT</b><br/>$' . esc_html( round( ltrim( get_post_meta($postid, 'tekserverentals_request_deposits', true), "$" ), 2 ) ) . '<br/>';
-$totals .= '<h4><b>TOTAL</b><br/>$' . esc_html( round( ltrim( get_post_meta($postid, 'tekserverentals_request_total', true), "$" ), 2 ) ) . '</h4>';
+$totals .= '<b>SHIPPING</b><br />$' . esc_html( round( ltrim( get_post_meta($postid, 'tekserverentals_request_shipping', true), "$" ), 2 ) ) . '<br />';
+$totals .= '<b>TAX</b><br />$' . esc_html( round( ltrim( get_post_meta($postid, 'tekserverentals_request_tax', true), "$" ), 2 ) ) . '<br />';
+$totals .= '<b>DEPOSIT</b><br />$' . esc_html( round( ltrim( get_post_meta($postid, 'tekserverentals_request_deposits', true), "$" ), 2 ) ) . '<br />';
+$totals .= '<h4><b>TOTAL</b><br />$' . esc_html( round( ltrim( get_post_meta($postid, 'tekserverentals_request_total', true), "$" ), 2 ) ) . '</h4>';
 $totals .= '</div>';
 $line_items = '<h3>Line Items:</h3>';
 $line_items .= display_tekserverentals_request_line_items($postid, true);
