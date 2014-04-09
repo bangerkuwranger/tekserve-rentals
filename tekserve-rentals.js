@@ -72,6 +72,7 @@ jQuery(function() {
 		jQuery('.tekserverentals-cart').show();
 		jQuery('.tekserverentals-cart-showbutton').hide();
 		jQuery('.tekserverentals-cart-container').css('background', '#fff').css('box-shadow','1px 1px 10px #334');
+		jQuery( "#addDialog" ).dialog( "close" );
 	});
 
 	jQuery('.tekserverentals-cart-hidebutton').click(function() {
@@ -280,11 +281,13 @@ function dateButton(isFirst) {
 			tekserveRentalsUpDates(endDate,startDate);
 			jQuery('.tekserverentals-cart').show();
 			jQuery('.tekserverentals-cart-container').show();
+			jQuery( "#addDialog" ).dialog( "close" );
 		}
 		else {
 			tekserveRentalsUpDates(startDate,endDate);
 			jQuery('.tekserverentals-cart').show();
 			jQuery('.tekserverentals-cart-container').show();
+			jQuery( "#addDialog" ).dialog( "close" );
 		}
 	}
 	else {
@@ -425,14 +428,19 @@ function updateExtraData( data ){
 
 //bind after add date calculation
 simpleCart.bind( "afterAdd" , function( item ){
-// 	alert( item.get("name") + " has been added to the cart!");
-	updateTotals();
-	var cartItems = jQuery( ".simpleCart_items" ).html();
-	var addAlert = '<br/><b style="font-size: 1.25em; text-transform: uppercase; margin-bottom: 1.5em;">Current items:</b></br>'+cartItems+'<div class="button emptyCart-button">Clear All Items</div>';
-	jQuery( "#addDialog" ).html( addAlert );
-	jQuery( "#addDialog" ).dialog( "option", "title", "Added: " + item.get("name") );
-	jQuery( "#addDialog" ).dialog( "open" );
-	jQuery( "#addDialog" ).dialog( "option", "position", { my: "center", at: "center", of: window } );
+	if( jQuery('.tekserverentals-cart-container').is(':visible') ) {
+		alert( item.get("name") + " has been added to the cart!");
+		jQuery( "#addDialog" ).dialog( "close" );
+	 }
+	 else {
+		updateTotals();
+		var cartItems = jQuery( ".simpleCart_items" ).html();
+		var addAlert = '<br/><b style="font-size: 1.25em; text-transform: uppercase; margin-bottom: 1.5em;">Current items:</b></br>'+cartItems;
+		jQuery( "#addDialog" ).html( addAlert );
+		jQuery( "#addDialog" ).dialog( "option", "title", "Added: " + item.get("name") );
+		jQuery( "#addDialog" ).dialog( "open" );
+		jQuery( "#addDialog" ).dialog( "option", "position", { my: "center", at: "center", of: window } );
+	}
 });
 
 //bind update to increment click

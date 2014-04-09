@@ -3,7 +3,7 @@
  * Plugin Name: Tekserve Rentals
  * Plugin URI: https://github.com/bangerkuwranger
  * Description: Enables a rentals system, complete with individual skus and rates.
- * Version: 1.0
+ * Version: 1.1
  * Author: Chad A. Carino
  * Author URI: http://www.chadacarino.com
  * License: MIT
@@ -1047,7 +1047,7 @@ function tekserverental_checkout( $atts ) {
 	$custinfo .= '<div id="tekserverental-company-name">
 		<label class="description" for="entry_2">Company Name (if applicable) </label>
 		<div>
-			<input id="entry_2" name="companyname" class="element text medium" type="text" maxlength="255" value=""> 
+			<input id="entry_2" name="companyname" class="element text medium" type="text" size="50" maxlength="255" value=""> 
 		</div> 
 		</div>';
 	$custinfo .= '<div id="tekserverental-email">
@@ -1099,7 +1099,7 @@ function tekserverental_checkout( $atts ) {
 	$shipping .= '</div>';
 	$form = '<div class="tekserverental-checkout-form"><form id="tekserverentals-checkout-form">';
 	$form .= $custinfo;
-	$form .= '<div><label for="entry_14">Enter any additional requests </label><textarea name="additionalinfo" id="entry_14">&nbsp;</textarea></div>';
+	$form .= '<div><label for="entry_14">Enter any additional requests </label><textarea name="additionalinfo" id="entry_14" rows="4" cols="60">&nbsp;</textarea></div>';
 	$form .= '</form></div>';
 	$button = '<a href="javascript:;" class="simpleCart_checkout button">Submit Request</a>';
 	$out = '<div class="tekserverental-checkout">';

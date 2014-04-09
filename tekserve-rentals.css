@@ -2,7 +2,7 @@
 	position: fixed;
 	right: 100px;
 	top: 100px;
-	width: 400px;
+	width: 420px;
 	max-height: 80%;
 	background: #fff;
 	color: #004d72;
@@ -16,12 +16,12 @@
 .tekserverentals-cart-container .tekserverentals-cart-hidebutton.button,
 .tekserverentals-cart-container .tekserverentals-cart-showbutton.button {
 	display: block;
-	width: 126px;
-	margin-left: 225px;
+	width: 150px;
+	margin-left: 220px;
 }
 
 .tekserverentals-cart-container .tekserverentals-cart-showbutton.button {
-	width: 146px;
+	width: 160px;
 	margin-left: 200px;
 	background-color: rgba(243, 111, 55,.6);
 }
@@ -164,4 +164,43 @@
 .emptyCart-button {
 	cursor: pointer;
 	font-weight: 900;
+}
+
+.section a.tekserverentals-item-add-to-cart-button,
+.section div.emptyCart-button,
+.section div.tekserverentals-cart-hidebutton,
+.tekserverentals-cart-container .tekserverentals-cart-showbutton.button {
+	font-size: 1.25em;
+}
+
+.section div.emptyCart-button {
+	margin-left: 153px;
+}
+
+.tekserverental-checkout label {
+	font-size: 1.5em;
+	clear: both;
+	margin-top: 1em;
+}
+
+.tekserverental-checkout label.lower {
+	font-size: 1em;
+	margin-right: 1em;
+	clear: none;
+	margin-top: 0;
+}
+
+#entry_9 { margin-left: 5em; }
+#entry_10 { margin-left: 5em; }
+#entry_11 { margin-left: 10em; }
+#entry_13 { margin-left: 4em; }
+
+@media only screen and (max-width: 500px) {
+	.tekserverental-checkout form input,
+	.tekserverental-checkout form textarea {
+		margin-left: 0 !important;
+		max-width: 250px !important;
+		clear: both;
+		display: block;
+	}
 }
