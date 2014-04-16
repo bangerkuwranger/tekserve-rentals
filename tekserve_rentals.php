@@ -1093,9 +1093,9 @@ function tekserverental_checkout( $atts ) {
 	$custinfo .= '</div>';
 	$shipping = '<div class="tekserverental-shipping">';
 	$shipping .= '<div class="tekserverental-delivery"><label for="tekserverentals-delivery">Would you like messenger delivery? </label><input type="checkbox" name="tekserverentals-delivery" id="tekserverentals-delivery" value="true"> Yes, bring it to me.';
-	$shipping .= '<label for="tekserverentals-delivery-loc">Where you like the messenger to deliver your rental items? </label><input type="radio" name="tekserverentals-delivery-loc" value="manhattan" checked="checked"> Manhattan <input type="radio" name="tekserverentals-delivery-loc" value="borough"> Bronx, Brooklyn, Queens, or Staten Island</div>';
+	$shipping .= '<label for="tekserverentals-delivery-loc">Where would you like us to deliver your rental items? </label><input type="radio" name="tekserverentals-delivery-loc" value="manhattan" checked="checked"> Manhattan <input type="radio" name="tekserverentals-delivery-loc" value="borough"> Bronx, Brooklyn, Queens, or Staten Island</div>';
 	$shipping .= '<div class="tekserverental-pickup"><label for="tekserverentals-pickup">Would you like messenger pickup at the end of your rental? </label><input type="checkbox" name="tekserverentals-pickup" id="tekserverentals-pickup" value="true"> Yes, pick it up for me.';
-	$shipping .= '<label for="tekserverentals-pickup-loc">Where you like the messenger to pick up your rental items? </label><input type="radio" name="tekserverentals-pickup-loc" value="manhattan" checked="checked"> Manhattan <input type="radio" name="tekserverentals-pickup-loc" value="borough"> Bronx, Brooklyn, Queens, or Staten Island</div>';
+	$shipping .= '<label for="tekserverentals-pickup-loc">Where would you like us to pick up your rental items? </label><input type="radio" name="tekserverentals-pickup-loc" value="manhattan" checked="checked"> Manhattan <input type="radio" name="tekserverentals-pickup-loc" value="borough"> Bronx, Brooklyn, Queens, or Staten Island</div>';
 	$shipping .= '</div>';
 	$form = '<div class="tekserverental-checkout-form"><form id="tekserverentals-checkout-form">';
 	$form .= $custinfo;
