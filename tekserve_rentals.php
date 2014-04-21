@@ -1118,7 +1118,7 @@ function tekserverental_date_form( $atts ) {
 	$form .= '<div class="tekserverental-dates-end"><h3>Choose the End Date for Your Rental</h3><div><input type="text" id="tekserverental-end-date" name="enddate"></div></div>';
 	$form .= '</form></div>';
 	$button = '<a class="button tekserverentals-dates-button" href="javascript:;">Set Dates</a>';
-	$out = '<div class="tekserverental-dates">';
+	$out = '<a style="position: relative; top: -16em;" id="step-2-dates" name="step-2-dates"></a><div class="tekserverental-dates">';
 	$out .= $form;
 	$out .= '</div>';
 	return $out;

@@ -435,7 +435,7 @@ simpleCart.bind( "afterAdd" , function( item ){
 	 else {
 		updateTotals();
 		var cartItems = jQuery( ".simpleCart_items" ).html();
-		var addAlert = '<br/><b style="font-size: 1.25em; text-transform: uppercase; margin-bottom: 1.5em;">Current items:</b></br>'+cartItems;
+		var addAlert = '<br/><b style="font-size: 1.25em; text-transform: uppercase; margin-bottom: 1.5em;">Current items:</b><br/>'+cartItems+'<br/><a href="#step-2-dates">Go to Next Step (Choose Dates)</a>';
 		jQuery( "#addDialog" ).html( addAlert );
 		jQuery( "#addDialog" ).dialog( "option", "title", "Added: " + item.get("name") );
 		jQuery( "#addDialog" ).dialog( "open" );
