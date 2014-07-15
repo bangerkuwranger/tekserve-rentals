@@ -3,7 +3,7 @@
  * Plugin Name: Tekserve Rentals
  * Plugin URI: https://github.com/bangerkuwranger
  * Description: Enables a rentals system, complete with individual skus and rates.
- * Version: 1.1
+ * Version: 1.1.2
  * Author: Chad A. Carino
  * Author URI: http://www.chadacarino.com
  * License: MIT

@@ -341,7 +341,7 @@ function updateShipping() {
 	//delivery cost
 	if (delivery) {
 		if ((deliveryLoc == 'manhattan') && (howManyUnits < 5)) {
-			deliveryCost = 35;
+			deliveryCost = 42;
 		}
 		else if ((deliveryLoc == 'borough') && (howManyUnits < 5)) {
 			deliveryCost = 55;
@@ -350,7 +350,7 @@ function updateShipping() {
 			deliveryCost = 85;
 		}
 		else if ((deliveryLoc == 'manhattan') && (howManyUnits > 4) && (howManyUnits < 11)) {
-			deliveryCost = 60;
+			deliveryCost = 62;
 		}
 		else {
 			deliveryCost = 500;
@@ -362,7 +362,7 @@ function updateShipping() {
 	//pickup cost
 	if (pickup) {
 		if ((pickupLoc == 'manhattan') && (howManyUnits < 5)) {
-			pickupCost = 35;
+			pickupCost = 42;
 		}
 		else if ((pickupLoc == 'borough') && (howManyUnits < 5)) {
 			pickupCost = 55;
@@ -371,7 +371,7 @@ function updateShipping() {
 			pickupCost = 85;
 		}
 		else if ((pickupLoc == 'manhattan') && (howManyUnits > 4) && (howManyUnits < 11)) {
-			pickupCost = 60;
+			pickupCost = 62;
 		}
 		else {
 			pickupCost = 500;

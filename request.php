@@ -169,6 +169,7 @@ update_post_meta( $new_rental_request, 'tekserverentals_request_duration', absin
 if($orderinfo["delivery"] == 1) {
 	update_post_meta( $new_rental_request, 'tekserverentals_request_delivery', "delivery" );
 }
+
 if($orderinfo["pickup"] == 1) {
 	update_post_meta( $new_rental_request, 'tekserverentals_request_pickup', "pickup" );
 }
