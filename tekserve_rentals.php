@@ -3,7 +3,7 @@
  * Plugin Name: Tekserve Rentals
  * Plugin URI: https://github.com/bangerkuwranger
  * Description: Enables a rentals system, complete with individual skus and rates.
- * Version: 1.1.2
+ * Version: 1.2
  * Author: Chad A. Carino
  * Author URI: http://www.chadacarino.com
  * License: MIT
@@ -25,9 +25,13 @@ function tekserverentals_simplecart() {
 	wp_register_script( 'simplecart', plugins_url()."/tekserve-rentals/simpleCart.js", false, '3.0.5', true );
 	wp_register_script( 'tekserverentals', plugins_url()."/tekserve-rentals/tekserve-rentals.js", false, false, true );
 	wp_register_style( 'tekserverentalscss',  plugins_url()."/tekserve-rentals/tekserve-rentals.css" );
+	wp_register_script( 'jqvalidate', "//ajax.aspnetcdn.com/ajax/jquery.validate/1.13.0/jquery.validate.min.js", false, false, true );
+	wp_register_script( 'jqvalidateExtra', "//ajax.aspnetcdn.com/ajax/jquery.validate/1.13.0/additional-methods.min.js", false, false, true );
 	wp_enqueue_script( 'simplecart' );
 	wp_enqueue_script( 'tekserverentals' );
 	wp_enqueue_style( 'tekserverentalscss' );
+	wp_enqueue_script( 'jqvalidate' );
+	wp_enqueue_script( 'jqvalidateExtra' );
 	$tekserverentalsjsdata = array(
 		'tekserveRentalsUrl' => plugins_url().'/tekserve-rentals/'
 		);
@@ -1037,11 +1041,11 @@ add_shortcode( 'rentalitemcategory', 'tekserverental_item_category' );
 function tekserverental_checkout( $atts ) {
 	$custinfo = '<div class="tekserverental-checkout-custinfo">';
 	$custinfo .= '<div id="tekserverental-name">
-	<label class="required" for="entry_0" style="width: 6em;">Name </label>
-	<span><label class="lower">First</label><input id="entry_0" name="firstname" class="required" title="We need to know your name." maxlength="255" size="25" value="">
+	<label class="required" >Name </label>
+	<span><input id="entry_0" name="firstname" class="required" title="We need to know your name." maxlength="255" size="25" value=""><label for="entry_0" class="lower">First Name</label>
 		</span>
 		<span>
-			<label class="lower">Last</label><input id="entry_1" name="lastname" class="required" title="We need to know your name." maxlength="255" size="25" value="">
+			<input id="entry_1" name="lastname" class="required" title="We need to know your name." maxlength="255" size="25" value=""><label  for="entry_1" class="lower">Last Name</label>
 		</span>
 		</div>';
 	$custinfo .= '<div id="tekserverental-company-name">
@@ -1051,20 +1055,20 @@ function tekserverental_checkout( $atts ) {
 		</div> 
 		</div>';
 	$custinfo .= '<div id="tekserverental-email">
-		<label class="req" for="entry_3" style="width: 35px;">Email</label>
+		<label class="req" for="entry_3" >Email</label>
 		<div>
 			<input id="entry_3" name="emailaddress" class="email required" title="We need to know your valid email address to send you a quote." type="email" size="50" maxlength="255" value=""> 
 		</div> 
 		</div>';
 	$custinfo .= '<div id="tekserverental-phone-number">
-		<label class="req" for="entry_7" style="width: 35px;">Phone</label>
+		<label class="req" for="entry_7">Phone</label>
 		<span>
 			<input id="entry_7" name="phonenumber" class=" digits required" size="14" maxlength="14" value="" type="tel">
-			<label for="entry_7" class="lower">(###) ###-####</label>
+			<label class="lower">(7 digits)</label>
 		</span>
 		</div>';
 	$custinfo .= '<div id="tekserverental-">
-		<label class="req" for="element_5" style="width: 9em;">Billing Address </label>
+		<label class="req" for="element_5" >Billing Address </label>
 		<div>
 			<input id="entry_9" name="addressone" class="large required" value="" type="text">
 			<label for="entry_9" class="lower">Street Address</label>
@@ -1081,13 +1085,13 @@ function tekserverental_checkout( $atts ) {
 		</div>
 	
 		<div class="left">
-			<input id="entry_12" name="state" class="medium required" value="" type="text">
-			<label for="entry_12" class="lower">State / Province / Region</label>
+			<input id="entry_12" name="state" maxlength="2" class="medium required" value="" type="text">
+			<label for="entry_12" class="lower">State</label>
 		</div>
 	
 		<div class="right">
 			<input id="entry_13" name="zip" class="medium required" maxlength="15" value="" type="text">
-			<label for="entry_13" class="lower">Postal / Zip Code</label>
+			<label for="entry_13" class="lower">Zip Code</label>
 		</div>
 	</div>';
 	$custinfo .= '</div>';
@@ -1101,12 +1105,12 @@ function tekserverental_checkout( $atts ) {
 	$form .= $custinfo;
 	$form .= '<div><label for="entry_14">Enter any additional requests </label><textarea name="additionalinfo" id="entry_14" rows="4" cols="60">&nbsp;</textarea></div>';
 	$form .= '</form></div>';
-	$button = '<a href="javascript:;" class="simpleCart_checkout button">Submit Request</a>';
+	$button = '<a href="javascript:;" id="submitRequest" class="simpleCart_checkout button">Submit Request</a>';
 	$out = '<div class="tekserverental-checkout">';
 	$out .= $shipping;
 	$out .= $form;
 	$out .= $button;
-	$out .= '</div>';
+	$out .= '<div class="validationerrors"></div></div>';
 	return $out;
 }
 add_shortcode( 'rentalcheckout', 'tekserverental_checkout' );
@@ -1114,8 +1118,8 @@ add_shortcode( 'rentalcheckout', 'tekserverental_checkout' );
 // Add Shortcode for Dates Form
 function tekserverental_date_form( $atts ) {
 	$form = '<div class="tekserverental-dates-form"><form id="tekserverentals-checkout-dates">';
-	$form .= '<div class="tekserverental-dates-start"><h3>Choose the Start Date for Your Rental</h3><div><input type="text" id="tekserverental-start-date" name="startdate"></div></div>';
-	$form .= '<div class="tekserverental-dates-end"><h3>Choose the End Date for Your Rental</h3><div><input type="text" id="tekserverental-end-date" name="enddate"></div></div>';
+	$form .= '<div class="tekserverental-dates-start"><h3><label class="required" for="tekserverentalStartDate">Choose the Start Date for Your Rental</label></h3><div><input type="text" class="required" id="tekserverentalStartDate" name="startdate"></div></div>';
+	$form .= '<div class="tekserverental-dates-end"><h3><label class="required" for="tekserverentalEndDate">Choose the End Date for Your Rental</label></h3><div><input type="text" class="required" id="tekserverentalEndDate" name="enddate"></div></div>';
 	$form .= '</form></div>';
 	$button = '<a class="button tekserverentals-dates-button" href="javascript:;">Set Dates</a>';
 	$out = '<a style="position: relative; top: -16em;" id="step-2-dates" name="step-2-dates"></a><div class="tekserverental-dates">';

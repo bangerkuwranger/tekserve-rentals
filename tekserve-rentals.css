@@ -188,12 +188,68 @@
 	margin-right: 1em;
 	clear: none;
 	margin-top: 0;
+	float: none;
 }
 
-#entry_9 { margin-left: 5em; }
-#entry_10 { margin-left: 5em; }
-#entry_11 { margin-left: 10em; }
-#entry_13 { margin-left: 4em; }
+.tekserverental-checkout label.required:after,
+#tekserverentals-checkout-dates label.required:after,
+.tekserverental-checkout label.req:after {
+	content: '*';
+	color: #f36f37;
+	font-family: fontawesome;
+}
+
+.orange #tekserverentals-checkout-dates label.required:after,
+.orange .tekserverental-checkout label.req:after {
+	color: #004d72;
+}
+
+.tekserverental-checkout label.error {
+	color: #004d72;
+	text-transform: lower;
+	font-weight: 200;
+	font-size: .8em;
+}
+
+.tekserverental-checkout label.error:before {
+	content: '\f0a6';
+	font-family: fontawesome;
+	margin-right: 1em;
+}
+
+.tekserverental-checkout label.error.valid,
+.tekserverental-checkout label.error.valid:before {
+	display: none !important;
+}
+
+.tekserverental-checkout input {
+	margin-top: 1em;
+}
+
+.tekserverental-checkout input.error {
+	background-color: #f36f37;
+	color: #fff;
+	padding-left: 1em;
+	font-weight: bold;
+}
+
+.tekserverental-checkout input.error.valid {
+	background-color: #fff;
+	color: #004d72;
+	padding-left: 0;
+	font-weight: normal;
+}
+
+.tekserverentals-cart>a,
+.tekserverentals-cart>a:visited {
+	color: #40a8c9;
+}
+
+.tekserverentals-cart>a:hover,
+.tekserverentals-cart>a:active {
+	color: #f36f37;
+}
+
 
 @media only screen and (max-width: 500px) {
 	.tekserverental-checkout form input,
