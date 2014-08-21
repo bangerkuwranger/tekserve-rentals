@@ -13,15 +13,18 @@
 	-webkit-overflow-scrolling: touch;
 }
 
+.innerRowWrap .tekserverentals-cart-container .button {
+	font-size: 1.25em;
+	background-color: #40a8c9;
+}
+
 .tekserverentals-cart-container .tekserverentals-cart-hidebutton.button,
 .tekserverentals-cart-container .tekserverentals-cart-showbutton.button {
-	display: block;
-	width: 150px;
-	margin-left: 220px;
+	display: inline-block;
+	margin-left: 2em;
 }
 
 .tekserverentals-cart-container .tekserverentals-cart-showbutton.button {
-	width: 160px;
 	margin-left: 200px;
 	background-color: rgba(243, 111, 55,.6);
 }
@@ -250,8 +253,79 @@
 	color: #f36f37;
 }
 
+.innerRowWrap .tekserverentals-cart-container .tekserverentals-cart>a.button {
+	color: #fff;
+	font-size: 1.5em;
+	background-color: #f36f37;
+}
+
+.innerRowWrap .tekserverentals-cart-container .tekserverentals-cart>a.button:hover {
+	background-color: #40a8c9;
+}
+
+.single.single-rentalrequest .content-sidebar-wrap {
+	width: 100%;
+	max-width: 960px;
+}
+
+.single.single-rentalrequest #content {
+	max-width: 960px;
+	width: 95%;
+	padding: 0 2.5%;
+	margin: 0 auto;
+}
+
+.single.single-rentalrequest  h1.entry-title {
+	font-size: 1.75em;
+	text-transform: none;
+}
+
+.tekserve_rental_request_container h2 {
+	font-size: 1.5em;
+	color: #f36f37;
+	text-transform: uppercase;
+	margin-left: 1em;
+}
+
+.tekserve_rental_request_container h3 {
+	font-size: 1.25em;
+	margin-left: 1em;
+}
+
+.tekserve_rental_request_line_items,
+.tekserve_rental_request_delivery,
+.tekserve_rental_request_totals,
+.tekserve_rental_request_notes,
+.tekserve_rental_request_your_info {
+	max-width: 50%;
+	padding: 0 1em;
+}
+
+.tekserve_rental_request_totals h4 {
+	color: #f36f37;
+}
+
+.tekserve_rental_request_customer,
+.tekserve_rental_request_line_items table,
+.tekserve_rental_request_delivery>div,
+.tekserve_rental_request_totals>div,
+.tekserve_rental_request_notes {
+	border: 1px solid #40a8c9;
+	padding: 1em;
+	border-top: 0;
+}
+
+
+@media only screen and (max-width: 960px) and (min-width: 640px) {
+
+	.tekserverentals-cart-container {
+		top: 200px;
+	}
+
+}
 
 @media only screen and (max-width: 500px) {
+
 	.tekserverental-checkout form input,
 	.tekserverental-checkout form textarea {
 		margin-left: 0 !important;
@@ -259,4 +333,12 @@
 		clear: both;
 		display: block;
 	}
+	
+	.tekserverentals-cart-container {
+		max-width: 90%;
+		top: 10%;
+		right: 2.5%;
+		padding: 1em 2.5%;
+	}
+	
 }

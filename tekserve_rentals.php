@@ -3,7 +3,7 @@
  * Plugin Name: Tekserve Rentals
  * Plugin URI: https://github.com/bangerkuwranger
  * Description: Enables a rentals system, complete with individual skus and rates.
- * Version: 1.2
+ * Version: 1.3
  * Author: Chad A. Carino
  * Author URI: http://www.chadacarino.com
  * License: MIT
@@ -28,7 +28,7 @@ function tekserverentals_simplecart() {
 	wp_register_script( 'jqvalidate', "//ajax.aspnetcdn.com/ajax/jquery.validate/1.13.0/jquery.validate.min.js", false, false, true );
 	wp_register_script( 'jqvalidateExtra', "//ajax.aspnetcdn.com/ajax/jquery.validate/1.13.0/additional-methods.min.js", false, false, true );
 	wp_enqueue_script( 'simplecart' );
-	wp_enqueue_script( 'tekserverentals' );
+	if( get_post_type() == 'page' ) { wp_enqueue_script( 'tekserverentals' ); }
 	wp_enqueue_style( 'tekserverentalscss' );
 	wp_enqueue_script( 'jqvalidate' );
 	wp_enqueue_script( 'jqvalidateExtra' );
@@ -903,10 +903,10 @@ function display_tekserverentals_request_line_items($post, $no_output = NULL) {
 $line_items_output = '
 <table>
 	<thead>
-		<tr>
-			<td style="font-weight: bold; padding: 1em;">Name</td>
-			<td style="font-weight: bold; padding: 1em;">Qty</td>
-			<td style="font-weight: bold; padding: 1em;">Price</td>';
+		<tr style="border: 1px solid #004d72;">
+			<td style="font-weight: bold; padding: 1em 1em 1em 0; font-weight: 900;">Name</td>
+			<td style="font-weight: bold; padding: 1em 1em 1em 0; font-weight: 900;">Qty</td>
+			<td style="font-weight: bold; padding: 1em 1em 1em 0; font-weight: 900;">Price</td>';
 			if ( is_array( $no_output ) ) { $line_items_output .= '<td class="line_item_update_link"></td>'; }
 $line_items_output .= '
 		</tr>
@@ -914,9 +914,9 @@ $line_items_output .= '
 	<tbody>';
 while ( $line_items->have_posts() ) : $line_items->the_post();
 		$line_items_output .= '<tr>
-			<td style="padding: 1em;">' . get_the_title() . '</td>
-			<td style="padding: 1em;">' . get_post_meta( get_the_ID(), 'tekserverentals_line_item_qty', true ) . '</td>
-			<td style="padding: 1em;">$' . get_post_meta( get_the_ID(), 'tekserverentals_line_item_price', true ) . '</td>';
+			<td style="padding: 1em 1em 1em 0;">' . get_the_title() . '</td>
+			<td style="padding: 1em 1em 1em 0;">' . get_post_meta( get_the_ID(), 'tekserverentals_line_item_qty', true ) . '</td>
+			<td style="padding: 1em 1em 1em 0;">$' . get_post_meta( get_the_ID(), 'tekserverentals_line_item_price', true ) . '</td>';
 			if ( is_array( $no_output ) ) { $line_items_output .= '<td style="padding: 1em;" class="line_item_update_link"><a href="' . get_edit_post_link( get_the_ID() ) . '">Update This Item</a></td>'; }
 	endwhile;
 	$line_items_output .= '</table>';
@@ -1007,9 +1007,9 @@ function tekserverental_item_category( $atts ) {
 			if ( $i == 0 ) {
 				$cat_content .= '[vc_row_inner]';
 			}
-			$cat_content .= '[vc_column_inner width="1/3"][rentalitem id="';
+			$cat_content .= '[vc_column width="1/3"][rentalitem id="';
 			$cat_content .= $product->ID;
-			$cat_content .= '" /][/vc_column_inner]';
+			$cat_content .= '" /][/vc_column]';
 			if ( $i == 2 ) {
 				$cat_content .= '[/vc_row_inner]';
 				$i = 0;
@@ -1064,7 +1064,7 @@ function tekserverental_checkout( $atts ) {
 		<label class="req" for="entry_7">Phone</label>
 		<span>
 			<input id="entry_7" name="phonenumber" class=" digits required" size="14" maxlength="14" value="" type="tel">
-			<label class="lower">(7 digits)</label>
+			<label class="lower">(10 digits)</label>
 		</span>
 		</div>';
 	$custinfo .= '<div id="tekserverental-">
