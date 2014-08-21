@@ -263,16 +263,12 @@
 	background-color: #40a8c9;
 }
 
-.single.single-rentalrequest .content-sidebar-wrap {
-	width: 100%;
-	max-width: 960px;
-}
-
 .single.single-rentalrequest #content {
 	max-width: 960px;
 	width: 95%;
 	padding: 0 2.5%;
 	margin: 0 auto;
+	float: none;
 }
 
 .single.single-rentalrequest  h1.entry-title {
@@ -297,7 +293,7 @@
 .tekserve_rental_request_totals,
 .tekserve_rental_request_notes,
 .tekserve_rental_request_your_info {
-	max-width: 50%;
+	max-width: 70%;
 	padding: 0 1em;
 }
 
@@ -321,10 +317,28 @@
 	.tekserverentals-cart-container {
 		top: 200px;
 	}
+	
+	.tekserve_rental_request_line_items,
+	.tekserve_rental_request_delivery,
+	.tekserve_rental_request_totals,
+	.tekserve_rental_request_notes,
+	.tekserve_rental_request_your_info {
+		max-width: 85%;
+		padding: 0 5%;
+	}
 
 }
 
 @media only screen and (max-width: 500px) {
+
+	.tekserve_rental_request_line_items,
+	.tekserve_rental_request_delivery,
+	.tekserve_rental_request_totals,
+	.tekserve_rental_request_notes,
+	.tekserve_rental_request_your_info {
+		max-width: 95%;
+		padding: 0 2%;
+	}
 
 	.tekserverental-checkout form input,
 	.tekserverental-checkout form textarea {
@@ -340,5 +354,6 @@
 		right: 2.5%;
 		padding: 1em 2.5%;
 	}
+	
 	
 }

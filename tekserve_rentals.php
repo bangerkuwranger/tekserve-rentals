@@ -907,23 +907,28 @@ $line_items_output = '
 			<td style="font-weight: bold; padding: 1em 1em 1em 0; font-weight: 900;">Name</td>
 			<td style="font-weight: bold; padding: 1em 1em 1em 0; font-weight: 900;">Qty</td>
 			<td style="font-weight: bold; padding: 1em 1em 1em 0; font-weight: 900;">Price</td>';
-			if ( is_array( $no_output ) ) { $line_items_output .= '<td class="line_item_update_link"></td>'; }
+			if ( is_array( $no_output && $no_output['output'] != 'yes' ) ) { $line_items_output .= '<td class="line_item_update_link"></td>'; }
 $line_items_output .= '
 		</tr>
 	</thead>
 	<tbody>';
+$itemtotal = 0;
 while ( $line_items->have_posts() ) : $line_items->the_post();
 		$line_items_output .= '<tr>
 			<td style="padding: 1em 1em 1em 0;">' . get_the_title() . '</td>
 			<td style="padding: 1em 1em 1em 0;">' . get_post_meta( get_the_ID(), 'tekserverentals_line_item_qty', true ) . '</td>
 			<td style="padding: 1em 1em 1em 0;">$' . get_post_meta( get_the_ID(), 'tekserverentals_line_item_price', true ) . '</td>';
-			if ( is_array( $no_output ) ) { $line_items_output .= '<td style="padding: 1em;" class="line_item_update_link"><a href="' . get_edit_post_link( get_the_ID() ) . '">Update This Item</a></td>'; }
+			$itemtotal = $itemtotal + ( intval( get_post_meta( get_the_ID(), 'tekserverentals_line_item_qty', true ) ) * intval( get_post_meta( get_the_ID(), 'tekserverentals_line_item_price', true ) ) );
+			if ( is_array( $no_output ) && $no_output['output'] != 'yes' ) { $line_items_output .= '<td style="padding: 1em;" class="line_item_update_link"><a href="' . get_edit_post_link( get_the_ID() ) . '">Update This Item</a></td>'; }
 	endwhile;
 	$line_items_output .= '</table>';
 if ( is_array( $no_output ) ) {
 	echo $line_items_output;
+	return $itemtotal;
 }
-else{ return $line_items_output; }
+else { 
+	return $line_items_output; 
+	}
 }
 
 // Add Shortcode for Generating rental item by ID
@@ -1250,4 +1255,45 @@ function include_tekserve_rentals_template_function( $template_path ) {
         }
     }
     return $template_path;
+}
+
+//register option to set thank you text
+function tekserve_rentals_register_settings() {
+	add_option( 'tekserve_rentals_ty_title', 'Thank You!');
+	add_option( 'tekserve_rentals_ty_body', '<p style="margin-bottom: 1em;">Your request has been sent to Tekserve\'s Rental Department folks, who will take a gander at it and contact you shortly. We just need a bit of time to make sure everything will be ready and waiting for you wherever you need it, and then we can set up your deposit and complete your reservation.</p><p style="margin-bottom: 2.5em;">Take a look below and make sure everything is set up the way you want it; if you need to make changes, just send us a quick email at rentals@tekserve.com, or call us up at 212.929.3645 and we\'ll help you out. Talk you you soon!</p>');
+	register_setting( 'default', 'tekserve_rentals_ty_title' ); 
+	register_setting( 'default', 'tekserve_rentals_ty_body' ); 
+} 
+add_action( 'admin_init', 'tekserve_rentals_register_settings' );
+
+//register thank you text options page
+function tekserve_rentals_register_options_page() {
+	add_options_page('Tekserve Rentals', 'Tekserve Rentals', 'manage_options', 'tekserve-rentals-options', 'tekserve_rentals_options_page');
+}
+add_action('admin_menu', 'tekserve_rentals_register_options_page');
+
+//generate content of thank you text options page
+function tekserve_rentals_options_page() {
+	?>
+<div class="wrap">
+	<?php screen_icon(); ?>
+	<h2>Tekserve Rentals</h2>
+	<form method="post" action="options.php"> 
+		<?php settings_fields( 'default' ); ?>
+		<h3>"Thank-You" Text</h3>
+			<p>Edit the heading and body of the text that appears at the top of the confirmation screen after a user submits a request for a rental.</p>
+			<table class="form-table">
+				<tr valign="top">
+					<th scope="row"><label for="tekserve_rentals_ty_title">Heading</label></th>
+					<td><input type="text" id="tekserve_rentals_ty_title" name="tekserve_rentals_ty_title" value="<?php echo get_option('tekserve_rentals_ty_title'); ?>" /></td>
+				</tr>
+				<tr valign="top">
+					<th scope="row"><label for="tekserve_rentals_ty_body">Body</label></th>
+					<td><textarea rows="10" cols="80" id="tekserve_rentals_ty_body" name="tekserve_rentals_ty_body" ><?php echo get_option('tekserve_rentals_ty_body'); ?></textarea></td>
+				</tr>
+			</table>
+		<?php submit_button(); ?>
+	</form>
+</div>
+<?php
 }
