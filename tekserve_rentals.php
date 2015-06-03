@@ -19,31 +19,31 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-
-
-//check for posts-2-posts plugin - exit if not (admin is warned)
-function tekserverentals_need_ptop() {
-
-	echo '<div class="error"><p><strong>Tekserve Rentals Cannot Run:</strong></p><p>This plugin uses scribu\'s posts-to-posts plugin for a lot of its functions. Please make sure this is installed and working. If it is not installed, you can download it from the <a href="https://wordpress.org/plugins/posts-to-posts/" target="_blank">posts-to-posts plugin page on worpress.org</a>. (if Tekserve Rentals was working before, the data should still be there; you will see your entries again once this issue is resolved.)</p></div>';
-
-}	//end tekserverentals_need_ptop()
-
-add_action( 'plugins_loaded', 'tekserverentals_ptop_check' );
-
-function tekserverentals_ptop_check() {
-
-	if( function_exists( 'p2p_register_connection_type' ) ) {
-
-		if ( is_admin() ) {
-		
-			add_action('admin_notices', 'tekserverentals_need_ptop');
-		
-		}
-		exit();
-
-	}	//end if( ! function_exists( 'p2p_register_connection_type' ) )
-	
-}	//end tekserverentals_ptop_check()
+// exit();
+// 
+// //check for posts-2-posts plugin - exit if not (admin is warned)
+// function tekserverentals_need_ptop() {
+// 
+// 	echo '<div class="error"><p><strong>Tekserve Rentals Cannot Run:</strong></p><p>This plugin uses scribu\'s posts-to-posts plugin for a lot of its functions. Please make sure this is installed and working. If it is not installed, you can download it from the <a href="https://wordpress.org/plugins/posts-to-posts/" target="_blank">posts-to-posts plugin page on worpress.org</a>. (if Tekserve Rentals was working before, the data should still be there; you will see your entries again once this issue is resolved.)</p></div>';
+// 
+// }	//end tekserverentals_need_ptop()
+// 
+// add_action( 'plugins_loaded', 'tekserverentals_ptop_check' );
+// 
+// function tekserverentals_ptop_check() {
+// 
+// 	if( function_exists( 'p2p_register_connection_type' ) ) {
+// 
+// 		if ( is_admin() ) {
+// 		
+// 			add_action('admin_notices', 'tekserverentals_need_ptop');
+// 		
+// 		}
+// 		exit();
+// 
+// 	}	//end if( ! function_exists( 'p2p_register_connection_type' ) )
+// 	
+// }	//end tekserverentals_ptop_check()
 
 
 
@@ -1095,8 +1095,8 @@ function tekserverentals_calculate_duration_price($days, $dprice, $edprice, $wpr
 
 
 // Connect Line Items to Requests
-add_action( 'p2p_init', 'tekservrentals_connect_line_items_to_request()' );
-function tekservrentals_connect_line_items_to_request() {
+add_action( 'p2p_init', 'tekserverentals_connect_line_items_to_request' );
+function tekserverentals_connect_line_items_to_request() {
 
 	p2p_register_connection_type( array(
 	
@@ -1127,7 +1127,7 @@ function tekservrentals_connect_line_items_to_request() {
 	
 	) );
 
-}	//end tekservrentals_connect_line_items_to_request()
+}	//end tekserverentals_connect_line_items_to_request()
 
 
 //meta box for displaying line items in edit request admin pages
