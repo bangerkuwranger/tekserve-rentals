@@ -4,33 +4,36 @@ var tekserveRentalsUrl = tekserveRentalsData.tekserveRentalsUrl + "request.php";
 
 
 //set alert messages content object values
-var tekserveRentalsMessages;
-tekserveRentalsMessages.duration = 'This quote is for a long term rental. The actual price of this rental will be lower than the estimate below. Please contact us directly at 212.929.3645 or rentals@tekserve.com to get the lowest price for this rental.';
-tekserveRentalsMessages.shipping = 'This order has too many items to provide an accurate shipping estimate. Please contact us directly at rentals@tekserve.com or 212.929.3645 to get the price for shipping this rental.';
+var tekserveRentalsMessages = {
+	duration: 'This quote is for a long term rental. The actual price of this rental will be lower than the estimate below. Please contact us directly at 212.929.3645 or rentals@tekserve.com to get the lowest price for this rental.',
+	shipping: 'This order has too many items to provide an accurate shipping estimate. Please contact us directly at rentals@tekserve.com or 212.929.3645 to get the price for shipping this rental.',
+}
 
 
 
 //set anchors content object values
-var tekserveRentalsAnchors;
-tekserveRentalsAnchors.dates = '<a class="shift-up-16em" style="position: relative; top: -16em;" id="tekserve-rentals-dates" name="tekserve-rentals-dates"></a>';
-tekserveRentalsAnchors.checkout = '<a class="shift-up-16em" style="position: relative; top: -16em;" id="tekserve-rentals-checkout" name="tekserve-rentals-checkout"></a>';
-tekserveRentalsAnchors.submit = '<a class="shift-up-16em" style="position: relative; top: -16em;" id="tekserve-rentals-submit" name="tekserve-rentals-submit"></a>';
-tekserveRentalsAnchors.cart = '<a class="shift-up-16em" style="position: relative; top: -16em;" id="tekserve-rentals-cart" name="tekserve-rentals-cart"></a>';
+var tekserveRentalsAnchors = {
+	dates: '<a class="shift-up-16em" style="position: relative; top: -16em;" id="tekserve-rentals-dates" name="tekserve-rentals-dates"></a>',
+	checkout: '<a class="shift-up-16em" style="position: relative; top: -16em;" id="tekserve-rentals-checkout" name="tekserve-rentals-checkout"></a>',
+	submit: '<a class="shift-up-16em" style="position: relative; top: -16em;" id="tekserve-rentals-submit" name="tekserve-rentals-submit"></a>',
+	cart: '<a class="shift-up-16em" style="position: relative; top: -16em;" id="tekserve-rentals-cart" name="tekserve-rentals-cart"></a>',
+}
 
 
 
 //set shipping costs object values
-var tekserveRentalsShipcost;
-tekserveRentalsShipcost.mansm = 42;
-tekserveRentalsShipcost.manlg = 62;
-tekserveRentalsShipcost.borsm = 55;
-tekserveRentalsShipcost.borlg = 62;
-tekserveRentalsShipcost.error = 500;
+var tekserveRentalsShipcost = {
+	mansm: 42,
+	manlg: 62,
+	borsm: 55,
+	borlg: 62,
+	error: 500,
+}
 
 
 
 //create object for 'canonical' fields used in calculations (first form of each type created in each page is used, in case user uses shortcode or vc item more than once per page)
-var $tekserveRentalsFields;
+var $tekserveRentalsFields = {};
 
 
 
@@ -108,7 +111,7 @@ jQuery( document ).ready(function($j) {
 			 var tekShipCost = updateShipping();
 			 return tekShipCost;
 		},
-		taxRate: .08875,
+		taxRate: 0.08875,
 		taxShipping: true
 	
 	});	//end simpleCart
@@ -721,9 +724,12 @@ function updateShipping() {
 
 }	//end updateShipping()
 
+
+
 //function to update extra data
 function updateExtraData(data) {
 
+	console.log(data);
 	var delivery = 0;
 	var pickup = 0;
 	if (jQuery($tekserveRentalsFields.delivery).prop('checked')) {
@@ -731,31 +737,31 @@ function updateExtraData(data) {
 		delivery = 1;
 	
 	}	//end if (jQuery($tekserveRentalsFields.delivery).prop('checked'))
-	if (jQuery($tekserveRentalsFields.pickup).prop('checked'))
+	if (jQuery($tekserveRentalsFields.pickup).prop('checked')) {
 	
 		pickup = 1;
 	
 	}	//end if (jQuery($tekserveRentalsFields.pickup).prop('checked'))
-	data.start_date = jQuery($tekserveRentalsFields.startDate).val(),
-	data.end_date = jQuery($tekserveRentalsFields.endDate).val(),
-	data.deposits_total = jQuery('.tekserverentals-cart-deposits').html(),
-	data.duration = jQuery('.tekserverentals-cart-duration').html(),
-	data.delivery = delivery,
-	data.delivery_loc = jQuery($tekserveRentalsFields.deliveryLoc).filter(':checked').val(),
-	data.pickup = pickup,
-	data.pickup_loc = jQuery($tekserveRentalsFields.pickupLoc).filter(':checked').val(),
-	data.first_name = jQuery($tekserveRentalsFields.firstName).val(),
-	data.last_name = jQuery($tekserveRentalsFields.lastName).val(),
-	data.company = jQuery($tekserveRentalsFields.company).val(),
-	data.email = jQuery($tekserveRentalsFields.email).val(),
-	data.phone = jQuery($tekserveRentalsFields.phone).val(),
-	data.address_one = jQuery($tekserveRentalsFields.addressOne).val(),
-	data.address_two = jQuery($tekserveRentalsFields.addressTwo).val(),
-	data.city = jQuery($tekserveRentalsFields.city).val(),
-	data.state = jQuery($tekserveRentalsFields.state).val(),
-	data.zip = jQuery(zip).val(),
-	data.comments = jQuery($tekserveRentalsFields.additionalInfo).val(),
-	data.total_price = jQuery('.simpleCart_grandTotal').html()
+	data.start_date = jQuery($tekserveRentalsFields.startDate).val();
+	data.end_date = jQuery($tekserveRentalsFields.endDate).val();
+	data.deposits_total = jQuery('.tekserverentals-cart-deposits').html();
+	data.duration = jQuery('.tekserverentals-cart-duration').html();
+	data.delivery = delivery;
+	data.delivery_loc = jQuery($tekserveRentalsFields.deliveryLoc).filter(':checked').val();
+	data.pickup = pickup;
+	data.pickup_loc = jQuery($tekserveRentalsFields.pickupLoc).filter(':checked').val();
+	data.first_name = jQuery($tekserveRentalsFields.firstName).val();
+	data.last_name = jQuery($tekserveRentalsFields.lastName).val();
+	data.company = jQuery($tekserveRentalsFields.company).val();
+	data.email = jQuery($tekserveRentalsFields.email).val();
+	data.phone = jQuery($tekserveRentalsFields.phone).val();
+	data.address_one = jQuery($tekserveRentalsFields.addressOne).val();
+	data.address_two = jQuery($tekserveRentalsFields.addressTwo).val();
+	data.city = jQuery($tekserveRentalsFields.city).val();
+	data.state = jQuery($tekserveRentalsFields.state).val();
+	data.zip = jQuery($tekserveRentalsFieldszip).val();
+	data.comments = jQuery($tekserveRentalsFields.additionalInfo).val();
+	data.total_price = jQuery('.simpleCart_grandTotal').html();
 
 }	//end updateExtraData(data)
 
