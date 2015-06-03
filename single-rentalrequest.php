@@ -6,7 +6,7 @@
  */
  
 //* Customize the post info function to display custom fields */
-add_action( 'genesis_after_post_title', 'tekserve_rentals_output_request' );
+add_action( 'genesis_entry_content', 'tekserve_rentals_output_request', 1 );
 function tekserve_rentals_output_request() {
 	global $wp_query;
 	$postid = $wp_query->post->ID;
@@ -52,7 +52,7 @@ function tekserve_rentals_output_request() {
 	$request_data1 .= '<div class="tekserve_rental_request_line_items">';
 	$request_data1 .= '<h3>Equipment:</h3>';
 	echo $request_data1;
-	$line_items_total = display_tekserverentals_request_line_items( $postid, array('output' => 'yes') );
+	$line_items_total = tekserverentals_display_request_line_items_meta_box( $postid, array('output' => 'yes') );
 	$request_data2 = '</div>';//line items
 	$totals = '<div class="tekserve_rental_request_totals"><h3>Totals:</h3><div>';
 	$totals .= '<b>EQUIPMENT</b><br />$' . esc_html( round( ltrim( $line_items_total, "$" ), 2 ) ) . '<br />';
@@ -74,14 +74,14 @@ add_filter( 'the_content', 'tekserve_rental_filter_content' );
 function tekserve_rental_filter_content($value) {
 	$value = explode( '-<b>Original Notes from Customer</b>', $value );
 	$notecontent = ( strlen( $value[0] ) < 6 ) ? 'No notes entered.' : $value[0];
-	$notes = '<h2 style="font-size: 1.5em; color: #f36f37; text-transform: uppercase; margin-left: 1em;">Additional Notes:</h2><div class="tekserve_rental_request_notes">' . $notecontent . '</div>';
+	$notes = '<div class="tekserve_rental_request_container"><h2>Additional Notes</h2><div class="tekserve_rental_request_notes">' . $notecontent . '</div></div>';
 	return $notes;
 }
 
 //* Output Message after form submission above the title */
-add_action( 'genesis_before_post_title', 'tekserve_rentals_output_thanks' );
+add_action( 'genesis_entry_header', 'tekserve_rentals_output_thanks', 10 );
 function tekserve_rentals_output_thanks() {
-//Should have an option in settings to change this text from admin, along with global tax rate, shipping rules, etc. For now, hardcoded.
+
 $thankshead = '<h1>' . get_option('tekserve_rentals_ty_title', 'Thank You!') . '</h1>';
 $thanksbody = get_option('tekserve_rentals_ty_body', '<p style="margin-bottom: 1em;">Your request has been sent to Tekserve\'s Rental Department folks, who will take a gander at it and contact you shortly. We just need a bit of time to make sure everything will be ready and waiting for you wherever you need it, and then we can set up your deposit and complete your reservation.</p><p style="margin-bottom: 2.5em;">Take a look below and make sure everything is set up the way you want it; if you need to make changes, just send us a quick email at rentals@tekserve.com, or call us up at 212.929.3645 and we\'ll help you out. Talk you you soon!</p>');
 $thanks = '<div class="tekserve_rentals_thank_you">' . $thankshead . $thanksbody . '</div>';
@@ -89,6 +89,7 @@ echo $thanks;
 }
 
 /** Remove Post Info */
-remove_action( 'genesis_after_post_title', 'genesis_post_meta' );
+remove_action( 'genesis_entry_footer', 'genesis_post_info' );
+remove_action( 'genesis_entry_header', 'genesis_entry_meta' );
  
 genesis();

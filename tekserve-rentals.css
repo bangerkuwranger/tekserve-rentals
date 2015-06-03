@@ -1,3 +1,4 @@
+/* 
 .tekserverentals-cart-container {
 	position: fixed;
 	right: 100px;
@@ -78,6 +79,7 @@
 .tekserverentals-cart-long-term h3,
 .tekserverentals-cart-shipnote h3 {
 	color: #f36f37;
+ */
 }
 
 .tekserverentals-cart-container .simpleCart_items .itemRow .item-name,
@@ -169,6 +171,7 @@
 	font-weight: 900;
 }
 
+/* 
 .section a.tekserverentals-item-add-to-cart-button,
 .section div.emptyCart-button,
 .section div.tekserverentals-cart-hidebutton,
@@ -185,6 +188,7 @@
 	clear: both;
 	margin-top: 1em;
 }
+ */
 
 .tekserverental-checkout label.lower {
 	font-size: 1em;
@@ -271,21 +275,42 @@
 	float: none;
 }
 
-.single.single-rentalrequest  h1.entry-title {
-	font-size: 1.75em;
+.single.single-rentalrequest h1.entry-title {
+	font-size: 1.5em;
 	text-transform: none;
+	line-height: 1;
+	border-bottom: 2px solid #ccc;
+	text-align: center;
+	padding-bottom: 1em;
+	margin-bottom: 2.75em;
+}
+
+.single-rentalrequest p.entry-meta {
+	display: none;
+}
+
+.single .tekserve_rentals_thank_you h1 {
+	text-align: left;
+	font-size: 1.25em;
 }
 
 .tekserve_rental_request_container h2 {
-	font-size: 1.5em;
-	color: #f36f37;
 	text-transform: uppercase;
-	margin-left: 1em;
+	border: 2px solid #ccc;
+	border-width: 2px 0;
+	padding: .15em .15em 0;
+  	margin-bottom: 1em;
 }
 
+/*
 .tekserve_rental_request_container h3 {
 	font-size: 1.25em;
 	margin-left: 1em;
+}
+*/
+
+.tekserve_rental_request_container div {
+	margin-bottom: 2em;
 }
 
 .tekserve_rental_request_line_items,
@@ -300,6 +325,7 @@
 .tekserve_rental_request_totals h4 {
 	color: #f36f37;
 }
+/* 
 
 .tekserve_rental_request_customer,
 .tekserve_rental_request_line_items table,
@@ -310,14 +336,18 @@
 	padding: 1em;
 	border-top: 0;
 }
+ */
 
 
 @media only screen and (max-width: 960px) and (min-width: 640px) {
 
+/* 
 	.tekserverentals-cart-container {
 		top: 200px;
 	}
+ */
 	
+/* 
 	.tekserve_rental_request_line_items,
 	.tekserve_rental_request_delivery,
 	.tekserve_rental_request_totals,
@@ -326,11 +356,13 @@
 		max-width: 85%;
 		padding: 0 5%;
 	}
+ */
 
 }
 
 @media only screen and (max-width: 500px) {
 
+/* 
 	.tekserve_rental_request_line_items,
 	.tekserve_rental_request_delivery,
 	.tekserve_rental_request_totals,
@@ -354,6 +386,7 @@
 		right: 2.5%;
 		padding: 1em 2.5%;
 	}
+ */
 	
 	
 }
