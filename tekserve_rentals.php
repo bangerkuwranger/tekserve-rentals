@@ -3,14 +3,14 @@
  * Plugin Name: Tekserve Rentals
  * Plugin URI: https://github.com/bangerkuwranger
  * Description: Enables a rentals system, complete with individual skus and rates.
- * Version: 1.3
+ * Version: 1.4
  * Author: Chad A. Carino
  * Author URI: http://www.chadacarino.com
  * License: MIT
  */
 /*
 The MIT License (MIT)
-Copyright (c) 2014 Chad A. Carino
+Copyright (c) 2015 Chad A. Carino
  
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  
@@ -19,27 +19,37 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-// include simplecart, js, & styles
-//simplecart has been modified to include additional triggers - afterIncrement, afterDecrement, and afterRemove
-function tekserverentals_simplecart() {
-	wp_register_script( 'simplecart', plugins_url()."/tekserve-rentals/simpleCart.js", false, '3.0.5', true );
-	wp_register_script( 'tekserverentals', plugins_url()."/tekserve-rentals/tekserve-rentals.js", false, false, true );
-	wp_register_style( 'tekserverentalscss',  plugins_url()."/tekserve-rentals/tekserve-rentals.css" );
-	wp_register_script( 'jqvalidate', "//ajax.aspnetcdn.com/ajax/jquery.validate/1.13.0/jquery.validate.min.js", false, false, true );
-	wp_register_script( 'jqvalidateExtra', "//ajax.aspnetcdn.com/ajax/jquery.validate/1.13.0/additional-methods.min.js", false, false, true );
-	wp_enqueue_script( 'simplecart' );
-	if( get_post_type() == 'page' ) { wp_enqueue_script( 'tekserverentals' ); }
-	wp_enqueue_style( 'tekserverentalscss' );
-	wp_enqueue_script( 'jqvalidate' );
-	wp_enqueue_script( 'jqvalidateExtra' );
-	$tekserverentalsjsdata = array(
-		'tekserveRentalsUrl' => plugins_url().'/tekserve-rentals/'
-		);
-	wp_localize_script( 'tekserverentals', 'tekserveRentalsData', $tekserverentalsjsdata );
-}
 
-// Hook into the 'wp_enqueue_scripts' action
-add_action( 'wp_enqueue_scripts', 'tekserverentals_simplecart' );
+
+// include simplecart, validation, js, & styles
+//simplecart has been modified to include additional triggers - afterIncrement, afterDecrement, and afterRemove
+add_action( 'wp_enqueue_scripts', 'tekserverentals_enqueuing' );
+function tekserverentals_enqueuing() {
+
+	wp_register_script( 'simplecart', plugins_url()."/tekserve-rentals/simpleCart.js", array( 'jquery' ), '3.0.5', true );
+	wp_register_script( 'tekserverentals', plugins_url()."/tekserve-rentals/tekserve-rentals.js", array( 'jquery', 'simplecart' ), '1.4', true );
+	wp_register_style( 'tekserverentalscss',  plugins_url()."/tekserve-rentals/tekserve-rentals.css" );
+	wp_register_script( 'jqvalidate', "//ajax.aspnetcdn.com/ajax/jquery.validate/1.13.0/jquery.validate.min.js", array( 'jquery' ), false, true );
+	wp_register_script( 'jqvalidateExtra', "//ajax.aspnetcdn.com/ajax/jquery.validate/1.13.0/additional-methods.min.js", array( 'jquery' ), false, true );
+	$tekserverentalsjsdata = array(
+	
+		'tekserveRentalsUrl' => plugins_url().'/tekserve-rentals/'
+	
+	);
+	wp_localize_script( 'tekserverentals', 'tekserveRentalsData', $tekserverentalsjsdata );
+	if( get_post_type() == 'page' ) { 
+		
+		wp_enqueue_script( 'simplecart' );
+		wp_enqueue_script( 'jqvalidate' );
+		wp_enqueue_script( 'jqvalidateExtra' );
+		wp_enqueue_script( 'tekserverentals' );
+	
+	}	//end if( get_post_type() == 'page' )
+	wp_enqueue_style( 'tekserverentalscss' );
+
+}	//end tekserverentals_enqueuing()
+
+
 
 if ( ! function_exists('tekserverentals_rental_product') ) {
 
