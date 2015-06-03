@@ -267,7 +267,7 @@
 	background-color: #40a8c9;
 }
 
-.single.single-rentalrequest #content {
+.single.single-rentalrequest .content {
 	max-width: 960px;
 	width: 95%;
 	padding: 0 2.5%;
