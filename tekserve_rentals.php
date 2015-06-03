@@ -21,6 +21,33 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 
 
+//check for posts-2-posts plugin - exit if not (admin is warned)
+function tekserverentals_need_ptop() {
+
+	echo '<div class="error"><p><strong>Tekserve Rentals Cannot Run:</strong></p><p>This plugin uses scribu\'s posts-to-posts plugin for a lot of its functions. Please make sure this is installed and working. If it is not installed, you can download it from the <a href="https://wordpress.org/plugins/posts-to-posts/" target="_blank">posts-to-posts plugin page on worpress.org</a>. (if Tekserve Rentals was working before, the data should still be there; you will see your entries again once this issue is resolved.)</p></div>';
+
+}	//end tekserverentals_need_ptop()
+
+add_action( 'plugins_loaded', 'tekserverentals_ptop_check' );
+
+function tekserverentals_ptop_check() {
+
+	if( function_exists( 'p2p_register_connection_type' ) ) {
+
+		if ( is_admin() ) {
+		
+			add_action('admin_notices', 'tekserverentals_need_ptop');
+		
+		}
+		exit();
+
+	}	//end if( ! function_exists( 'p2p_register_connection_type' ) )
+	
+}	//end tekserverentals_ptop_check()
+
+
+
+
 // include simplecart, validation, js, & styles
 //simplecart has been modified to include additional triggers - afterIncrement, afterDecrement, and afterRemove
 add_action( 'wp_enqueue_scripts', 'tekserverentals_enqueuing' );
@@ -51,121 +78,121 @@ function tekserverentals_enqueuing() {
 
 
 
-if ( ! function_exists('tekserverentals_rental_product') ) {
+if( ! function_exists('tekserverentals_rental_product') ) {
 
-// Register Custom Post Type
-function tekserverentals_rental_product() {
+	// Register Custom Post Type
+	add_action( 'init', 'tekserverentals_rental_product', 0 );
+	function tekserverentals_rental_product() {
 
-	$labels = array(
-		'name'                => 'Rental Products',
-		'singular_name'       => 'Rental Product',
-		'menu_name'           => 'Rental Product',
-		'parent_item_colon'   => 'Parent Rental Product:',
-		'all_items'           => 'All Rental Products',
-		'view_item'           => 'View Rental Product',
-		'add_new_item'        => 'Add New Rental Product',
-		'add_new'             => 'New Rental Product',
-		'edit_item'           => 'Edit Rental Product',
-		'update_item'         => 'Update Rental Product',
-		'search_items'        => 'Search Rental Products',
-		'not_found'           => 'No Rental Products found',
-		'not_found_in_trash'  => 'No Rental Products found in Trash',
-	);
-	$rewrite = array(
-		'slug'                => 'rental-product',
-		'with_front'          => true,
-		'pages'               => false,
-		'feeds'               => true,
-	);
-	$args = array(
-		'label'               => 'rentalproduct',
-		'description'         => 'General Products Available for Rental',
-		'labels'              => $labels,
-		'supports'            => array( 'title', 'editor', 'thumbnail', 'revisions', ),
-		'taxonomies'          => array( 'category', 'post_tag', 'skus' ),
-		'hierarchical'        => false,
-		'public'              => true,
-		'show_ui'             => true,
-		'show_in_menu'        => true,
-		'show_in_nav_menus'   => true,
-		'show_in_admin_bar'   => true,
-		'menu_position'       => 5,
-		'menu_icon'           => '',
-		'can_export'          => true,
-		'has_archive'         => true,
-		'exclude_from_search' => false,
-		'publicly_queryable'  => true,
-		'query_var'           => 'rentalproduct',
-		'rewrite'             => $rewrite,
-		'capability_type'     => 'page',
-		'menu_icon'			  => 'dashicons-products',
-	);
-	register_post_type( 'rentalproduct', $args );
+		$labels = array(
+			'name'                => 'Rental Products',
+			'singular_name'       => 'Rental Product',
+			'menu_name'           => 'Rental Product',
+			'parent_item_colon'   => 'Parent Rental Product:',
+			'all_items'           => 'All Rental Products',
+			'view_item'           => 'View Rental Product',
+			'add_new_item'        => 'Add New Rental Product',
+			'add_new'             => 'New Rental Product',
+			'edit_item'           => 'Edit Rental Product',
+			'update_item'         => 'Update Rental Product',
+			'search_items'        => 'Search Rental Products',
+			'not_found'           => 'No Rental Products found',
+			'not_found_in_trash'  => 'No Rental Products found in Trash',
+		);
+		$rewrite = array(
+			'slug'                => 'rental-product',
+			'with_front'          => true,
+			'pages'               => false,
+			'feeds'               => true,
+		);
+		$args = array(
+			'label'               => 'rentalproduct',
+			'description'         => 'General Products Available for Rental',
+			'labels'              => $labels,
+			'supports'            => array( 'title', 'editor', 'thumbnail', 'revisions', ),
+			'taxonomies'          => array( 'category', 'post_tag', 'skus' ),
+			'hierarchical'        => false,
+			'public'              => true,
+			'show_ui'             => true,
+			'show_in_menu'        => true,
+			'show_in_nav_menus'   => true,
+			'show_in_admin_bar'   => true,
+			'menu_position'       => 5,
+			'menu_icon'           => '',
+			'can_export'          => true,
+			'has_archive'         => true,
+			'exclude_from_search' => false,
+			'publicly_queryable'  => true,
+			'query_var'           => 'rentalproduct',
+			'rewrite'             => $rewrite,
+			'capability_type'     => 'page',
+			'menu_icon'			  => 'dashicons-products',
+		);
+		register_post_type( 'rentalproduct', $args );
+	
+	}	//end tekserverentals_rental_product()
 
-}
+}	//end if( ! function_exists('tekserverentals_rental_product') )
 
-// Hook into the 'init' action
-add_action( 'init', 'tekserverentals_rental_product', 0 );
 
-}
 
-if ( ! function_exists('tekserverentals_rental_sku') ) {
+if( ! function_exists('tekserverentals_rental_sku') ) {
 
-// Register Custom Post Type
-function tekserverentals_rental_sku() {
+	// Register Custom Post Type
+	add_action( 'init', 'tekserverentals_rental_sku', 0 );
+	function tekserverentals_rental_sku() {
 
-	$labels = array(
-		'name'                => 'Rental SKUs',
-		'singular_name'       => 'Rental SKU',
-		'menu_name'           => 'Rental SKU',
-		'parent_item_colon'   => 'Parent Rental SKU:',
-		'all_items'           => 'All Rental SKUs',
-		'view_item'           => 'View Rental SKU',
-		'add_new_item'        => 'Add New Rental SKU',
-		'add_new'             => 'New Rental SKU',
-		'edit_item'           => 'Edit Rental SKU',
-		'update_item'         => 'Update Rental SKU',
-		'search_items'        => 'Search Rental SKUs',
-		'not_found'           => 'No Rental SKUs found',
-		'not_found_in_trash'  => 'No Rental SKUs found in Trash',
-	);
-	$rewrite = array(
-		'slug'                => 'rental-sku',
-		'with_front'          => true,
-		'pages'               => false,
-		'feeds'               => true,
-	);
-	$args = array(
-		'label'               => 'rentalsku',
-		'description'         => 'Individual SKUs of products available for rental',
-		'labels'              => $labels,
-		'supports'            => array( 'title' ),
-		'taxonomies'          => array( '' ),
-		'hierarchical'        => false,
-		'public'              => true,
-		'show_ui'             => true,
-		'show_in_menu'        => true,
-		'show_in_nav_menus'   => true,
-		'show_in_admin_bar'   => true,
-		'menu_position'       => 5,
-		'menu_icon'           => '',
-		'can_export'          => true,
-		'has_archive'         => true,
-		'exclude_from_search' => false,
-		'publicly_queryable'  => true,
-		'query_var'           => 'rentalsku',
-		'rewrite'             => $rewrite,
-		'capability_type'     => 'page',
-		'menu_icon'			  => 'dashicons-feedback',
-	);
-	register_post_type( 'rentalsku', $args );
+		$labels = array(
+			'name'                => 'Rental SKUs',
+			'singular_name'       => 'Rental SKU',
+			'menu_name'           => 'Rental SKU',
+			'parent_item_colon'   => 'Parent Rental SKU:',
+			'all_items'           => 'All Rental SKUs',
+			'view_item'           => 'View Rental SKU',
+			'add_new_item'        => 'Add New Rental SKU',
+			'add_new'             => 'New Rental SKU',
+			'edit_item'           => 'Edit Rental SKU',
+			'update_item'         => 'Update Rental SKU',
+			'search_items'        => 'Search Rental SKUs',
+			'not_found'           => 'No Rental SKUs found',
+			'not_found_in_trash'  => 'No Rental SKUs found in Trash',
+		);
+		$rewrite = array(
+			'slug'                => 'rental-sku',
+			'with_front'          => true,
+			'pages'               => false,
+			'feeds'               => true,
+		);
+		$args = array(
+			'label'               => 'rentalsku',
+			'description'         => 'Individual SKUs of products available for rental',
+			'labels'              => $labels,
+			'supports'            => array( 'title' ),
+			'taxonomies'          => array( '' ),
+			'hierarchical'        => false,
+			'public'              => true,
+			'show_ui'             => true,
+			'show_in_menu'        => true,
+			'show_in_nav_menus'   => true,
+			'show_in_admin_bar'   => true,
+			'menu_position'       => 5,
+			'menu_icon'           => '',
+			'can_export'          => true,
+			'has_archive'         => true,
+			'exclude_from_search' => false,
+			'publicly_queryable'  => true,
+			'query_var'           => 'rentalsku',
+			'rewrite'             => $rewrite,
+			'capability_type'     => 'page',
+			'menu_icon'			  => 'dashicons-feedback',
+		);
+		register_post_type( 'rentalsku', $args );
 
-}
+	}	//end tekserverentals_rental_sku()
 
-// Hook into the 'init' action
-add_action( 'init', 'tekserverentals_rental_sku', 0 );
+}	//end if( ! function_exists('tekserverentals_rental_sku') )
 
-}
+
 
 // Connect SKUs to General Product
 function connect_sku_to_product() {
