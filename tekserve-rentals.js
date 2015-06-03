@@ -1,108 +1,203 @@
 //takes plugin folder location from php upon page init
 var tekserveRentalsUrl = tekserveRentalsData.tekserveRentalsUrl + "request.php";
 
-//init commands for simplecart
-simpleCart({
-    cartColumns: [
-        { attr: "name" , label: "Name" } ,
-        { attr: "price" , label: "Price", view: 'currency' } ,
-        { attr: "deposit" , label: "Deposit", view: 'currency' },
-        { view: "decrement" , label: false , text: "-" } ,
-        { attr: "quantity" , label: "Qty" } ,
-        { view: "increment" , label: false , text: "+" } ,
-        { view: "remove" , text: "Remove" , label: false }
-    ],
-    checkout: { 
-        type: "SendForm" , 
-        url: tekserveRentalsUrl ,
 
-        // http method for form, "POST" or "GET", default is "POST"
-        method: "POST" , 
 
-        // url to return to on successful checkout, default is null
-//         success: "success.html" , 
+//set alert messages content object values
+var tekserveRentalsMessages;
+tekserveRentalsMessages.duration = 'This quote is for a long term rental. The actual price of this rental will be lower than the estimate below. Please contact us directly at 212.929.3645 or rentals@tekserve.com to get the lowest price for this rental.';
+tekserveRentalsMessages.shipping = 'This order has too many items to provide an accurate shipping estimate. Please contact us directly at rentals@tekserve.com or 212.929.3645 to get the price for shipping this rental.';
 
-        // url to return to on cancelled checkout, default is null
-//         cancel: "cancel.html" ,
 
-        // an option list of extra name/value pairs that can
-        // be sent along with the checkout data
-        extra_data: {
-			storename: "Tekserve Rentals",
-			start_date: jQuery('#tekserverentalStartDate').val(),
-			end_date: jQuery('#tekserverentalEndDate').val(),
-			deposits_total: jQuery('.tekserverentals-cart-deposits').html(),
-			duration: jQuery('.tekserverentals-cart-duration').html(),
-			delivery: 0,
-			delivery_loc: jQuery('input:checked[name=tekserverentals-delivery-loc]').val(),
-			pickup: 0,
-			pickup_loc: jQuery('input:checked[name=tekserverentals-pickup-loc]').val(),
-			first_name: document.getElementById("entry_0").value,
-			last_name: document.getElementById("entry_1").value,
-			company: document.getElementById("entry_2").value,
-			email: document.getElementById("entry_3").value,
-			phone: document.getElementById("entry_7").value,
-			address_one: document.getElementById("entry_9").value,
-			address_two: document.getElementById("entry_10").value,
-			city: document.getElementById("entry_11").value,
-			state: document.getElementById("entry_12").value,
-			zip: document.getElementById("entry_13").value,
-			comments: document.getElementById("entry_14").value,
-			total_due: jQuery('.tekserverentals-cart-grand-total').html(),
-			total_price: jQuery('.simpleCart_grandTotal').html()
-        }
-    },
-    cartStyle: "div",
-    currency: "USD",
-    shippingCustom: function(){ 
-         //set up function to calculate costs based on item quantity and location
-         var tekShipCost = updateShipping();
-         return tekShipCost;
-    },
-    taxRate: .08875,
-    taxShipping: true
-});
 
-jQuery(function() {
-	//output the checkout box and Add Item Dialog
-	jQuery('.tekserverental-checkout').after('<div class="tekserverentals-cart-container" style="display: none;"><div class="tekserverentals-cart-showbutton button" style="display: none;">Show Cart</div><div class="tekserverentals-cart" style="display:none;"><div class="tekserverentals-cart-long-term" style="display: none;"><h3>Important Note</h3><p>This quote is for a long term rental. The actual price of this rental will be lower than the estimate below. Please contact us directly at 212.929.3645 or rentals@tekserve.com to get the lowest price for this rental.</p></div><div class="tekserverentals-cart-shipnote" style="display: none;"><h3>Important Note</h3><p>This order has too many items to provide an accurate shipping estimate. Please contact us directly at rentals@tekserve.com or 212.929.3645 to get the price for shipping this rental.</p></div><span style="font-weight: 900">Rental Duration: </span><div class="tekserverentals-cart-duration"></div><span> days.</span><br/><a href="#step-2-dates">Change Dates</a><div class="simpleCart_items"></div><hr style="height:1px; color: #004f72; background: #004d72;"><div class="tekserverentals-cart-totals"><div><span>Subtotal</span><div class="simpleCart_total"></div></div><div><span>Shipping</span><div class="simpleCart_shipping"></div></div><div><span>Tax</span><div class="simpleCart_tax"></div></div><div><span>Total Deposit</span><div class="tekserverentals-cart-deposits"></div></div><div><span style="font-weight: 900;">Total Cost</span><div class="simpleCart_grandTotal" style="font-weight: 900;"></div></div></div><div class="button emptyCart-button">Clear All Items</div><div class="tekserverentals-cart-hidebutton button" style="">Hide Cart</div><br/><a style="" href="#messenger" id="send-request" class="button" title="Step 3- Enter Personal / Shipping Info and Submit Request">Enter Info & Send Request</a></div></div>');
-// 	jQuery( "#addDialog" ).dialog({ autoOpen: false });
-	//bind show/click buttons for cart
-	jQuery('.tekserverentals-cart-showbutton').click(function() {
-		jQuery('.tekserverentals-cart').show();
-		jQuery('.tekserverentals-cart-showbutton').hide();
-		jQuery('.tekserverentals-cart-container').css('background', '#fff').css('box-shadow','1px 1px 10px #334');
-// 		jQuery( "#addDialog" ).dialog( "close" );
-	});
+//set anchors content object values
+var tekserveRentalsAnchors;
+tekserveRentalsAnchors.dates = '<a class="shift-up-16em" style="position: relative; top: -16em;" id="tekserve-rentals-dates" name="tekserve-rentals-dates"></a>';
+tekserveRentalsAnchors.checkout = '<a class="shift-up-16em" style="position: relative; top: -16em;" id="tekserve-rentals-checkout" name="tekserve-rentals-checkout"></a>';
+tekserveRentalsAnchors.submit = '<a class="shift-up-16em" style="position: relative; top: -16em;" id="tekserve-rentals-submit" name="tekserve-rentals-submit"></a>';
+tekserveRentalsAnchors.cart = '<a class="shift-up-16em" style="position: relative; top: -16em;" id="tekserve-rentals-cart" name="tekserve-rentals-cart"></a>';
 
-	jQuery('.tekserverentals-cart-hidebutton').click(function() {
-		jQuery('.tekserverentals-cart').hide();
-		jQuery('.tekserverentals-cart-showbutton').show();
-		jQuery('.tekserverentals-cart-container').css('background', 'rgba(255,255,255,0.4)').css('box-shadow','1px 1px 10px #fff');
-	});
 
+
+//set shipping costs object values
+var tekserveRentalsShipcost;
+tekserveRentalsShipcost.mansm = 42;
+tekserveRentalsShipcost.manlg = 62;
+tekserveRentalsShipcost.borsm = 55;
+tekserveRentalsShipcost.borlg = 62;
+tekserveRentalsShipcost.error = 500;
+
+
+
+//create object for 'canonical' fields used in calculations (first form of each type created in each page is used, in case user uses shortcode or vc item more than once per page)
+var $tekserveRentalsFields;
+
+
+
+//after jQuery is loaded
+jQuery( document ).ready(function($j) {
+
+	//set values in object for 'canonical' fields used in calculations
+	var $dates = $j('.tekserverental-dates-form').first();
+	var $shipping = $j('.tekserverental-checkout-form').first().find('.tekserverental-checkout-shipping');
+	var $cust = $j('.tekserverental-checkout-form').first().find('.tekserverental-checkout-custinfo');
+	$tekserveRentalsFields.startDate = $j($dates).find('.tekserverental-dates-start input');
+	$tekserveRentalsFields.endDate = $j($dates).first().find('.tekserverental-dates-end input');
+	$tekserveRentalsFields.delivery = $j($shipping).find('.tekserverental-delivery input:checkbox');
+	$tekserveRentalsFields.deliveryLoc = $j($shipping).find('.tekserverental-delivery input[name="tekserverentals-delivery-loc"]:radio');
+	$tekserveRentalsFields.pickup = $j($shipping).find('.tekserverental-pickup input:checkbox');
+	$tekserveRentalsFields.pickupLoc = $j($shipping).find('.tekserverental-pickup input[name="tekserverentals-pickup-loc"]:radio');
+	$tekserveRentalsFields.firstName = $j($cust).find('.tekserverental-name span.firstname input');
+	$tekserveRentalsFields.lastName = $j($cust).find('.tekserverental-name span.lastname input');
+	$tekserveRentalsFields.company = $j($cust).find('div.tekserverental-company-name input');
+	$tekserveRentalsFields.email = $j($cust).find('div.tekserverental-email input');
+	$tekserveRentalsFields.phone = $j($cust).find('div.tekserverental-phone-number input');
+	$tekserveRentalsFields.addressOne = $j($cust).find('div.tekserverental-addressone input');
+	$tekserveRentalsFields.addressTwo = $j($cust).find('div.tekserverental-addresstwo input');
+	$tekserveRentalsFields.city = $j($cust).find('div.tekserverental-city input');
+	$tekserveRentalsFields.state = $j($cust).find('div.tekserverental-state input');
+	$tekserveRentalsFields.zip = $j($cust).find('div.tekserverental-zip input');
+	$tekserveRentalsFields.additionalInfo = $j('.tekserverental-checkout-form').first().find('.tekserverental-additional-info textarea');
+
+	//init simplecart
+	simpleCart({
+	
+		cartColumns: [
+			{ attr: "name" , label: "Name" } ,
+			{ attr: "price" , label: "Price", view: 'currency' } ,
+			{ attr: "deposit" , label: "Deposit", view: 'currency' },
+			{ view: "decrement" , label: false , text: "-" } ,
+			{ attr: "quantity" , label: "Qty" } ,
+			{ view: "increment" , label: false , text: "+" } ,
+			{ view: "remove" , text: "Remove" , label: false }
+		],
+		checkout: { 
+			type: "SendForm", 
+			url: tekserveRentalsUrl,
+			// http method for form, "POST" or "GET", default is "POST"
+			method: "POST",
+			// an option list of extra name/value pairs that can be sent along with the checkout data
+			extra_data: {
+				storename: "Tekserve Rentals",
+				start_date: $j($tekserveRentalsFields.startDate).val(),
+				end_date: $j($tekserveRentalsFields.endDate).val(),
+				deposits_total: $j('.tekserverentals-cart-deposits').first().html(),
+				duration: $j('.tekserverentals-cart-duration').first().html(),
+				delivery: 0,
+				delivery_loc: $j($tekserveRentalsFields.deliveryLoc).filter(':checked').val(),
+				pickup: 0,
+				pickup_loc: $j($tekserveRentalsFields.pickupLoc).filter(':checked').val(),
+				first_name: $j($tekserveRentalsFields.firstName).val(),
+				last_name: $j($tekserveRentalsFields.lastName).val(),
+				company: $j($tekserveRentalsFields.company).val(),
+				email: $j($tekserveRentalsFields.email).val(),
+				phone: $j($tekserveRentalsFields.phone).val(),
+				address_one: $j($tekserveRentalsFields.addressOne).val(),
+				address_two: $j($tekserveRentalsFields.addressTwo).val(),
+				city: $j($tekserveRentalsFields.city).val(),
+				state: $j($tekserveRentalsFields.state).val(),
+				zip: $j($tekserveRentalsFields.zip).val(),
+				comments: $j($tekserveRentalsFields.additionalInfo).val(),
+				total_price: $j('.simpleCart_grandTotal').first().html()
+			}
+		},
+		cartStyle: "div",
+		currency: "USD",
+		shippingCustom: function(){ 
+			 //set up function to calculate costs based on item quantity and location
+			 var tekShipCost = updateShipping();
+			 return tekShipCost;
+		},
+		taxRate: .08875,
+		taxShipping: true
+	
+	});	//end simpleCart
+	
 	//datepicker for dates fields
-	jQuery( "#tekserverentalStartDate" ).datepicker();
-    jQuery( "#tekserverentalEndDate" ).datepicker();
+	$j($tekserveRentalsFields.startDate).datepicker();
+    $j($tekserveRentalsFields.endDate).datepicker();
     
     //set old value to zero (keeps user from being nagged when entering date for the first time)
-    jQuery('#tekserverentalEndDate').data('old', 0);
+    $j($tekserveRentalsFields.endDate).data('old', 0);
     
-    //bind empty cart button
-	jQuery('.emptyCart-button').click(function() {
+    //bind empty cart button(s)
+	$j('.emptyCart-button').click(function() {
+	
 		simpleCart.update();
 		simpleCart.empty();
 		simpleCart.update();
 		updateTotals();
-	});
+	
+	});	//end $j('.emptyCart-button').click(function()
+	
+	//bind change startDate
+	$j($tekserveRentalsFields.startDate).change(function() {
+	
+		var validates;
+		if ($j($tekserveRentalsFields.endDate).data('old') == 0) {
+		
+			validates = dateButton('first');
+		
+		}
+		else {	
+		
+			validates = dateButton('');
+		
+		}	//end if ($j($tekserveRentalsFields.endDate).data('old') == 0)
+	
+		if (validates) {
+		
+			updateTotals();
+		
+		}
+		$j(this).removeClass('error');
+
+	
+	});	//end $j($tekserveRentalsFields.startDate).change(function()
+
+	//bind change endDate
+	$j($tekserveRentalsFields.endDate).change(function() {
+	
+		if (($j(this).data('old') == 0) && !($j(this).val())) {
+		
+			$j(this).data('old', 'empty');
+		
+		}
+		else {
+		
+			$j(this).data('old', $j(this).val());
+		
+		}		
+		var validates = dateButton('');
+		if(validates) {
+			updateTotals();
+		}
+		$j(this).removeClass('error');
+	
+	});	//end $j($tekserveRentalsFields.endDate).change(function()
+
+	//bind changes to shipping info
+	$j($shipping).find('input').change(function() {
+	
+		simpleCart.update();
+		updateTotals();
+	
+	});	//end $j($shipping).find('input').change(function()
+	
+	
+	
+	//bind all simplecart actions
+	bindAllCartActions();
+
 	
 	//Data Validation
-	jQuery.validator.setDefaults({
+	$j.validator.setDefaults({
 	  debug: true,
 	  success: "valid"
 	});
 	
-	jQuery( "#tekserverentals-checkout-form" ).validate({
+	$j(".tekserverentals-checkout-form form").first().validate({
+	
 		rules: {
 			firstname: {
 				required: true
@@ -133,31 +228,74 @@ jQuery(function() {
 				zipcodeUS: true
 			}
 		}
-	});
-	jQuery( "#tekserverentals-checkout-dates" ).validate({
-			rules: {
-				startdate: {
-				  required: true,
-				  date: true
-				},
-				enddate: {
-				  required: true,
-				  date: true
-				}
+	
+	});	//end
+	
+	$j(".tekserverentals-dates-form form").first().validate({
+	
+		rules: {
+			startdate: {
+			  required: true,
+			  date: true
+			},
+			enddate: {
+			  required: true,
+			  date: true
 			}
-		});
+		}
 
-});
+	});	//end $j(".tekserverentals-dates-form form").first().validate
+
+});	//end jQuery( document ).ready(function($j)
+
+
+
+//after page has loaded
+jQuery(window).bind('load', function() {
+
+	//add anchors
+	if (jQuery('.tekserverental-dates-form').length > 0) {
+	
+		jQuery('.tekserverental-dates-form').first().before(tekserveRentalsAnchors.dates);
+	
+	}	//end if (jQuery('.tekserverental-dates-form').length > 0)
+	if (jQuery('.tekserverental-checkout').length > 0) {
+	
+		jQuery('.tekserverental-checkout').first().before(tekserveRentalsAnchors.checkout);
+	
+	}	//end if (jQuery('.tekserverental-checkout').length > 0)
+	if (jQuery('.tekserverental-checkout .tekserverental-checkout-submit').length > 0) {
+	
+		jQuery('.tekserverental-checkout .tekserverental-checkout-submit').first().before(tekserveRentalsAnchors.submit);
+	
+	}	//end if (jQuery('.tekserverental-checkout .tekserverental-submit').length > 0)
+	if (jQuery('.tekserverentals-cart').length > 0) {
+	
+		jQuery('.tekserverentals-cart').first().before(tekserveRentalsAnchors.cart);
+	
+	}	//end if (jQuery('.tekserverentals-cart').length > 0)
+
+});	//end jQuery(window).bind('load', function()
+
+
 
 //date validation function
 function isValidDate(d) {
-  if ( Object.prototype.toString.call(d) !== "[object Date]" )
-    return false;
-  return !isNaN(d.getTime());
-}
+
+	if (Object.prototype.toString.call(d) !== "[object Date]") {
+	
+		return false;
+	
+	}	//end if (Object.prototype.toString.call(d) !== "[object Date]")
+	return !isNaN(d.getTime());
+
+}	//end isValidDate(d)
+
+
 
 //function to compare two dates and either return that date range is invalid & why, or return the number of days, weeks, extra days, and extra weeks
 function tekserveRentalsCompareDates(startDate,endDate) {
+
 	var oneDay=1000*60*60*24;
 	var date1ms = startDate.getTime();
   	var date2ms = endDate.getTime();
@@ -167,29 +305,41 @@ function tekserveRentalsCompareDates(startDate,endDate) {
   	var differenceWeeks = 0;
   	var differenceEweeks = 0;
   	if (differenceDays > 7) {
+  	
   		if (differenceDays > 13) {
+  		
   			differenceWeeks = 1;
   			differenceEweeks = Math.floor((differenceDays-7)/7);
   			differenceEdays = differenceDays - ((differenceEweeks+1)*7);
+  		
   		}
   		else {
+  		
   			differenceWeeks = 1;
   			differenceEdays = differenceDays - 7;
-  		}
+  		
+  		}	//end if (differenceDays > 13)
+  	
   	}
   	else if (differenceDays > 1) {
+  	
   		differenceEdays = differenceDays - 1;
-  	}
+  	
+  	}	//end if (differenceDays > 7)
   	var differences = new Array();
   	differences[0] = differenceDays;
   	differences[1] = differenceEdays;
   	differences[2] = differenceWeeks;
   	differences[3] = differenceEweeks;
   	return differences;
-}
+
+}	//end tekserveRentalsCompareDates(startDate,endDate)
+
+
 
 //function to add/update dates for each item
 function tekserveRentalsUpDates(startDate,endDate) {
+
 	var dPrice;
 	var edPrice;
 	var wPrice;
@@ -203,7 +353,8 @@ function tekserveRentalsUpDates(startDate,endDate) {
 	var chargedDays;
 	var chargedWeeks;
 	var termFlag;
-	simpleCart.each(function( item , x ){
+	simpleCart.each(function(item,x) {
+	
 		//assign dates to each item in the cart
 		item.set('start',startDate);
 		item.set('end',endDate);
@@ -229,17 +380,32 @@ function tekserveRentalsUpDates(startDate,endDate) {
 		jQuery('.tekserverentals-cart-deposits').html('$'+depositTotal);
 		jQuery('.tekserverentals-cart-grand-total').html('$'+gTotal.toFixed(2));
 		if (termFlag == 'longTerm') {
-			jQuery('.tekserverentals-cart-long-term').show();
+		
+			jQuery('.tekserverentals-cart-message p.duration').text(tekserveRentalsMessages.duration);
+			jQuery('.tekserverentals-cart-message').show();
+		
 		}
 		else {
-			jQuery('.tekserverentals-cart-long-term').hide();
-		}
-	});
+		
+			jQuery('.tekserverentals-cart-message p.duration').text('');
+			if (!(jQuery('.tekserverentals-cart-message p.shipping').text())) {
+			
+				jQuery('.tekserverentals-cart-message').hide();
+			
+			}	//end if (!(jQuery('.tekserverentals-cart-message p.shipping').text()))
+		
+		}	//end if (termFlag == 'longTerm')
+	
+	});	//end simpleCart.each(function(item,x)
 	simpleCart.update();
-}
+
+}	//end tekserveRentalsUpDates(startDate,endDate)
+
+
 
 //function to calculate the best price for the cust based on pricing for no of days, edays, weeks, and eweeks rental is set for
 function tekserveRentalsItemPrice(startDate,endDate,dPrice,edPrice,wPrice,ewPrice) {
+
 	var dayArray = tekserveRentalsCompareDates(startDate,endDate);
 	var termFlag = 'shortTerm';
 	var totalPrice = dPrice;
@@ -252,62 +418,90 @@ function tekserveRentalsItemPrice(startDate,endDate,dPrice,edPrice,wPrice,ewPric
 	var dTot;
 	var wTot;
 	if (weeks > 0) {
+	
 		if (eWeeks > 0) {
+		
 			if (eDays > 0) {
+			
 				dTot = parseInt(wPrice) + (edPrice * eDays) + (ewPrice * eWeeks);
 				wTot = parseInt(wPrice) + parseInt(ewPrice) + (ewPrice * eWeeks);
 				if (wTot < dTot) {
+				
 					totalPrice = wTot;
 					chargedDays = 0;
 					chargedWeeks = parseInt(eWeeks) + 1;
+				
 				}
 				else {
+				
 					totalPrice = dTot;
 					chargedDays = eDays;
 					chargedWeeks = parseInt(eWeeks) + 1;
-				}
+				
+				}	//end if (wTot < dTot)
+			
 			}
 			else {
+			
 				totalPrice = parseInt(wPrice) + (ewPrice * eWeeks);
 				chargedDays = 0;
 				chargedWeeks = parseInt(eWeeks) + 1;
-			}
+			
+			}	//end if (eDays > 0)
+		
 		}
 		else if (eDays > 0) {
+		
 			dTot = parseInt(wPrice) + (edPrice * eDays) + (ewPrice * eWeeks);
 			wTot = parseInt(wPrice) + parseInt(ewPrice) + (ewPrice * eWeeks);
 			if (wTot < dTot) {
+			
 				totalPrice = wTot;
 				chargedDays = 0;
 				chargedWeeks = parseInt(eWeeks) + 1;
+			
 			}
 			else {
+			
 				totalPrice = dTot;
 				chargedDays = eDays;
 				chargedWeeks = parseInt(eWeeks) + 1;
-				}
+			
+			}	//end if (wTot < dTot)
+		
 		}
 		else {
+		
 			totalPrice = wPrice;
 			chargedDays = 0;
 			chargedWeeks = 1;
-		}
+		
+		}	//end if (eWeeks > 0)
+	
 	}
 	else if (eDays > 0) {
+	
 		dTot = parseInt(dPrice) + (edPrice * eDays);
 		if (wPrice < dTot) {
+		
 			totalPrice = wPrice;
 			chargedDays = 0;
 			chargedWeeks = 1;
+		
 		}
 		else {
+		
 			totalPrice = dTot;
 			chargedDays = days;
-		}
-	}
+		
+		}	//end if (wPrice < dTot)
+	
+	}	//end if (weeks > 0)
 	if (eWeeks > 2) {
+	
 		termFlag = 'longTerm';
-	}
+	
+	}	//end if (eWeeks > 2)
 	var finalPrice = new Array();
 	finalPrice[0] = totalPrice;
 	finalPrice[1] = days;
@@ -315,266 +509,353 @@ function tekserveRentalsItemPrice(startDate,endDate,dPrice,edPrice,wPrice,ewPric
 	finalPrice[3] = chargedWeeks;
 	finalPrice[4] = termFlag;
 	return finalPrice;
-}
+
+}	//end tekserveRentalsItemPrice(startDate,endDate,dPrice,edPrice,wPrice,ewPrice)
+
+
 
 //function for updating on date change
 function dateButton(isFirst) {
-	var startDate = new Date(jQuery('#tekserverentalStartDate').val());
-	var endDate = new Date(jQuery('#tekserverentalEndDate').val());
+
+	var startDate = new Date(jQuery($tekserveRentalsFields.startDate).val());
+	var endDate = new Date(jQuery($tekserveRentalsFields.endDate).val());
 	var today = new Date();
 	if (isValidDate(startDate) && isValidDate(endDate)) {
+	
 		if ((startDate < today) || (endDate < today)) {
+		
 			alert("Time machine is for data backup, not actual time travel. Please choose dates in the future.");
-			jQuery('.tekserverentals-cart').hide();
+			jQuery('.tekserverentals-cart-container').slideUp();
 			return false;
+		
 		}
 		else if (endDate < startDate) {
+		
 			tekserveRentalsUpDates(endDate,startDate);
-			jQuery('.tekserverentals-cart').show();
-			jQuery('.tekserverentals-cart-container').show();
+			jQuery('.tekserverentals-cart-container').slideDown();
 			return true;
+		
 		}
 		else {
+		
 			tekserveRentalsUpDates(startDate,endDate);
-			jQuery('.tekserverentals-cart').show();
-			jQuery('.tekserverentals-cart-container').show();
+			jQuery('.tekserverentals-cart-container').slideDown();
 			return true;
-		}
+		
+		}	//end if ((startDate < today) || (endDate < today))
+	
 	}
 	else {
+	
 		if (isFirst !== 'first') {
+		
 			alert("Please enter both a start and end date for this rental.");
-			}
-		jQuery('.tekserverentals-cart').hide();
+		
+		}	//end if (isFirst !== 'first')
+		jQuery('.tekserverentals-cart-container').slideUp();
 		return false;
-	}
-}
+	
+	}	//end if (isValidDate(startDate) && isValidDate(endDate))
+
+}	//end dateButton(isFirst)
+
+
 
 //simple function to update all totals. Called by updates.
 function updateTotals() {
-	var startDate = new Date(jQuery('#tekserverentalStartDate').val());
-	var endDate = new Date(jQuery('#tekserverentalEndDate').val());
+
+	var startDate = new Date(jQuery($tekserveRentalsFields.startDate).val());
+	var endDate = new Date(jQuery($tekserveRentalsFields.endDate).val());
 	if (isValidDate(startDate) && isValidDate(endDate)) {
+	
 		tekserveRentalsUpDates(startDate,endDate);
-	}
-}
+	
+	}	//end if (isValidDate(startDate) && isValidDate(endDate))
+
+}	//end updateTotals()
+
+
 
 //function to update shipping based on quantity and locations
 function updateShipping() {
-	var delivery;
-	var pickup;
+
+	var delivery = 0;
+	var pickup = 0;
 	var deliveryLoc;
 	var pickupLoc;
 	var deliveryCost;
 	var pickupCost;
 	var shippingTotal;
-	//has cust selected pickup or delivery
-	if ( jQuery('#tekserverentals-delivery').prop('checked') ) {
+	//has cust selected pickup or delivery?
+	if (jQuery($tekserveRentalsFields.delivery).prop('checked')) {
+	
 		delivery = 1;
-		deliveryLoc = jQuery('input:checked[name=tekserverentals-delivery-loc]').val();
-	}
-	if ( jQuery('#tekserverentals-pickup').prop('checked') ) {
+		deliveryLoc = jQuery($tekserveRentalsFields.deliveryLoc).filter(':checked').val();
+	
+	}	//end if (jQuery($tekserveRentalsFields.delivery).prop('checked'))
+	if (jQuery($tekserveRentalsFields.pickup).prop('checked')) {
+	
 		pickup = 1;
-		pickupLoc = jQuery('input:checked[name=tekserverentals-pickup-loc]').val();
-	}
+		pickupLoc = jQuery($tekserveRentalsFields.pickupLoc).filter(':checked').val();
+	
+	}	//end if (jQuery($tekserveRentalsFields.pickup).prop('checked'))
 	if ( delivery || pickup ) {
-		var howManyUnits = 0; //exclude accessories
-		simpleCart.each(function( item , x ){
+	
+		var howManyUnits = 0;
+		//exclude accessories
+		simpleCart.each(function(item, x) {
+		
 			if (((item.get('name')).indexOf('Mac') > -1) || ((item.get('name')).indexOf('iPad') > -1)) {
+			
 				howManyUnits += parseInt(item.get('quantity'));
-			}
-		});
+			
+			}	//end if (((item.get('name')).indexOf('Mac') > -1) || ((item.get('name')).indexOf('iPad') > -1))
+		
+		});	//end simpleCart.each(function(item, x)
+	
 	}
 	//no delivery, set ship to 0 and exit
 	else {
-		jQuery('.tekserverentals-cart-shipnote').hide();
+	
+		jQuery('.tekserverentals-cart-message p.shipping').text('');
+		if (!(jQuery('.tekserverentals-cart-message p.duration').text())) {
+			
+				jQuery('.tekserverentals-cart-message').hide();
+			
+			}	//end if (!(jQuery('.tekserverentals-cart-message p.duration').text()))
 		return 0;
-	}
+	
+	}	//end if ( delivery || pickup )
 	//delivery cost
 	if (delivery) {
+	
 		if ((deliveryLoc == 'manhattan') && (howManyUnits < 5)) {
-			deliveryCost = 42;
+		
+			deliveryCost = tekserveRentalsShipcost.mansm;
+		
 		}
 		else if ((deliveryLoc == 'borough') && (howManyUnits < 5)) {
-			deliveryCost = 55;
+		
+			deliveryCost = tekserveRentalsShipcost.borsm;
+		
 		}
 		else if ((deliveryLoc == 'borough') && (howManyUnits > 4) && (howManyUnits < 11)) {
-			deliveryCost = 85;
+		
+			deliveryCost = tekserveRentalsShipcost.borlg;
+		
 		}
 		else if ((deliveryLoc == 'manhattan') && (howManyUnits > 4) && (howManyUnits < 11)) {
-			deliveryCost = 62;
+		
+			deliveryCost = tekserveRentalsShipcost.manlg;
+		
 		}
 		else {
-			deliveryCost = 500;
-		}
+		
+			deliveryCost = tekserveRentalsShipcost.error;
+		
+		}	//end if ((deliveryLoc == 'manhattan') && (howManyUnits < 5))
+	
 	}
 	else {
+	
 		deliveryCost = 0;
-	}
+	
+	}	//end if (delivery)
 	//pickup cost
 	if (pickup) {
+	
 		if ((pickupLoc == 'manhattan') && (howManyUnits < 5)) {
-			pickupCost = 42;
+		
+			pickupCost = tekserveRentalsShipcost.mansm;
+		
 		}
 		else if ((pickupLoc == 'borough') && (howManyUnits < 5)) {
-			pickupCost = 55;
+		
+			pickupCost = tekserveRentalsShipcost.borsm;
+		
 		}
 		else if ((pickupLoc == 'borough') && (howManyUnits > 4) && (howManyUnits < 11)) {
-			pickupCost = 85;
+		
+			pickupCost = tekserveRentalsShipcost.borlg;
+		
 		}
 		else if ((pickupLoc == 'manhattan') && (howManyUnits > 4) && (howManyUnits < 11)) {
-			pickupCost = 62;
+		
+			pickupCost = tekserveRentalsShipcost.manlg;
+		
 		}
 		else {
-			pickupCost = 500;
-		}
+		
+			pickupCost = tekserveRentalsShipcost.error;
+		
+		}	//end if ((pickupLoc == 'manhattan') && (howManyUnits < 5))
+	
 	}
 	else {
+	
 		pickupCost = 0;
-	}
+	
+	}	//end if (pickup)
 	shippingTotal = parseInt(deliveryCost) + parseInt(pickupCost);
 	//orders with more than 10 big items will not get an estimate
-	if (shippingTotal > 200) {
-		jQuery('.tekserverentals-cart-shipnote').show();
+	if (shippingTotal > 499) {
+	
+		
+		jQuery('.tekserverentals-cart-message p.shipping').text(tekserveRentalsMessages.shipping);
+		jQuery('.tekserverentals-cart-message').show();
 		return 0;
+	
 	}
 	//write shipping cost to cart
 	else {
-		jQuery('.tekserverentals-cart-shipnote').hide();
+	
+		jQuery('.tekserverentals-cart-message p.shipping').text('');
+		if (!(jQuery('.tekserverentals-cart-message p.duration').text())) {
+		
+			jQuery('.tekserverentals-cart-message').hide();
+		
+		}	//end if (!(jQuery('.tekserverentals-cart-message p.duration').text()))
 		return shippingTotal;
-	}
-}
+	
+	}	//end if (shippingTotal > 499)
+
+}	//end updateShipping()
 
 //function to update extra data
-function updateExtraData( data ){
+function updateExtraData(data) {
+
 	var delivery = 0;
 	var pickup = 0;
-	if ( jQuery('#tekserverentals-delivery').prop('checked') ) {
+	if (jQuery($tekserveRentalsFields.delivery).prop('checked')) {
+	
 		delivery = 1;
-	}
-	if ( jQuery('#tekserverentals-pickup').prop('checked') ) {
+	
+	}	//end if (jQuery($tekserveRentalsFields.delivery).prop('checked'))
+	if (jQuery($tekserveRentalsFields.pickup).prop('checked'))
+	
 		pickup = 1;
-	}
-	data.start_date = jQuery('#tekserverentalStartDate').val(),
-	data.end_date = jQuery('#tekserverentalEndDate').val(),
+	
+	}	//end if (jQuery($tekserveRentalsFields.pickup).prop('checked'))
+	data.start_date = jQuery($tekserveRentalsFields.startDate).val(),
+	data.end_date = jQuery($tekserveRentalsFields.endDate).val(),
 	data.deposits_total = jQuery('.tekserverentals-cart-deposits').html(),
 	data.duration = jQuery('.tekserverentals-cart-duration').html(),
 	data.delivery = delivery,
-	data.delivery_loc = jQuery('input:checked[name=tekserverentals-delivery-loc]').val(),
+	data.delivery_loc = jQuery($tekserveRentalsFields.deliveryLoc).filter(':checked').val(),
 	data.pickup = pickup,
-	data.pickup_loc = jQuery('input:checked[name=tekserverentals-pickup-loc]').val(),
-	data.first_name = document.getElementById("entry_0").value,
-	data.last_name = document.getElementById("entry_1").value,
-	data.company = document.getElementById("entry_2").value,
-	data.email = document.getElementById("entry_3").value,
-	data.phone = document.getElementById("entry_7").value,
-	data.address_one = document.getElementById("entry_9").value,
-	data.address_two = document.getElementById("entry_10").value,
-	data.city = document.getElementById("entry_11").value,
-	data.state = document.getElementById("entry_12").value,
-	data.zip = document.getElementById("entry_13").value,
-	data.comments = document.getElementById("entry_14").value,
-	data.total_due = jQuery('.tekserverentals-cart-grand-total').html(),
+	data.pickup_loc = jQuery($tekserveRentalsFields.pickupLoc).filter(':checked').val(),
+	data.first_name = jQuery($tekserveRentalsFields.firstName).val(),
+	data.last_name = jQuery($tekserveRentalsFields.lastName).val(),
+	data.company = jQuery($tekserveRentalsFields.company).val(),
+	data.email = jQuery($tekserveRentalsFields.email).val(),
+	data.phone = jQuery($tekserveRentalsFields.phone).val(),
+	data.address_one = jQuery($tekserveRentalsFields.addressOne).val(),
+	data.address_two = jQuery($tekserveRentalsFields.addressTwo).val(),
+	data.city = jQuery($tekserveRentalsFields.city).val(),
+	data.state = jQuery($tekserveRentalsFields.state).val(),
+	data.zip = jQuery(zip).val(),
+	data.comments = jQuery($tekserveRentalsFields.additionalInfo).val(),
 	data.total_price = jQuery('.simpleCart_grandTotal').html()
-}
 
-//bind after add date calculation
-simpleCart.bind( "afterAdd" , function( item ){
-	if( ! jQuery('.tekserverentals-cart-container').is(':visible') ) {
-		alert( item.get("name") + " has been added to the cart!");
-	 }
-	updateTotals();
-});
+}	//end updateExtraData(data)
 
-//bind update to increment click
-simpleCart.bind( "afterIncrement" , function( item ){
-	updateTotals();
-});
 
-//bind update to decrement click
-simpleCart.bind( "afterDecrement" , function( item ){
-	updateTotals();
-});
 
-//bind update to decrement click
-simpleCart.bind( "afterRemove" , function( item ){
-	updateTotals();
-});
+//simpleCart Binding Function
+function bindAllCartActions() {
 
-//bind change startDate
-jQuery('#tekserverentalStartDate').change(function() {
-	var validates;
-	if (jQuery('#tekserverentalEndDate').data('old') == 0) {
-		validates = dateButton('first');
-	}
-	else {	
-		validates = dateButton('');
-	}
+	//bind after add date calculation
+	simpleCart.bind("afterAdd", function(item) {
+
+		if(!(jQuery('.tekserverentals-cart-container').is(':visible'))) {
 	
-	if(validates) {
+			alert( item.get("name") + " has been added to the cart!");
+	 
+		 }	//end if(!(jQuery('.tekserverentals-cart-container').is(':visible')))
 		updateTotals();
-	}
-	jQuery(this).removeClass('error');
 
-});
+	});	//end simpleCart.bind("afterAdd", function(item)
 
-//bind change endDate
-jQuery('#tekserverentalEndDate').change(function() {
-	if ((jQuery('#tekserverentalEndDate').data('old') == 0) && !(jQuery('#tekserverentalEndDate').val())) {
-		jQuery('#tekserverentalEndDate').data('old', 'empty');
-	}
-	else {	
-		jQuery('#tekserverentalEndDate').data('old', jQuery('#tekserverentalEndDate').val());
-	}	
-	var validates = dateButton('');
-	if(validates) {
+
+
+	//bind update to increment click
+	simpleCart.bind("afterIncrement", function(item) {
+
 		updateTotals();
-	}
-	jQuery(this).removeClass('error');
-	
-});
 
-//bind changes to shipping info
-jQuery('.tekserverental-shipping input').change(function() {
-	simpleCart.update();
-	updateTotals();
-});
+	});	//end simpleCart.bind("afterIncrement", function(item)
 
-//bind saving data to checkout
-simpleCart.bind( 'beforeCheckout' , function( data ){
-	updateExtraData( data );
-	var formReady = true;
-	var valErrors = new Array();
-	var i = 0;
-	
-	jQuery('#tekserverentals-checkout-dates input.required').each(function(){
-		if (jQuery(this).val()=='' || jQuery(this).val()==null || jQuery(this).hasClass('error')) {
-			formReady = false;
-			jQuery(this).addClass('error');
-			valErrors[i] = jQuery(this).attr('id');
-			i++;
-		}
-	});
-	
-	jQuery('#tekserverentals-checkout-form input.required').each(function(){
-		if (jQuery(this).val()=='' || jQuery(this).val()==null || jQuery(this).hasClass('error')) {
-			formReady = false;
-			jQuery(this).addClass('error');
-			valErrors[i] = jQuery(this).attr('id');
-			i++;
-		}
-	});
 
-	if (!formReady) {
-		var errorHtml = '<label class="error" style="font-size: 2em;">Please Fill Out These Fields:</label><br/><ul class="errorlist">';
-		var errortext;
-		for (i = 0; i < valErrors.length; i++) {
-			errortext = jQuery('label[for="' + valErrors[i] + '"]').html();
-			errorHtml += '<li><a href="#' + valErrors[i] + '">' + errortext + '</a></li>';
-		}
-		errorHtml += '</ul>';
-		jQuery('.tekserverental-checkout .validationerrors').html(errorHtml);
-		scrollToID('submitRequest');
-		return false;
-	}
-});
+
+	//bind update to decrement click
+	simpleCart.bind("afterDecrement", function(item) {
+
+		updateTotals();
+
+	});	//end simpleCart.bind("afterDecrement", function(item)
+
+
+
+	//bind update to decrement click
+	simpleCart.bind("afterRemove", function(item) {
+	
+		updateTotals();
+	
+	});	//end simpleCart.bind( "afterRemove", function(item)
+
+
+
+	//bind saving data to checkout
+	simpleCart.bind('beforeCheckout', function(data) {
+	
+		updateExtraData(data);
+		var formReady = true;
+		var valErrors = new Array();
+		var i = 0;
+	
+		jQuery('.tekserverental-dates-form').first().find('input.required').each(function() {
+		
+			if (jQuery(this).val()=='' || jQuery(this).val()==null || jQuery(this).hasClass('error')) {
+			
+				formReady = false;
+				jQuery(this).addClass('error');
+				valErrors[i] = jQuery(this).attr('id');
+				i++;
+			
+			}	//end if (jQuery(this).val()=='' || jQuery(this).val()==null || jQuery(this).hasClass('error'))
+		
+		});	//end jQuery('#tekserverentals-checkout-dates').first().find('input.required').each(function()
+	
+		jQuery('.tekserverentals-checkout-form form').first().find('input.required').each(function() {
+		
+			if (jQuery(this).val()=='' || jQuery(this).val()==null || jQuery(this).hasClass('error')) {
+			
+				formReady = false;
+				jQuery(this).addClass('error');
+				valErrors[i] = jQuery(this).attr('id');
+				i++;
+			
+			}	//end if (jQuery(this).val()=='' || jQuery(this).val()==null || jQuery(this).hasClass('error'))
+		
+		});	//end jQuery('.tekserverentals-checkout-form form').first().find('input.required').each(function()
+
+		if (!formReady) {
+		
+			var errorHtml = '<label class="error" style="font-size: 2em;">Please Fill Out These Fields:</label><br/><ul class="errorlist">';
+			var errortext;
+			for (i = 0; i < valErrors.length; i++) {
+			
+				errortext = jQuery('label[for="' + valErrors[i] + '"]').html();
+				errorHtml += '<li><a href="#' + valErrors[i] + '">' + errortext + '</a></li>';
+			
+			}	//end for (i = 0; i < valErrors.length; i++)
+			errorHtml += '</ul>';
+			jQuery('.tekserverental-checkout').first().find('.validationerrors').html(errorHtml);
+			scrollToID('tekserve-rentals-submit');
+			return false;
+		
+		}	//end if (!formReady)
+	
+	});	//end simpleCart.bind('beforeCheckout', function(data)
+
+}	//end bindAllCartActions()

@@ -1045,74 +1045,70 @@ add_shortcode( 'rentalitemcategory', 'tekserverental_item_category' );
 // Add Shortcode for Checkout Form
 function tekserverental_checkout( $atts ) {
 	$custinfo = '<div class="tekserverental-checkout-custinfo">';
-	$custinfo .= '<div id="tekserverental-name">
+	$custinfo .= '<div class="tekserverental-name">
 	<label class="required" >Name </label>
-	<span><input id="entry_0" name="firstname" class="required" title="We need to know your name." maxlength="255" size="25" value=""><label for="entry_0" class="lower">First Name</label>
+	<span class="firstname"><input id="entry_0" name="firstname" class="required" title="We need to know your name." maxlength="255" size="25" value=""><label for="entry_0" class="lower">First Name</label>
 		</span>
-		<span>
+		<span class="lastname">
 			<input id="entry_1" name="lastname" class="required" title="We need to know your name." maxlength="255" size="25" value=""><label  for="entry_1" class="lower">Last Name</label>
 		</span>
 		</div>';
-	$custinfo .= '<div id="tekserverental-company-name">
+	$custinfo .= '<div class="tekserverental-company-name">
 		<label class="description" for="entry_2">Company Name (if applicable) </label>
 		<div>
 			<input id="entry_2" name="companyname" class="element text medium" type="text" size="50" maxlength="255" value=""> 
 		</div> 
 		</div>';
-	$custinfo .= '<div id="tekserverental-email">
+	$custinfo .= '<div class="tekserverental-email">
 		<label class="req" for="entry_3" >Email</label>
 		<div>
 			<input id="entry_3" name="emailaddress" class="email required" title="We need to know your valid email address to send you a quote." type="email" size="50" maxlength="255" value=""> 
 		</div> 
 		</div>';
-	$custinfo .= '<div id="tekserverental-phone-number">
+	$custinfo .= '<div class="tekserverental-phone-number">
 		<label class="req" for="entry_7">Phone</label>
 		<span>
 			<input id="entry_7" name="phonenumber" class=" digits required" size="14" maxlength="14" value="" type="tel">
 			<label class="lower">(10 digits)</label>
 		</span>
 		</div>';
-	$custinfo .= '<div id="tekserverental-">
+	$custinfo .= '<div class="tekserverental-address">
 		<label class="req" for="element_5" >Billing Address </label>
-		<div>
+		<div class="addressone">
 			<input id="entry_9" name="addressone" class="large required" value="" type="text">
 			<label for="entry_9" class="lower">Street Address</label>
 		</div>
-	
-		<div>
+		<div class="addresstwo">
 			<input id="entry_10" name="addresstwo" class="element large text" value="" type="text">
 			<label for="" class="lower">Address Line 2</label>
 		</div>
-	
-		<div>
+		<div class="city">
 			<input id="entry_11" name="city" class="large required" value="" type="text">
 			<label for="entry_11" class="lower">City</label>
 		</div>
-	
-		<div class="left">
+		<div class="state">
 			<input id="entry_12" name="state" maxlength="2" class="medium required" value="" type="text">
 			<label for="entry_12" class="lower">State</label>
 		</div>
-	
-		<div class="right">
+		<div class="zip">
 			<input id="entry_13" name="zip" class="medium required" maxlength="15" value="" type="text">
 			<label for="entry_13" class="lower">Zip Code</label>
 		</div>
 	</div>';
 	$custinfo .= '</div>';
-	$shipping = '<div class="tekserverental-shipping">';
+	$shipping = '<div class="tekserverental-checkout-shipping">';
 	$shipping .= '<div class="tekserverental-delivery"><label for="tekserverentals-delivery">Would you like messenger delivery? </label><input type="checkbox" name="tekserverentals-delivery" id="tekserverentals-delivery" value="true"> Yes, bring it to me.';
 	$shipping .= '<label for="tekserverentals-delivery-loc">Where would you like us to deliver your rental items? </label><input type="radio" name="tekserverentals-delivery-loc" value="manhattan" checked="checked"> Manhattan <input type="radio" name="tekserverentals-delivery-loc" value="borough"> Bronx, Brooklyn, Queens, or Staten Island</div>';
 	$shipping .= '<div class="tekserverental-pickup"><label for="tekserverentals-pickup">Would you like messenger pickup at the end of your rental? </label><input type="checkbox" name="tekserverentals-pickup" id="tekserverentals-pickup" value="true"> Yes, pick it up for me.';
 	$shipping .= '<label for="tekserverentals-pickup-loc">Where would you like us to pick up your rental items? </label><input type="radio" name="tekserverentals-pickup-loc" value="manhattan" checked="checked"> Manhattan <input type="radio" name="tekserverentals-pickup-loc" value="borough"> Bronx, Brooklyn, Queens, or Staten Island</div>';
 	$shipping .= '</div>';
-	$form = '<div class="tekserverental-checkout-form"><form id="tekserverentals-checkout-form">';
+	$form = '<form id="tekserverentals-checkout-form">';
+	$form .= $shipping;
 	$form .= $custinfo;
-	$form .= '<div><label for="entry_14">Enter any additional requests </label><textarea name="additionalinfo" id="entry_14" rows="4" cols="60">&nbsp;</textarea></div>';
-	$form .= '</form></div>';
-	$button = '<a href="javascript:;" id="submitRequest" class="simpleCart_checkout button">Submit Request</a>';
-	$out = '<div class="tekserverental-checkout">';
-	$out .= $shipping;
+	$form .= '<div class="tekserverental-additional-info"><label for="entry_14">Enter any additional requests </label><textarea name="additionalinfo" id="entry_14" rows="4" cols="60">&nbsp;</textarea></div>';
+	$form .= '</form>';
+	$button = '<a href="javascript:;" class="simpleCart_checkout button tekserverental-checkout-submit">Submit Request</a>';
+	$out = '<div class="tekserverental-checkout-form">';
 	$out .= $form;
 	$out .= $button;
 	$out .= '<div class="validationerrors"></div></div>';
@@ -1127,12 +1123,42 @@ function tekserverental_date_form( $atts ) {
 	$form .= '<div class="tekserverental-dates-end"><h3><label class="required" for="tekserverentalEndDate">Choose the End Date for Your Rental</label></h3><div><input type="text" class="required" id="tekserverentalEndDate" name="enddate"></div></div>';
 	$form .= '</form></div>';
 	$button = '<a class="button tekserverentals-dates-button" href="javascript:;">Set Dates</a>';
-	$out = '<a style="position: relative; top: -16em;" id="step-2-dates" name="step-2-dates"></a><div class="tekserverental-dates">';
+	$out = '<div class="tekserverental-dates">';
 	$out .= $form;
 	$out .= '</div>';
 	return $out;
 }
 add_shortcode( 'rentaldateform', 'tekserverental_date_form' );
+
+
+
+function tekserverental_cart( $atts ) {
+
+	$cart = '<div class="tekserverentals-cart-container" style="display: none;">';
+	$cart .= '<div class="tekserverentals-cart-message" style="display: none;"><h3>Important Note</h3><p class="duration"></p><p class="shipping"></p></div>';
+	$cart .= '<div class="tekserverentals-cart">';
+	$cart .= '<div class="tekserverentals-cart-duration">';
+	$cart .= '<span style="font-weight: 900">Rental Duration: </span><div class="tekserverentals-cart-duration"></div><span> days.</span><a class="button" href="#tekserve-rentals-dates">Change Dates</a>';
+	$cart .= '</div>';
+	$cart .= '<div class="simpleCart_items tekserverentals-cart-items"></div><hr/>';
+	$cart .= '<div class="tekserverentals-cart-totals">';
+	$cart .= '<div class="tekserverentals-cart-totals-subtotal"><span>Subtotal</span><div class="simpleCart_total"></div></div>';
+	$cart .= '<div class="tekserverentals-cart-totals-shipping"><span>Shipping</span><div class="simpleCart_shipping"></div></div>';
+	$cart .= '<div class="tekserverentals-cart-totals-tax"><span>Tax</span><div class="simpleCart_tax"></div></div>';
+	$cart .= '<div class="tekserverentals-cart-totals-deposit"><span>Total Deposit</span><div class="tekserverentals-cart-deposits"></div></div>';
+	$cart .= '<div class="tekserverentals-cart-totals-grand"><span style="font-weight: 900;">Total Cost</span><div class="simpleCart_grandTotal" style="font-weight: 900;"></div></div>';
+	$cart .= '</div>';
+	$cart .= '<div class="tekserverentals-cart-buttons">';
+	$cart .= '<a class="button tekserve-cart-buttons-changedates" href="#tekserve-rentals-dates">Change Dates</a>';
+	$cart .= '<div class="button emptyCart-button tekserve-cart-buttons-removeall">Remove All Items</div>';
+	$cart .= '<a href="#tekserve-rentals-checkout" class="button tekserve-cart-buttons-gotoform" title="Enter Personal / Shipping Info and Submit Request">Enter Info & Send Request</a>';
+	$cart .= '</div>';
+	$cart .= '</div>';
+	$cart .= '</div>';
+	return $cart;
+
+}	//end tekserverental_cart( $atts )
+add_shortcode( 'rentalcart', 'tekserverental_cart' );
 
 
 //Add VC buttons if VC is installed
@@ -1221,7 +1247,7 @@ if (function_exists('vc_map')) { //check for vc_map function before mapping butt
 	)	);
 	
 	vc_map( array(
-	   "name" => __("Rental Checkout Form"),
+	   "name" => __("Rental Request Checkout Form"),
 	   "base" => "rentalcheckout",
 	   "class" => "",
 	   "show_settings_on_create" => false,
@@ -1230,11 +1256,20 @@ if (function_exists('vc_map')) { //check for vc_map function before mapping butt
 	)	);
 	
 	vc_map( array(
-	   "name" => __("Rental Dates Form"),
+	   "name" => __("Rental RequestDates Form"),
 	   "base" => "rentaldateform",
 	   "class" => "",
 	   "show_settings_on_create" => false,
 	   "icon" => "icon-wpb-rentaldateform",
+	   "category" => __('Content')
+	)	);
+	
+	vc_map( array(
+	   "name" => __("Rental Request Cart"),
+	   "base" => "rentalcart",
+	   "class" => "",
+	   "show_settings_on_create" => false,
+	   "icon" => "icon-wpb-rentalcart",
 	   "category" => __('Content')
 	)	);
 }
