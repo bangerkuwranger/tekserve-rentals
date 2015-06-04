@@ -85,7 +85,7 @@ jQuery( document ).ready(function($j) {
 				start_date: $j($tekserveRentalsFields.startDate).val(),
 				end_date: $j($tekserveRentalsFields.endDate).val(),
 				deposits_total: $j('.tekserverentals-cart-deposits').first().html(),
-				duration: $j('.tekserverentals-cart-duration').first().html(),
+				duration: $j('.tekserverentals-cart-duration-value').first().html(),
 				delivery: 0,
 				delivery_loc: $j($tekserveRentalsFields.deliveryLoc).filter(':checked').val(),
 				pickup: 0,
@@ -104,7 +104,7 @@ jQuery( document ).ready(function($j) {
 				total_price: $j('.simpleCart_grandTotal').first().html()
 			}
 		},
-		cartStyle: "div",
+		cartStyle: "table",
 		currency: "USD",
 		shippingCustom: function(){ 
 			 //set up function to calculate costs based on item quantity and location
@@ -122,16 +122,6 @@ jQuery( document ).ready(function($j) {
     
     //set old value to zero (keeps user from being nagged when entering date for the first time)
     $j($tekserveRentalsFields.endDate).data('old', 0);
-    
-    //bind empty cart button(s)
-	$j('.emptyCart-button').click(function() {
-	
-		simpleCart.update();
-		simpleCart.empty();
-		simpleCart.update();
-		updateTotals();
-	
-	});	//end $j('.emptyCart-button').click(function()
 	
 	//bind change startDate
 	$j($tekserveRentalsFields.startDate).change(function() {
@@ -186,7 +176,17 @@ jQuery( document ).ready(function($j) {
 		updateTotals();
 	
 	});	//end $j($shipping).find('input').change(function()
+    
+    //bind empty cart button(s)
+	$j('.emptyCart-button').click(function() {
 	
+		simpleCart.update();
+		simpleCart.empty();
+		simpleCart.update();
+		updateTotals();
+		simpleCart.save()
+	
+	});	//end $j('.emptyCart-button').click(function()
 	
 	
 	//bind all simplecart actions
@@ -257,26 +257,29 @@ jQuery( document ).ready(function($j) {
 jQuery(window).bind('load', function() {
 
 	//add anchors
-	if (jQuery('.tekserverental-dates-form').length > 0) {
+	if (jQuery('.tekserverental-dates').length > 0) {
 	
-		jQuery('.tekserverental-dates-form').first().before(tekserveRentalsAnchors.dates);
+		jQuery('.tekserverental-dates').first().before(tekserveRentalsAnchors.dates);
 	
-	}	//end if (jQuery('.tekserverental-dates-form').length > 0)
-	if (jQuery('.tekserverental-checkout').length > 0) {
+	}	//end if (jQuery('.tekserverental-dates').length > 0)
+	if (jQuery('.tekserverental-checkout-form').length > 0) {
 	
-		jQuery('.tekserverental-checkout').first().before(tekserveRentalsAnchors.checkout);
+		jQuery('.tekserverental-checkout-form').first().before(tekserveRentalsAnchors.checkout);
 	
-	}	//end if (jQuery('.tekserverental-checkout').length > 0)
-	if (jQuery('.tekserverental-checkout .tekserverental-checkout-submit').length > 0) {
+	}	//end if (jQuery('.tekserverental-checkout-form').length > 0)
+	if (jQuery('.tekserverental-checkout-form .tekserverental-checkout-submit').length > 0) {
 	
-		jQuery('.tekserverental-checkout .tekserverental-checkout-submit').first().before(tekserveRentalsAnchors.submit);
+		jQuery('.tekserverental-checkout-form .tekserverental-checkout-submit').first().before(tekserveRentalsAnchors.submit);
 	
-	}	//end if (jQuery('.tekserverental-checkout .tekserverental-submit').length > 0)
+	}	//end if (jQuery('.tekserverental-checkout-form .tekserverental-submit').length > 0)
 	if (jQuery('.tekserverentals-cart').length > 0) {
 	
-		jQuery('.tekserverentals-cart').first().before(tekserveRentalsAnchors.cart);
+		jQuery('.tekserverentals-cart-container').first().prepend(tekserveRentalsAnchors.cart);
 	
-	}	//end if (jQuery('.tekserverentals-cart').length > 0)
+	}	//end if (jQuery('.tekserverentals-cart-container').length > 0)
+	
+	//create and bind go to cart buttons
+    createCartButtons();
 
 });	//end jQuery(window).bind('load', function()
 
@@ -379,7 +382,7 @@ function tekserveRentalsUpDates(startDate,endDate) {
 		//display calculated rental information for order
 		days = priceArray[1];
 		termFlag = priceArray[4];
-		jQuery('.tekserverentals-cart-duration').html(Math.abs(days));
+		jQuery('.tekserverentals-cart-duration-value').html(Math.abs(days));
 		jQuery('.tekserverentals-cart-deposits').html('$'+depositTotal);
 		jQuery('.tekserverentals-cart-grand-total').html('$'+gTotal.toFixed(2));
 		if (termFlag == 'longTerm') {
@@ -401,6 +404,7 @@ function tekserveRentalsUpDates(startDate,endDate) {
 	
 	});	//end simpleCart.each(function(item,x)
 	simpleCart.update();
+	simpleCart.save()
 
 }	//end tekserveRentalsUpDates(startDate,endDate)
 
@@ -528,21 +532,21 @@ function dateButton(isFirst) {
 		if ((startDate < today) || (endDate < today)) {
 		
 			alert("Time machine is for data backup, not actual time travel. Please choose dates in the future.");
-			jQuery('.tekserverentals-cart-container').slideUp();
+			toggleCart('hide');
 			return false;
 		
 		}
 		else if (endDate < startDate) {
 		
 			tekserveRentalsUpDates(endDate,startDate);
-			jQuery('.tekserverentals-cart-container').slideDown();
+			toggleCart('show');
 			return true;
 		
 		}
 		else {
 		
 			tekserveRentalsUpDates(startDate,endDate);
-			jQuery('.tekserverentals-cart-container').slideDown();
+			toggleCart('show');
 			return true;
 		
 		}	//end if ((startDate < today) || (endDate < today))
@@ -555,7 +559,7 @@ function dateButton(isFirst) {
 			alert("Please enter both a start and end date for this rental.");
 		
 		}	//end if (isFirst !== 'first')
-		jQuery('.tekserverentals-cart-container').slideUp();
+		toggleCart('hide');
 		return false;
 	
 	}	//end if (isValidDate(startDate) && isValidDate(endDate))
@@ -729,7 +733,7 @@ function updateShipping() {
 //function to update extra data
 function updateExtraData(data) {
 
-	console.log(data);
+	// console.log(data);
 	var delivery = 0;
 	var pickup = 0;
 	if (jQuery($tekserveRentalsFields.delivery).prop('checked')) {
@@ -745,7 +749,7 @@ function updateExtraData(data) {
 	data.start_date = jQuery($tekserveRentalsFields.startDate).val();
 	data.end_date = jQuery($tekserveRentalsFields.endDate).val();
 	data.deposits_total = jQuery('.tekserverentals-cart-deposits').html();
-	data.duration = jQuery('.tekserverentals-cart-duration').html();
+	data.duration = jQuery('.tekserverentals-cart-duration-value').html();
 	data.delivery = delivery;
 	data.delivery_loc = jQuery($tekserveRentalsFields.deliveryLoc).filter(':checked').val();
 	data.pickup = pickup;
@@ -759,7 +763,7 @@ function updateExtraData(data) {
 	data.address_two = jQuery($tekserveRentalsFields.addressTwo).val();
 	data.city = jQuery($tekserveRentalsFields.city).val();
 	data.state = jQuery($tekserveRentalsFields.state).val();
-	data.zip = jQuery($tekserveRentalsFieldszip).val();
+	data.zip = jQuery($tekserveRentalsFields.zip).val();
 	data.comments = jQuery($tekserveRentalsFields.additionalInfo).val();
 	data.total_price = jQuery('.simpleCart_grandTotal').html();
 
@@ -832,7 +836,7 @@ function bindAllCartActions() {
 		
 		});	//end jQuery('#tekserverentals-checkout-dates').first().find('input.required').each(function()
 	
-		jQuery('.tekserverentals-checkout-form form').first().find('input.required').each(function() {
+		jQuery('.tekserverental-checkout-form form').first().find('input.required').each(function() {
 		
 			if (jQuery(this).val()=='' || jQuery(this).val()==null || jQuery(this).hasClass('error')) {
 			
@@ -856,8 +860,11 @@ function bindAllCartActions() {
 			
 			}	//end for (i = 0; i < valErrors.length; i++)
 			errorHtml += '</ul>';
-			jQuery('.tekserverental-checkout').first().find('.validationerrors').html(errorHtml);
+			jQuery('.tekserverental-checkout-form').first().find('.validationerrors').html(errorHtml);
 			scrollToID('tekserve-rentals-submit');
+			if (typeof(bindAnchors) === "function") {
+				bindAnchors();
+			}
 			return false;
 		
 		}	//end if (!formReady)
@@ -865,3 +872,130 @@ function bindAllCartActions() {
 	});	//end simpleCart.bind('beforeCheckout', function(data)
 
 }	//end bindAllCartActions()
+
+
+
+//function to create cart buttons
+function createCartButtons() {
+
+	//all .tekserverental-show-cart-button-container (display:none by default) get a button and bind it
+	jQuery('.tekserverentals-show-cart-button-container').each( function() {
+
+		var target = areYouMyMother(this);
+		jQuery(this).append('<a class="cartbutton button" href="#!">Show Cart</a>');
+		jQuery(this).children('a').click( function(e) {
+		
+			e.preventDefault();
+			moveCartHere( target.parent );
+// 			setTimeout(function() {
+				scrollToID('tekserve-rentals-cart');
+// 			}, 150);
+		
+		});	//end jQuery(this).children('a').click( function(e)
+	
+	});	//end jQuery('.tekserverental-show-cart-button-container').each( function()
+
+}	//end createCartButtons()
+
+
+
+//toggle visibility of cart and cart buttons
+function toggleCart(action) {
+
+	if (action === 'show') {
+	
+		jQuery('.tekserverentals-cart-container').slideDown();
+		jQuery('.tekserverentals-show-cart-button-container').fadeIn();
+	
+	}
+	else if (action === 'hide') {
+	
+		jQuery('.tekserverentals-cart-container').slideUp();
+		jQuery('.tekserverentals-show-cart-button-container').fadeOut();
+	
+	}
+	else {
+		if (jQuery('.tekserverentals-cart-container').filter(':visible').length > 0 ) {
+	
+			toggleCart('hide');
+	
+		}
+		else {
+	
+			toggleCart('show');
+	
+		}	//end if (jQuery('.tekserverentals-cart-container').filter(':visible').length > 0 )
+	
+	}	//end if (action==='show')
+
+}	//end toggleCart(action)
+
+
+
+//function to move cart to where user has made a change
+function moveCartHere($cartTarget) {
+
+	//var $cartContainer from .tekserverentals-cart-container
+	var cartContainer = areYouMyMother(jQuery('.tekserverentals-cart-container').first());
+	
+	//look for correct wrapper for cart: end up with it removed from DOM and stored in $wrappedCart
+	if (cartContainer.isVC && cartContainer.hasSiblings) {
+	
+		var spacer = '<div class="wpb_wrapper"><div class="vc_empty_space" style="height: 2em"><span class="vc_empty_space_inner"></span></div></div>';
+		jQuery(cartContainer.parent).after(spacer);
+		if (jQuery(cartContainer.parent).closest('.vc_row .innerRowWrap').length > 0 ) {
+		
+			jQuery(cartContainer.parent).wrap('<div class="innerRowWrap"></div>');
+			jQuery(cartContainer.parent).closest('.innerRowWrap').wrap('<div class="vc_row wpb_row vc_row-fluid"></div>');
+		}
+		else {
+		
+			jQuery(cartContainer.parent).wrap('<div class="vc_row wpb_row vc_row-fluid"></div>');
+		
+		}	//end if (jQuery(cartContainer.parent).closest('.vc_row .innerRowWrap').length > 0 )
+		cartContainer.parent = jQuery(cartContainer.parent).closest('.vc_row');
+	
+	}	//end if (cartContainer.isVC && cartContainer.hasSiblings)
+	var $wrappedCart = jQuery(cartContainer.parent).detach();
+	//var $wrappedCart is now ready and detached; hide it;
+	jQuery($wrappedCart).hide();
+	//move $wrappedCart to end of $cartTarget
+	jQuery($cartTarget).after($wrappedCart);
+	//show the relocated cart to user
+	jQuery($wrappedCart).slideDown();
+
+}	//end moveCartHere( objectAbove )
+
+
+
+//function to check correct wrapper
+//return object with .parent($object), .hasSiblings(bool), and isVC(bool)
+function areYouMyMother($babyBird) {
+
+	var snort = {
+		parent: '',
+		isVC: false,
+		hasSiblings: false,
+	};
+	//if has parent .vc_column_container, keep checking
+	snort.parent = jQuery($babyBird).closest('.vc_row .vc_column_container');
+	//if not, it's flying solo
+	if (snort.parent.length < 1) {
+	
+		snort.parent = $babyBird;
+		return snort;
+	
+	}	//end if (snort.parent.length < 1)
+	snort.isVC = true;
+	//check for siblings; if it has them, return the column, not row
+	if (jQuery(snort.parent).siblings().length > 0) {
+	
+		snort.hasSiblings = true;
+		return snort;
+	
+	}	//end if (jQuery($babyBird).siblings > 0)
+	//otherwise, return the row
+	snort.parent = jQuery($babyBird).closest('.vc_row');
+	return snort;
+
+}	//end areYouMyMother($babyBird)

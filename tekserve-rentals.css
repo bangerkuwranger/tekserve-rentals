@@ -1,18 +1,27 @@
-/* 
-.tekserverentals-cart-container {
-	position: fixed;
-	right: 100px;
-	top: 100px;
-	width: 420px;
-	max-height: 80%;
-	background: #fff;
-	color: #004d72;
-	padding: 1em;
-	box-shadow: 1px 1px 10px #334;
-	z-index: 50;
-	overflow-y: auto;
+.tekserverentals-cart-container,
+.tekserverental-checkout-form {
+	padding-bottom: 2em;
 	-webkit-overflow-scrolling: touch;
 }
+
+.tekserverentals-cart-duration,
+.tekserverentals-cart-items-title span {
+	border: 2px solid #ccc;
+	display: inline-block;
+	padding: 0 .5em;
+}
+
+.tekserverentals-cart-items-title,
+.tekserverentals-cart-duration span {
+	font-weight: 900;
+	margin-top: 1.5em;
+}
+
+.tekserverentals-cart-items-title span {
+	border: 0;
+	text-transform: uppercase;
+}
+/*
 
 .innerRowWrap .tekserverentals-cart-container .button {
 	font-size: 1.25em;
@@ -65,12 +74,14 @@
 #addDialog .itemRow div {
 	padding: .5em;
 }
+ */
 
-.tekserverentals-cart-duration {
+.tekserverentals-cart-duration-value {
 	display: inline;
 	line-height: 2em;
 }
 
+/* 
 .tekserverentals-cart-shipnote p,
 .tekserverentals-cart-long-term p {
 	color: #004d72;
@@ -79,7 +90,17 @@
 .tekserverentals-cart-long-term h3,
 .tekserverentals-cart-shipnote h3 {
 	color: #f36f37;
+}
  */
+ 
+.tekserverental-dates-title,
+.tekserverental-items-title,
+.tekserverental-checkout-title,
+.tekserverental-cart-title {
+	border: 2px solid #ccc;
+	border-width: 2px 0;
+	text-transform: uppercase;
+	padding: .15em 0 0 .15em;
 }
 
 .tekserverentals-cart-container .simpleCart_items .itemRow .item-name,
@@ -154,6 +175,7 @@
 
 .tekserverentals-cart-totals {
 	display: table;
+	border-top: 2px solid #ccc;
 }
 
 .tekserverentals-cart-totals>div {
@@ -164,6 +186,11 @@
 .tekserverentals-cart-totals>div>span {
 	display: table-cell;
 	padding: .5em;
+}
+
+.tekserverentals-cart-totals > .tekserverentals-cart-totals-grand {
+	text-transform: uppercase;
+	font-weight: 900;
 }
 
 .emptyCart-button {
@@ -183,14 +210,14 @@
 	margin-left: 153px;
 }
 
-.tekserverental-checkout label {
+.tekserverental-checkout-form label {
 	font-size: 1.5em;
 	clear: both;
 	margin-top: 1em;
 }
  */
 
-.tekserverental-checkout label.lower {
+.tekserverental-checkout-form label.lower {
 	font-size: 1em;
 	margin-right: 1em;
 	clear: none;
@@ -198,49 +225,55 @@
 	float: none;
 }
 
-.tekserverental-checkout label.required:after,
-#tekserverentals-checkout-dates label.required:after,
-.tekserverental-checkout label.req:after {
+.tekserverental-checkout-form label.required:after,
+.tekserverental-dates-form label.required:after,
+.tekserverental-checkout-form label.req:after {
 	content: '*';
 	color: #f36f37;
 	font-family: fontawesome;
 }
 
-.orange #tekserverentals-checkout-dates label.required:after,
-.orange .tekserverental-checkout label.req:after {
+.orange tekserverentals-dates-form label.required:after,
+.orange .tekserverental-checkout-form label.req:after {
 	color: #004d72;
 }
 
-.tekserverental-checkout label.error {
+.tekserverental-checkout-form label.error,
+.tekserverental-dates-form label.error {
 	color: #004d72;
 	text-transform: lower;
 	font-weight: 200;
 	font-size: .8em;
 }
 
-.tekserverental-checkout label.error:before {
+.tekserverental-checkout-form label.error:before,
+.tekserverental-dates-form label.error:before {
 	content: '\f0a6';
 	font-family: fontawesome;
 	margin-right: 1em;
 }
 
-.tekserverental-checkout label.error.valid,
-.tekserverental-checkout label.error.valid:before {
+.tekserverental-checkout-form label.error.valid,
+.tekserverental-checkout-form label.error.valid:before {
 	display: none !important;
 }
 
-.tekserverental-checkout input {
+/* 
+.tekserverental-checkout-form input {
 	margin-top: 1em;
 }
+ */
 
-.tekserverental-checkout input.error {
+.tekserverental-checkout-form input.error,
+.tekserverental-dates-form input.error {
 	background-color: #f36f37;
 	color: #fff;
 	padding-left: 1em;
 	font-weight: bold;
 }
 
-.tekserverental-checkout input.error.valid {
+.tekserverental-checkout-form input.error.valid,
+.tekserverental-dates-form input.error.valid {
 	background-color: #fff;
 	color: #004d72;
 	padding-left: 0;
@@ -337,6 +370,10 @@
 	border-top: 0;
 }
  */
+ 
+.tekserverentals-show-cart-button-container {
+	display: none;
+}
 
 
 @media only screen and (max-width: 960px) and (min-width: 640px) {
@@ -372,8 +409,8 @@
 		padding: 0 2%;
 	}
 
-	.tekserverental-checkout form input,
-	.tekserverental-checkout form textarea {
+	.tekserverental-checkout-form form input,
+	.tekserverental-checkout-form form textarea {
 		margin-left: 0 !important;
 		max-width: 250px !important;
 		clear: both;
@@ -387,6 +424,10 @@
 		padding: 1em 2.5%;
 	}
  */
+ 
+	 .tekserverentals-cart-items .itemRow td {
+	 	padding: .25em;
+	 }
 	
 	
 }

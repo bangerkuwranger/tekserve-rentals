@@ -1335,13 +1335,24 @@ function tekserverental_item_category( $atts ) {
 add_shortcode( 'rentalcheckout', 'tekserverental_checkout' );
 function tekserverental_checkout( $atts ) {
 
+	extract( shortcode_atts(
+		array(
+			'title'		=> '',
+			'container'	=> 'h2',
+		), $atts )
+	);
+	if( ! empty( $title ) ) {
+	
+		$title = '<' . $container . ' class="tekserverental-dates-title">' . $title . '</' . $container . '>';
+	
+	}
 	$custinfo = '<div class="tekserverental-checkout-custinfo">';
 	$custinfo .= '<div class="tekserverental-name">
-	<label class="required" >Name </label>
-	<span class="firstname"><input id="entry_0" name="firstname" class="required" title="We need to know your name." maxlength="255" size="25" value=""><label for="entry_0" class="lower">First Name</label>
+	<label>Name </label>
+	<span class="firstname"><input id="entry_0" name="firstname" class="required" title="We need to know your name." maxlength="255" size="25" value=""><label for="entry_0" class="lower required">First Name</label>
 		</span>
 		<span class="lastname">
-			<input id="entry_1" name="lastname" class="required" title="We need to know your name." maxlength="255" size="25" value=""><label  for="entry_1" class="lower">Last Name</label>
+			<input id="entry_1" name="lastname" class="required" title="We need to know your name." maxlength="255" size="25" value=""><label  for="entry_1" class="lower required">Last Name</label>
 		</span>
 		</div>';
 	$custinfo .= '<div class="tekserverental-company-name">
@@ -1364,10 +1375,10 @@ function tekserverental_checkout( $atts ) {
 		</span>
 		</div>';
 	$custinfo .= '<div class="tekserverental-address">
-		<label class="req" for="element_5" >Billing Address </label>
+		<label for="element_5" >Billing Address </label>
 		<div class="addressone">
 			<input id="entry_9" name="addressone" class="large required" value="" type="text">
-			<label for="entry_9" class="lower">Street Address</label>
+			<label for="entry_9" class="lower required">Street Address</label>
 		</div>
 		<div class="addresstwo">
 			<input id="entry_10" name="addresstwo" class="element large text" value="" type="text">
@@ -1375,15 +1386,15 @@ function tekserverental_checkout( $atts ) {
 		</div>
 		<div class="city">
 			<input id="entry_11" name="city" class="large required" value="" type="text">
-			<label for="entry_11" class="lower">City</label>
+			<label for="entry_11" class="lower required">City</label>
 		</div>
 		<div class="state">
 			<input id="entry_12" name="state" maxlength="2" class="medium required" value="" type="text">
-			<label for="entry_12" class="lower">State</label>
+			<label for="entry_12" class="lower required">State</label>
 		</div>
 		<div class="zip">
 			<input id="entry_13" name="zip" class="medium required" maxlength="15" value="" type="text">
-			<label for="entry_13" class="lower">Zip Code</label>
+			<label for="entry_13" class="lower required">Zip Code</label>
 		</div>
 	</div>';
 	$custinfo .= '</div>';
@@ -1398,10 +1409,10 @@ function tekserverental_checkout( $atts ) {
 	$form .= $custinfo;
 	$form .= '<div class="tekserverental-additional-info"><label for="entry_14">Enter any additional requests </label><textarea name="additionalinfo" id="entry_14" rows="4" cols="60">&nbsp;</textarea></div>';
 	$form .= '</form>';
-	$button = '<a href="javascript:;" class="simpleCart_checkout button tekserverental-checkout-submit">Submit Request</a>';
-	$out = '<div class="tekserverental-checkout-form">';
+	$buttons = '<div class="tekserverentals-show-cart-button-container"></div><a href="javascript:;" class="simpleCart_checkout button tekserverental-checkout-submit">Submit Request</a>';
+	$out = '<div class="tekserverental-checkout-form">' . $title;
 	$out .= $form;
-	$out .= $button;
+	$out .= $buttons;
 	$out .= '<div class="validationerrors"></div></div>';
 	return $out;
 
@@ -1411,16 +1422,30 @@ function tekserverental_checkout( $atts ) {
 
 
 // Add Shortcode for Dates Form
+//e.g. [rentaldateform title="The Title" container="h1"]
 add_shortcode( 'rentaldateform', 'tekserverental_date_form' );
 function tekserverental_date_form( $atts ) {
-
+	
+	extract( shortcode_atts(
+		array(
+			'title'		=> '',
+			'container'	=> 'h2',
+		), $atts )
+	);
+	if( ! empty( $title ) ) {
+	
+		$title = '<' . $container . ' class="tekserverental-dates-title">' . $title . '</' . $container . '>';
+	
+	}
 	$form = '<div class="tekserverental-dates-form"><form id="tekserverentals-checkout-dates">';
 	$form .= '<div class="tekserverental-dates-start"><h3><label class="required" for="tekserverentalStartDate">Choose the Start Date for Your Rental</label></h3><div><input type="text" class="required" id="tekserverentalStartDate" name="startdate"></div></div>';
 	$form .= '<div class="tekserverental-dates-end"><h3><label class="required" for="tekserverentalEndDate">Choose the End Date for Your Rental</label></h3><div><input type="text" class="required" id="tekserverentalEndDate" name="enddate"></div></div>';
 	$form .= '</form></div>';
 	$button = '<a class="button tekserverentals-dates-button" href="javascript:;">Set Dates</a>';
 	$out = '<div class="tekserverental-dates">';
+	$out .= $title;
 	$out .= $form;
+	$out .= '<div class="tekserverentals-show-cart-button-container"></div>';
 	$out .= '</div>';
 	return $out;
 
@@ -1432,19 +1457,31 @@ function tekserverental_date_form( $atts ) {
 add_shortcode( 'rentalcart', 'tekserverental_cart' );
 function tekserverental_cart( $atts ) {
 
-	$cart = '<div class="tekserverentals-cart-container" style="display: none;">';
+	extract( shortcode_atts(
+		array(
+			'title'		=> '',
+			'container'	=> 'h2',
+		), $atts )
+	);
+	if( ! empty( $title ) ) {
+	
+		$title = '<' . $container . ' class="tekserverental-cart-title">' . $title . '</' . $container . '>';
+	
+	}
+	$cart = '<div class="tekserverentals-cart-container" style="display: none;">' . $title;
 	$cart .= '<div class="tekserverentals-cart-message" style="display: none;"><h3>Important Note</h3><p class="duration"></p><p class="shipping"></p></div>';
 	$cart .= '<div class="tekserverentals-cart">';
 	$cart .= '<div class="tekserverentals-cart-duration">';
-	$cart .= '<span style="font-weight: 900">Rental Duration: </span><div class="tekserverentals-cart-duration"></div><span> days.</span><a class="button" href="#tekserve-rentals-dates">Change Dates</a>';
+	$cart .= '<span>Rental Duration:</span>&nbsp;<div class="tekserverentals-cart-duration-value"></div>&nbsp;days.';
 	$cart .= '</div>';
-	$cart .= '<div class="simpleCart_items tekserverentals-cart-items"></div><hr/>';
+	$cart .= '<div class="tekserverentals-cart-items-title"><span>Rental Items:</span></div>';
+	$cart .= '<div class="simpleCart_items tekserverentals-cart-items"></div>';
 	$cart .= '<div class="tekserverentals-cart-totals">';
 	$cart .= '<div class="tekserverentals-cart-totals-subtotal"><span>Subtotal</span><div class="simpleCart_total"></div></div>';
 	$cart .= '<div class="tekserverentals-cart-totals-shipping"><span>Shipping</span><div class="simpleCart_shipping"></div></div>';
 	$cart .= '<div class="tekserverentals-cart-totals-tax"><span>Tax</span><div class="simpleCart_tax"></div></div>';
 	$cart .= '<div class="tekserverentals-cart-totals-deposit"><span>Total Deposit</span><div class="tekserverentals-cart-deposits"></div></div>';
-	$cart .= '<div class="tekserverentals-cart-totals-grand"><span style="font-weight: 900;">Total Cost</span><div class="simpleCart_grandTotal" style="font-weight: 900;"></div></div>';
+	$cart .= '<div class="tekserverentals-cart-totals-grand"><span>Total Cost</span><div class="simpleCart_grandTotal"></div></div>';
 	$cart .= '</div>';
 	$cart .= '<div class="tekserverentals-cart-buttons">';
 	$cart .= '<a class="button tekserve-cart-buttons-changedates" href="#tekserve-rentals-dates">Change Dates</a>';
@@ -1547,31 +1584,110 @@ if (function_exists('vc_map')) {
 		)
 	)	);
 	
+	$header_dropdown = array(
+		'Default'					=> '',
+		'<h1>Header One </h1>'		=> 'h1',
+		'<h2>Header Two</h2>'		=> 'h2',
+		'<h3>Header Three</h3>'		=> 'h3',
+		'<h4>Header Four</h4>'		=> 'h4',
+		'<h5>Header Five</h5>'		=> 'h5',
+		'<h6>Header Six</h6>'		=> 'h6',
+		'<div>Div</div>'			=> 'div',
+		'<span>Span</span>'			=> 'span',
+		'<p>Paragraph</p>'			=> 'p',
+	);
+	
 	vc_map( array(
-	   "name" => __("Rental Request Checkout Form"),
-	   "base" => "rentalcheckout",
-	   "class" => "",
-	   "show_settings_on_create" => false,
-	   "icon" => "icon-wpb-rentalcheckout",
-	   "category" => __('Content')
+	   "name" 						=> "Rental Request Checkout Form",
+	   "base" 						=> "rentalcheckout",
+	   "class" 						=> "",
+	   "show_settings_on_create"	=> false,
+	   "icon" 						=> "icon-wpb-rentalcheckout",
+	   "category" 					=> 'Content',
+	   "params"						=> array(
+											array(
+											 "type" => "textfield",
+											 "holder" => "div",
+											 "class" => "",
+											 "heading" => __("Title"),
+											 "param_name" => "title",
+											 "value" => "",
+											 "description" => __("Text for title of this form. Leave blank for no title."),
+											 "admin_label" => TRUE
+											),
+											array(
+											 "type" => "dropdown",
+											 "holder" => "div",
+											 "class" => "",
+											 "heading" => "Container Element",
+											 "param_name" => "container",
+											 "value" => $header_dropdown,
+											 "description" => __("Select type of element to display title in. Default is H2."),
+											 "admin_label" => TRUE
+										  ),
+										),
 	)	);
 	
 	vc_map( array(
-	   "name" => __("Rental RequestDates Form"),
-	   "base" => "rentaldateform",
-	   "class" => "",
-	   "show_settings_on_create" => false,
-	   "icon" => "icon-wpb-rentaldateform",
-	   "category" => __('Content')
+	   "name" 						=> "Rental Request Dates Form",
+	   "base"						=> "rentaldateform",
+	   "class"						=> "",
+	   "show_settings_on_create" 	=> false,
+	   "icon" 						=> "icon-wpb-rentaldateform",
+	   "category" 					=> __('Content'),
+	   "params"						=> array(
+											array(
+											 "type" => "textfield",
+											 "holder" => "div",
+											 "class" => "",
+											 "heading" => __("Title"),
+											 "param_name" => "title",
+											 "value" => "",
+											 "description" => __("Text for title of this form. Leave blank for no title."),
+											 "admin_label" => TRUE
+											),
+											array(
+											 "type" => "dropdown",
+											 "holder" => "div",
+											 "class" => "",
+											 "heading" => "Container Element",
+											 "param_name" => "container",
+											 "value" => $header_dropdown,
+											 "description" => __("Select type of element to display title in. Default is H2."),
+											 "admin_label" => TRUE
+										  ),
+										),
 	)	);
 	
 	vc_map( array(
-	   "name" => __("Rental Request Cart"),
-	   "base" => "rentalcart",
-	   "class" => "",
-	   "show_settings_on_create" => false,
-	   "icon" => "icon-wpb-rentalcart",
-	   "category" => __('Content')
+	   "name" 						=> __("Rental Request Cart"),
+	   "base" 						=> "rentalcart",
+	   "class" 						=> "",
+	   "show_settings_on_create"	=> false,
+	   "icon"						=> "icon-wpb-rentalcart",
+	   "category"					=> __('Content'),
+	   "params"						=> array(
+											array(
+											 "type" => "textfield",
+											 "holder" => "div",
+											 "class" => "",
+											 "heading" => __("Title"),
+											 "param_name" => "title",
+											 "value" => "",
+											 "description" => __("Text for title of this form. Leave blank for no title."),
+											 "admin_label" => TRUE
+											),
+											array(
+											 "type" => "dropdown",
+											 "holder" => "div",
+											 "class" => "",
+											 "heading" => "Container Element",
+											 "param_name" => "container",
+											 "value" => $header_dropdown,
+											 "description" => __("Select type of element to display title in. Default is H2."),
+											 "admin_label" => TRUE
+										  ),
+										),
 	)	);
 
 }	//end if (function_exists('vc_map'))
