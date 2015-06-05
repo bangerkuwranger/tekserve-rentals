@@ -359,52 +359,65 @@ function tekserveRentalsUpDates(startDate,endDate) {
 	var chargedDays;
 	var chargedWeeks;
 	var termFlag;
-	simpleCart.each(function(item,x) {
+	if (simpleCart.quantity() > 0 ) {
 	
-		//assign dates to each item in the cart
-		item.set('start',startDate);
-		item.set('end',endDate);
-		dPrice = item.get('dprice');
-		edPrice = item.get('edprice');
-		wPrice = item.get('wprice');
-		ewPrice = item.get('ewprice');
-		deposit = item.get('deposit');
-		qty = item.get('quantity');
-		//calculate price for this item for the duration
-		priceArray = tekserveRentalsItemPrice(startDate,endDate,dPrice,edPrice,wPrice,ewPrice);
-		//set price
-		item.set('price',priceArray[0]);
-		//set deposit
-		deposit = parseInt(deposit) * parseInt(qty);
-		depositTotal += deposit;
-		//set grand total with deposit
-		gTotal = simpleCart.grandTotal() + depositTotal;
-		//display calculated rental information for order
-		days = priceArray[1];
-		termFlag = priceArray[4];
-		jQuery('.tekserverentals-cart-duration-value').html(Math.abs(days));
-		jQuery('.tekserverentals-cart-deposits').html('$'+depositTotal);
-		jQuery('.tekserverentals-cart-grand-total').html('$'+gTotal.toFixed(2));
-		if (termFlag == 'longTerm') {
-		
-			jQuery('.tekserverentals-cart-message p.duration').text(tekserveRentalsMessages.duration);
-			jQuery('.tekserverentals-cart-message').show();
-		
-		}
-		else {
-		
-			jQuery('.tekserverentals-cart-message p.duration').text('');
-			if (!(jQuery('.tekserverentals-cart-message p.shipping').text())) {
-			
-				jQuery('.tekserverentals-cart-message').hide();
-			
-			}	//end if (!(jQuery('.tekserverentals-cart-message p.shipping').text()))
-		
-		}	//end if (termFlag == 'longTerm')
+		simpleCart.each(function(item,x) {
 	
-	});	//end simpleCart.each(function(item,x)
+			//assign dates to each item in the cart
+			item.set('start',startDate);
+			item.set('end',endDate);
+			dPrice = item.get('dprice');
+			edPrice = item.get('edprice');
+			wPrice = item.get('wprice');
+			ewPrice = item.get('ewprice');
+			deposit = item.get('deposit');
+			qty = item.get('quantity');
+			//calculate price for this item for the duration
+			priceArray = tekserveRentalsItemPrice(startDate,endDate,dPrice,edPrice,wPrice,ewPrice);
+			//set price
+			item.set('price',priceArray[0]);
+			//set deposit
+			deposit = parseInt(deposit) * parseInt(qty);
+			depositTotal += deposit;
+			//set grand total with deposit
+			gTotal = simpleCart.grandTotal() + depositTotal;
+			//display calculated rental information for order
+			days = priceArray[1];
+			termFlag = priceArray[4];
+			//remove this logic from loop to update duration without items
+			jQuery('.tekserverentals-cart-duration-value').html(Math.abs(days));
+			jQuery('.tekserverentals-cart-deposits').html('$'+depositTotal);
+			jQuery('.tekserverentals-cart-grand-total').html('$'+gTotal.toFixed(2));
+			if (termFlag == 'longTerm') {
+		
+				jQuery('.tekserverentals-cart-message p.duration').text(tekserveRentalsMessages.duration);
+				jQuery('.tekserverentals-cart-message').show();
+		
+			}
+			else {
+		
+				jQuery('.tekserverentals-cart-message p.duration').text('');
+				if (!(jQuery('.tekserverentals-cart-message p.shipping').text())) {
+			
+					jQuery('.tekserverentals-cart-message').hide();
+			
+				}	//end if (!(jQuery('.tekserverentals-cart-message p.shipping').text()))
+		
+			}	//end if (termFlag == 'longTerm')
+	
+		});	//end simpleCart.each(function(item,x)
+	
+	}
+	//if there are no items, update date and set all other values to zero
+	else {
+	
+		days = tekserveRentalsCompareDates(startDate,endDate);
+		jQuery('.tekserverentals-cart-duration-value').html(Math.abs(days[0]));
+		jQuery('.tekserverentals-cart-deposits').html('$0.00');
+		jQuery('.tekserverentals-cart-grand-total').html('$0.00');
+	
+	}
 	simpleCart.update();
-	simpleCart.save()
 
 }	//end tekserveRentalsUpDates(startDate,endDate)
 
