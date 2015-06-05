@@ -53,9 +53,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 add_action( 'wp_enqueue_scripts', 'tekserverentals_enqueuing' );
 function tekserverentals_enqueuing() {
 
-	wp_register_script( 'simplecart', plugins_url()."/tekserve-rentals/simpleCart.js", array( 'jquery' ), '3.0.5', true );
-	wp_register_script( 'tekserverentals', plugins_url()."/tekserve-rentals/tekserve-rentals.js", array( 'jquery', 'simplecart' ), '1.4', true );
-	wp_register_style( 'tekserverentalscss',  plugins_url()."/tekserve-rentals/tekserve-rentals.css" );
+	wp_register_script( 'simplecart', plugins_url()."/tekserve-rentals/simpleCart.min.js", array( 'jquery' ), '3.0.5', true );
+	wp_register_script( 'tekserverentals', plugins_url()."/tekserve-rentals/tekserve-rentals.min.js", array( 'jquery', 'simplecart', 'jqvalidate', 'jqvalidateExtra' ), '1.4', true );
+	wp_register_style( 'tekserverentalscss',  plugins_url()."/tekserve-rentals/tekserve-rentals.min.css" );
 	wp_register_script( 'jqvalidate', "//ajax.aspnetcdn.com/ajax/jquery.validate/1.13.0/jquery.validate.min.js", array( 'jquery' ), false, true );
 	wp_register_script( 'jqvalidateExtra', "//ajax.aspnetcdn.com/ajax/jquery.validate/1.13.0/additional-methods.min.js", array( 'jquery' ), false, true );
 	$tekserverentalsjsdata = array(
