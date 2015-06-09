@@ -55,11 +55,11 @@ jQuery( document ).ready(function($j) {
 	$tekserveRentalsFields.company = $j($cust).find('div.tekserverental-company-name input');
 	$tekserveRentalsFields.email = $j($cust).find('div.tekserverental-email input');
 	$tekserveRentalsFields.phone = $j($cust).find('div.tekserverental-phone-number input');
-	$tekserveRentalsFields.addressOne = $j($cust).find('div.tekserverental-addressone input');
-	$tekserveRentalsFields.addressTwo = $j($cust).find('div.tekserverental-addresstwo input');
-	$tekserveRentalsFields.city = $j($cust).find('div.tekserverental-city input');
-	$tekserveRentalsFields.state = $j($cust).find('div.tekserverental-state input');
-	$tekserveRentalsFields.zip = $j($cust).find('div.tekserverental-zip input');
+	$tekserveRentalsFields.addressOne = $j($cust).find('div.tekserverental-address .addressone input');
+	$tekserveRentalsFields.addressTwo = $j($cust).find('div.tekserverental-address .addresstwo input');
+	$tekserveRentalsFields.city = $j($cust).find('div.tekserverental-address .city input');
+	$tekserveRentalsFields.state = $j($cust).find('div.tekserverental-address .state input');
+	$tekserveRentalsFields.zip = $j($cust).find('div.tekserverental-address .zip input');
 	$tekserveRentalsFields.additionalInfo = $j('.tekserverental-checkout-form').first().find('.tekserverental-additional-info textarea');
 
 	//init simplecart
@@ -199,7 +199,7 @@ jQuery( document ).ready(function($j) {
 	  success: "valid"
 	});
 	
-	$j(".tekserverentals-checkout-form form").first().validate({
+	$j(".tekserverental-checkout-form form").first().validate({
 	
 		rules: {
 			firstname: {
@@ -232,9 +232,9 @@ jQuery( document ).ready(function($j) {
 			}
 		}
 	
-	});	//end
+	});	//end $j(".tekserverental-checkout-form form").first().validate({
 	
-	$j(".tekserverentals-dates-form form").first().validate({
+	$j(".tekserverental-dates-form form").first().validate({
 	
 		rules: {
 			startdate: {
@@ -247,7 +247,7 @@ jQuery( document ).ready(function($j) {
 			}
 		}
 
-	});	//end $j(".tekserverentals-dates-form form").first().validate
+	});	//end $j(".tekserverental-dates-form form").first().validate
 
 });	//end jQuery( document ).ready(function($j)
 
@@ -847,7 +847,7 @@ function bindAllCartActions() {
 			
 			}	//end if (jQuery(this).val()=='' || jQuery(this).val()==null || jQuery(this).hasClass('error'))
 		
-		});	//end jQuery('#tekserverentals-checkout-dates').first().find('input.required').each(function()
+		});	//end jQuery('.tekserverental-checkout-dates').first().find('input.required').each(function()
 	
 		jQuery('.tekserverental-checkout-form form').first().find('input.required').each(function() {
 		
@@ -860,7 +860,7 @@ function bindAllCartActions() {
 			
 			}	//end if (jQuery(this).val()=='' || jQuery(this).val()==null || jQuery(this).hasClass('error'))
 		
-		});	//end jQuery('.tekserverentals-checkout-form form').first().find('input.required').each(function()
+		});	//end jQuery('.tekserverentalscheckout-form form').first().find('input.required').each(function()
 
 		if (!formReady) {
 		
@@ -900,9 +900,7 @@ function createCartButtons() {
 		
 			e.preventDefault();
 			moveCartHere( target.parent );
-// 			setTimeout(function() {
-				scrollToID('tekserve-rentals-cart');
-// 			}, 150);
+			scrollToID('tekserve-rentals-cart');
 		
 		});	//end jQuery(this).children('a').click( function(e)
 	
