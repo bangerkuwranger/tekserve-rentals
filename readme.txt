@@ -4,7 +4,7 @@ Tags: rental,equipment,checkout
 Donate link: http://www.chadacarino.com/burnallmoney.html
 Requires at least: 4.2
 Tested up to: 4.2.2
-Stable tag: 1.4
+Stable tag: 1.4.1
 License: MIT
 License URI: http://www.chadacarino.com/license-mit.html
 
