@@ -836,6 +836,7 @@ function bindAllCartActions() {
 		var valErrors = new Array();
 		var i = 0;
 	
+	console.log('Validating');
 		jQuery('.tekserverental-dates-form').first().find('input.required').each(function() {
 		
 			if (jQuery(this).val()=='' || jQuery(this).val()==null || jQuery(this).hasClass('error')) {
@@ -1010,3 +1011,42 @@ function areYouMyMother($babyBird) {
 	return snort;
 
 }	//end areYouMyMother($babyBird)
+
+
+
+function scrollToID(id) {
+	if(id) {
+		window.location.href = '#' + id;
+		goToAnchor();
+	}
+	else {
+		goToAnchor();
+	}
+}
+
+function goToAnchor() {
+
+	hash = document.location.hash;
+	if (hash != "" && hash != "#!" && hash != "#") {
+	
+		setTimeout(function() {
+			if (location.hash) {
+			
+				window.scrollTo(0, 0);
+// 				fixDiv();
+				// var offset = -2*(parseInt($j('.nav-primary').outerHeight(true)));
+				window.location.href = hash;
+// 				window.scrollBy(0, offset);
+			
+			}	//end if (location.hash)
+		
+		}, 250);	//end setTimeout(function()
+	
+	}
+	else {
+	
+		return false;
+	
+	}	//end if (hash !="")
+
+}	//end gotToAnchor()

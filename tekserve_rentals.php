@@ -54,8 +54,8 @@ add_action( 'wp_enqueue_scripts', 'tekserverentals_enqueuing' );
 function tekserverentals_enqueuing() {
 
 	wp_register_script( 'simplecart', plugins_url()."/tekserve-rentals/simpleCart.min.js", array( 'jquery' ), '3.0.5', true );
-	wp_register_script( 'tekserverentals', plugins_url()."/tekserve-rentals/tekserve-rentals.min.js", array( 'jquery', 'simplecart', 'jqvalidate', 'jqvalidateExtra' ), '1.4.1', true );
-	wp_register_style( 'tekserverentalscss',  plugins_url()."/tekserve-rentals/tekserve-rentals.min.css" );
+	wp_register_script( 'tekserverentals', plugins_url()."/tekserve-rentals/tekserve-rentals.js", array( 'jquery', 'simplecart', 'jqvalidate', 'jqvalidateExtra', 'jquery-ui-datepicker' ), '1.4.1', true );
+	wp_register_style( 'tekserverentalscss',  plugins_url()."/tekserve-rentals/tekserve-rentals.css" );
 	wp_register_script( 'jqvalidate', "//ajax.aspnetcdn.com/ajax/jquery.validate/1.13.0/jquery.validate.min.js", array( 'jquery' ), false, true );
 	wp_register_script( 'jqvalidateExtra', "//ajax.aspnetcdn.com/ajax/jquery.validate/1.13.0/additional-methods.min.js", array( 'jquery' ), false, true );
 	$tekserverentalsjsdata = array(
@@ -69,6 +69,7 @@ function tekserverentals_enqueuing() {
 		wp_enqueue_script( 'simplecart' );
 		wp_enqueue_script( 'jqvalidate' );
 		wp_enqueue_script( 'jqvalidateExtra' );
+		wp_enqueue_script( 'jquery-ui-datepicker' );
 		wp_enqueue_script( 'tekserverentals' );
 	
 	}	//end if( get_post_type() == 'page' )
@@ -815,7 +816,7 @@ function tekserverentals_display_line_item_meta_box_fields( $lineitem ) {
 
 
 //make sure internal comments aren't shown to cust
-add_filter( 'content_save_pre', 'tekserverentals_private_rental_notes' );
+// add_filter( 'content_save_pre', 'tekserverentals_private_rental_notes' );
 function tekserverentals_private_rental_notes( $content ) {
 
 	$old_content = get_post();
@@ -1356,9 +1357,9 @@ function tekserverental_checkout( $atts ) {
 		</span>
 		</div>';
 	$custinfo .= '<div class="tekserverental-company-name">
-		<label class="description" for="entry_2">Company Name (if applicable) </label>
+		<label class="description req" for="entry_2">Company Name </label>
 		<div>
-			<input id="entry_2" name="companyname" class="element text medium" type="text" size="50" maxlength="255" value=""> 
+			<input id="entry_2" name="companyname" class="element text medium required" type="text" size="50" maxlength="255" value=""> 
 		</div> 
 		</div>';
 	$custinfo .= '<div class="tekserverental-email">

@@ -98,9 +98,10 @@
 .tekserverental-checkout-title,
 .tekserverental-cart-title {
 	border: 2px solid #ccc;
-	border-width: 2px 0;
+	border-width: 0;
 	text-transform: uppercase;
 	padding: .15em 0 0 .15em;
+	color: #000;
 }
 
 .tekserverentals-cart-container .simpleCart_items .itemRow .item-name,
@@ -195,7 +196,6 @@
 
 .emptyCart-button {
 	cursor: pointer;
-	font-weight: 900;
 }
 
 /* 
@@ -266,8 +266,7 @@
 
 .tekserverental-checkout-form input.error,
 .tekserverental-dates-form input.error {
-	background-color: #f36f37;
-	color: #fff;
+	border-color: #e82255;
 	padding-left: 1em;
 	font-weight: bold;
 }
@@ -329,10 +328,21 @@
 
 .tekserve_rental_request_container h2 {
 	text-transform: uppercase;
+/* 
 	border: 2px solid #ccc;
 	border-width: 2px 0;
 	padding: .15em .15em 0;
+ */
   	margin-bottom: 1em;
+}
+
+.tekserverental-checkout-custinfo label {
+	display: block;
+}
+
+.tekserverental-checkout-custinfo label  {
+	font-weight: 200;
+	margin-bottom: 1em;
 }
 
 /*
