@@ -1359,19 +1359,19 @@ function tekserverental_checkout( $atts ) {
 	$custinfo .= '<div class="tekserverental-company-name">
 		<label class="description req" for="entry_2">Company Name </label>
 		<div>
-			<input id="entry_2" name="companyname" class="element text medium required" type="text" size="50" maxlength="255" value=""> 
+			<input id="entry_2" name="companyname" class="element text medium required" type="text" size="25" maxlength="255" value=""> 
 		</div> 
 		</div>';
 	$custinfo .= '<div class="tekserverental-email">
 		<label class="req" for="entry_3" >Email</label>
 		<div>
-			<input id="entry_3" name="emailaddress" class="email required" title="We need to know your valid email address to send you a quote." type="email" size="50" maxlength="255" value=""> 
+			<input id="entry_3" name="emailaddress" class="email required" title="We need to know your valid email address to send you a quote." type="email" size="25" maxlength="255" value=""> 
 		</div> 
 		</div>';
 	$custinfo .= '<div class="tekserverental-phone-number">
 		<label class="req" for="entry_7">Phone</label>
 		<span>
-			<input id="entry_7" name="phonenumber" class=" digits required" size="14" maxlength="14" value="" type="tel">
+			<input id="entry_7" name="phonenumber" class=" digits required" size="25" maxlength="14" value="" type="tel">
 			<label class="lower">(10 digits)</label>
 		</span>
 		</div>';
@@ -1408,7 +1408,7 @@ function tekserverental_checkout( $atts ) {
 	$form = '<form id="tekserverentals-checkout-form">';
 	$form .= $shipping;
 	$form .= $custinfo;
-	$form .= '<div class="tekserverental-additional-info"><label for="entry_14">Enter any additional requests </label><textarea name="additionalinfo" id="entry_14" rows="4" cols="60">&nbsp;</textarea></div>';
+	$form .= '<div class="tekserverental-additional-info"><label for="entry_14">Enter any additional requests </label><textarea name="additionalinfo" id="entry_14" rows="4" cols="25">&nbsp;</textarea></div>';
 	$form .= '</form>';
 	$buttons = '<div class="tekserverentals-show-cart-button-container"></div><a href="javascript:;" class="simpleCart_checkout button tekserverental-checkout-submit">Submit Request</a>';
 	$out = '<div class="tekserverental-checkout-form">' . $title;
