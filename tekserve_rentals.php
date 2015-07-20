@@ -654,7 +654,7 @@ function tekserverentals_save_request_fields( $tekserverentals_request_id, $rent
 				$new_price = tekserverentals_update_line_item_price($child_id, $new_duration, $current_qty);
 				update_post_meta( $child_id, 'tekserverentals_line_item_price', $new_price );
 				//update totals
-				tekserverentals_update_line_item_parent_totals ( $child_id, $new_price, $current_price, $current_qty, $current_qty );
+				tekserverentals_update_line_item_parent_totals( $child_id, $new_price, $current_price, $current_qty, $current_qty );
 			
 			endwhile;
     	
@@ -673,7 +673,7 @@ function tekserverentals_save_request_fields( $tekserverentals_request_id, $rent
 			//otherwise, accept input as is
 			else {
 			
-				update_post_meta( $tekserverentals_request_id, 'tekserverentals_request_shipping', round( ltrim( sanitize_text_field( $_REQUEST['tekserverentals_request_shipping'] ), "$" ), 2 ) );
+				update_post_meta( $tekserverentals_request_id, 'tekserverentals_request_shipping', round( str_replace( ',', '', ltrim( sanitize_text_field( $_REQUEST['tekserverentals_request_shipping'] ), "$" ) ), 2 ) );
 			
 			}	//end if(  $new_shipping != ( get_post_meta($tekserverentals_request_id, 'tekserverentals_request_shipping', true ) ) )
     	
@@ -942,7 +942,7 @@ function tekserverentals_update_rental_request_shipping($request_id, $new_shippi
 	$new_total_wdeposits = $new_total + $deposit;
 	update_post_meta( $request_id, 'tekserverentals_request_tax', $new_tax, $tax );
 	update_post_meta( $request_id, 'tekserverentals_request_total', $new_total);
-	update_post_meta( $request_id, 'tekserverentals_request_total_wdeposits', $new_total_wdeposits );//update total+deposit (ugh...)
+// 	update_post_meta( $request_id, 'tekserverentals_request_total_wdeposits', $new_total_wdeposits );//update total+deposit (ugh...)
 
 }	//end tekserverentals_update_rental_request_shipping
 
@@ -966,7 +966,15 @@ function tekserverentals_update_line_item_parent_totals( $lineitem, $new_price, 
 	//get old total from parent before tax & shipping
 	$old_total = get_post_meta( $parent_id, 'tekserverentals_request_total', true ) - $tax - $shipping;
 	//calculate new total
-	$new_total = $old_total - $old_price + $new_price; 
+	if( $new_qty == 0 ) {
+	
+		$new_total = $old_total - $old_price;
+		$new_price = 0;
+	
+	}
+	else {
+		$new_total = $old_total - $old_price + $new_price;
+	}
 	//get old deposit from parent, minus (old) deposit for this line item
 	$old_deposit = get_post_meta( $parent_id, 'tekserverentals_request_deposits', true ) - ( $old_qty * $deposit );
 	//calculate new total deposit with updated qty
@@ -975,11 +983,11 @@ function tekserverentals_update_line_item_parent_totals( $lineitem, $new_price, 
 	$new_tax = $tax - ( /*global_tax_rate*/ .08875 * $old_price )  + ( /*global_tax_rate*/ .08875 * $new_price );
 	//calculate new total, save the new values to parent request
 	$new_total = $new_total + $new_tax + $shipping;
-	$new_total_wdeposits = $new_total + $new_deposit;
+// 	$new_total_wdeposits = $new_total + $new_deposit;
 	update_post_meta( $parent_id, 'tekserverentals_request_tax', $new_tax, $tax );//update tax
 	update_post_meta( $parent_id, 'tekserverentals_request_deposits', $new_deposit );//update deposit
 	update_post_meta( $parent_id, 'tekserverentals_request_total', $new_total);//update total
-	update_post_meta( $parent_id, 'tekserverentals_request_total_wdeposits', $new_total_wdeposits );//update total+deposit
+// 	update_post_meta( $parent_id, 'tekserverentals_request_total_wdeposits', $new_total_wdeposits );//update total+deposit
 
 }	//end tekserverentals_update_line_item_parent_totals( $lineitem, $new_price, $old_price, $new_qty, $old_qty )
 

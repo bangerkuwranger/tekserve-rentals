@@ -54,7 +54,7 @@ $orderinfo = array(
 	"tax_total" 			=> $content["tax"],
 	"total" 				=> $content["total_price"],
 	"total_with_deposit" 	=> $content["total_due"],
-	"notes_from_cust" 		=> rtrim($content["comments"], 'Â')
+	"notes_from_cust" 		=> str_replace( 'Â', '', $content["comments"] )
 );
 $lineitems = array();
 $line_item_qty = intval($content["itemCount"]);
@@ -77,7 +77,7 @@ $orderinfo["end"] = strtotime($orderinfo["end"]);
 
 
 //output strings for debugging
-/*
+
 echo "<h1>Debug</h1>";
 var_dump($lineitems);
 echo "<br /><br /><h1>Customer Info</h1>";
@@ -132,7 +132,7 @@ foreach($lineitems as $item){
 }
 unset($item);
 echo "</tbody></table></div>";
-*/
+
 //end debugging output
 
 
@@ -226,9 +226,9 @@ if( $orderinfo["pickup"] == 1 ) {
 }	//if( $orderinfo["pickup"] == 1 )
 update_post_meta( $new_rental_request, 'tekserverentals_delivery_loc', $orderinfo["where_deliver"] );
 update_post_meta( $new_rental_request, 'tekserverentals_pickup_loc', $orderinfo["where_pickup"] );
-update_post_meta( $new_rental_request, 'tekserverentals_request_deposits', round( str_replace( ',', '', ltrim( sanitize_text_field( $orderinfo["deposit_total"] ), "$" ), 2 ) ) );
-update_post_meta( $new_rental_request, 'tekserverentals_request_shipping', round( str_replace( ',', '', ltrim( sanitize_text_field( $orderinfo["shipping_total"] ), "$" ), 2 ) ) );
-update_post_meta( $new_rental_request, 'tekserverentals_request_tax', round( str_replace( ',', '', ltrim( sanitize_text_field( $orderinfo["tax_total"] ), "$" ), 2 ) ) );
+update_post_meta( $new_rental_request, 'tekserverentals_request_deposits', round( str_replace( ',', '', ltrim( sanitize_text_field( $orderinfo["deposit_total"] ), "$" ) ), 2 ) );
+update_post_meta( $new_rental_request, 'tekserverentals_request_shipping', round( str_replace( ',', '', ltrim( sanitize_text_field( $orderinfo["shipping_total"] ), "$" ) ), 2 ) );
+update_post_meta( $new_rental_request, 'tekserverentals_request_tax', round( str_replace( ',', '', ltrim( sanitize_text_field( $orderinfo["tax_total"] ), "$" ) ), 2 ) );
 update_post_meta( $new_rental_request, 'tekserverentals_request_total', floatval( str_replace( ',', '', ltrim( sanitize_text_field( $orderinfo["total"] ), "$" ) ) ) );
 //update_post_meta( $new_rental_request, 'tekserverentals_request_total_wdeposits', round( ltrim( sanitize_text_field( $orderinfo["total_with_deposit"] ), "$" ), 2 ) );
 
@@ -256,12 +256,12 @@ foreach( $lineitems as $item ) {
 	);
 	$new_line_item = wp_insert_post($new_line_item_obj);
 	update_post_meta( $new_line_item, 'tekserverentals_line_item_qty', intval( ltrim($item_qty, "0" ) ) );
-	update_post_meta( $new_line_item, 'tekserverentals_line_item_price', round( ltrim( $item_price, "$" ), 2 ) );
-	update_post_meta( $new_line_item, '_tekserverentals_line_item_deposit', round( ltrim( $item_deposit, "$" ), 2 ) );
-	update_post_meta( $new_line_item, '_tekserverentals_line_item_dprice', round( ltrim( $item_dprice, "$" ), 2 ) );
-	update_post_meta( $new_line_item, '_tekserverentals_line_item_edprice', round( ltrim( $item_edprice, "$" ), 2 ) );
-	update_post_meta( $new_line_item, '_tekserverentals_line_item_wprice', round( ltrim( $item_wprice, "$" ), 2 ) );
-	update_post_meta( $new_line_item, '_tekserverentals_line_item_ewprice', round( ltrim( $item_ewprice, "$" ), 2 ) );
+	update_post_meta( $new_line_item, 'tekserverentals_line_item_price', round( str_replace( ',', '', ltrim( $item_price, "$" ) ), 2 ) );
+	update_post_meta( $new_line_item, '_tekserverentals_line_item_deposit', round( str_replace( ',', '', ltrim( $item_deposit, "$" ) ), 2 ) );
+	update_post_meta( $new_line_item, '_tekserverentals_line_item_dprice', round( str_replace( ',', '', ltrim( $item_dprice, "$" ) ), 2 ) );
+	update_post_meta( $new_line_item, '_tekserverentals_line_item_edprice', round( str_replace( ',', '', ltrim( $item_edprice, "$" ) ), 2 ) );
+	update_post_meta( $new_line_item, '_tekserverentals_line_item_wprice', round( str_replace( ',', '', ltrim( $item_wprice, "$" ) ), 2 ) );
+	update_post_meta( $new_line_item, '_tekserverentals_line_item_ewprice', round( str_replace( ',', '', ltrim( $item_ewprice, "$" ) ), 2 ) );
 	p2p_type( 'line_items_to_rental_requests' )->connect( $new_line_item, $new_rental_request, array() );
 	unset( $new_line_item );
 
@@ -275,7 +275,7 @@ echo '<p>post set:</p>';
 var_dump( $new_rental_request );
 echo get_permalink( $new_rental_request );
 $link = get_permalink( $new_rental_request );
-wp_redirect( $link );
+// wp_redirect( $link );
 
 
 
