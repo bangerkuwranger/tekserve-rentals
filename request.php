@@ -77,60 +77,62 @@ $orderinfo["end"] = strtotime($orderinfo["end"]);
 
 
 //output strings for debugging
+/*
 echo "<h1>Debug</h1>";
-// var_dump($lineitems);
-// echo "<br /><br /><h1>Customer Info</h1>";
-// echo "<div class='tekserverentals-customer-info'>";
-// echo "<p><b>Name:</b> ".$custinfo["first_name"]." ".$custinfo["last_name"]."</p>";
-// if ($custinfo["company"]) {
-// 	echo "<p><b>Company:</b> ".$custinfo["company"]."</p>";
-// }
-// echo "<p><b>Email:</b> ".$custinfo["email"]."</p>";
-// echo "<p><b>Phone:</b> ".$custinfo["phone"]."</p>";
-// echo "<p><b>Address:</b><br />".$custinfo["address"]."<br />".$custinfo["city"].", ".$custinfo["state"]." ".$custinfo["zip"]."</p>";
-// echo "</div>";
-// echo "<br /><br /><h1>Order Info</h1>";
-// echo "<div class='tekserverentals-order-info'>";
-// echo "<p><b>Rental Starts:</b> ".date('l, F jS, Y' , $orderinfo["start"])." <b>Rental Ends:</b> ".date('l, F jS, Y', $orderinfo["end"])."</p>";
-// if (($orderinfo["delivery"] == 1) && ($orderinfo["where_deliver"] == "manhattan")) {
-// 	echo "<p><b>Delivery Requested to:</b> Manhattan</p>";
-// }
-// if (($orderinfo["delivery"] == 1) && ($orderinfo["where_deliver"] == "borough")) {
-// 	echo "<p><b>Delivery Requested to:</b> Outer Boroughs</p>";
-// }
-// if (($orderinfo["pickup"] == 1) && ($orderinfo["where_pickup"] == "manhattan")) {
-// 	echo "<p><b>Delivery Requested to:</b> Manhattan</p>";
-// }
-// if (($orderinfo["pickup"] == 1) && ($orderinfo["where_pickup"] == "borough")) {
-// 	echo "<p><b>Delivery Requested to:</b> Outer Boroughs</p>";
-// }
-// if ($orderinfo["shipping_total"] != 0) {
-// 	echo "<p><b>Shipping Total:</b> ".$orderinfo["shipping_total"]."</p>";
-// }
-// echo "<p><b>Tax:</b> ".$orderinfo["tax_total"]."</p>";
-// echo "<p><b>Deposits:</b> ".$orderinfo["deposit_total"]."</p>";
-// echo "<p><b>Total Cost:</b> ".$orderinfo["total"]."</p>";
-// //echo "<p><b>Amount Due for Reservation:</b> (includes deposit) ".$orderinfo["total_with_deposit"]."</p>";
-// echo "<p><b>Additional Notes:</b> ".$orderinfo["notes_from_cust"]."</p>";
-// echo "</div>";
-// echo "<br /><br /><h1>Line Items</h1>";
-// echo "<div class='tekserverentals-line-items'><table>";
-// echo "<thead><tr><td>Item</td><td>Qty</td><td>Price</td></tr></thead><tbody>";
-// foreach($lineitems as $item){
-// 	echo "<tr>";
-// 	echo "<td>";
-// 	echo $item["name"];
-// 	echo "</td>";
-// 	echo "<td>";
-// 	echo $item["qty"];
-// 	echo "</td>";
-// 	echo "<td>";
-// 	echo $item["price"];
-// 	echo "</td>";
-// 	echo "</tr>";
-// }
-// unset($item);
-// echo "</tbody></table></div>";
+var_dump($lineitems);
+echo "<br /><br /><h1>Customer Info</h1>";
+echo "<div class='tekserverentals-customer-info'>";
+echo "<p><b>Name:</b> ".$custinfo["first_name"]." ".$custinfo["last_name"]."</p>";
+if ($custinfo["company"]) {
+	echo "<p><b>Company:</b> ".$custinfo["company"]."</p>";
+}
+echo "<p><b>Email:</b> ".$custinfo["email"]."</p>";
+echo "<p><b>Phone:</b> ".$custinfo["phone"]."</p>";
+echo "<p><b>Address:</b><br />".$custinfo["address"]."<br />".$custinfo["city"].", ".$custinfo["state"]." ".$custinfo["zip"]."</p>";
+echo "</div>";
+echo "<br /><br /><h1>Order Info</h1>";
+echo "<div class='tekserverentals-order-info'>";
+echo "<p><b>Rental Starts:</b> ".date('l, F jS, Y' , $orderinfo["start"])." <b>Rental Ends:</b> ".date('l, F jS, Y', $orderinfo["end"])."</p>";
+if (($orderinfo["delivery"] == 1) && ($orderinfo["where_deliver"] == "manhattan")) {
+	echo "<p><b>Delivery Requested to:</b> Manhattan</p>";
+}
+if (($orderinfo["delivery"] == 1) && ($orderinfo["where_deliver"] == "borough")) {
+	echo "<p><b>Delivery Requested to:</b> Outer Boroughs</p>";
+}
+if (($orderinfo["pickup"] == 1) && ($orderinfo["where_pickup"] == "manhattan")) {
+	echo "<p><b>Delivery Requested to:</b> Manhattan</p>";
+}
+if (($orderinfo["pickup"] == 1) && ($orderinfo["where_pickup"] == "borough")) {
+	echo "<p><b>Delivery Requested to:</b> Outer Boroughs</p>";
+}
+if ($orderinfo["shipping_total"] != 0) {
+	echo "<p><b>Shipping Total:</b> ".$orderinfo["shipping_total"]."</p>";
+}
+echo "<p><b>Tax:</b> ".$orderinfo["tax_total"]."</p>";
+echo "<p><b>Deposits:</b> ".$orderinfo["deposit_total"]."</p>";
+echo "<p><b>Total Cost:</b> ".$orderinfo["total"]."<br/>clean-". floatval(str_replace( ',', '', ltrim( sanitize_text_field( $orderinfo["total"] ), "$" ) ) )."</p>";
+//echo "<p><b>Amount Due for Reservation:</b> (includes deposit) ".$orderinfo["total_with_deposit"]."</p>";
+echo "<p><b>Additional Notes:</b> ".$orderinfo["notes_from_cust"]."</p>";
+echo "</div>";
+echo "<br /><br /><h1>Line Items</h1>";
+echo "<div class='tekserverentals-line-items'><table>";
+echo "<thead><tr><td>Item</td><td>Qty</td><td>Price</td></tr></thead><tbody>";
+foreach($lineitems as $item){
+	echo "<tr>";
+	echo "<td>";
+	echo $item["name"];
+	echo "</td>";
+	echo "<td>";
+	echo $item["qty"];
+	echo "</td>";
+	echo "<td>";
+	echo $item["price"];
+	echo "</td>";
+	echo "</tr>";
+}
+unset($item);
+echo "</tbody></table></div>";
+*/
 //end debugging output
 
 
@@ -224,10 +226,10 @@ if( $orderinfo["pickup"] == 1 ) {
 }	//if( $orderinfo["pickup"] == 1 )
 update_post_meta( $new_rental_request, 'tekserverentals_delivery_loc', $orderinfo["where_deliver"] );
 update_post_meta( $new_rental_request, 'tekserverentals_pickup_loc', $orderinfo["where_pickup"] );
-update_post_meta( $new_rental_request, 'tekserverentals_request_deposits', round( ltrim( sanitize_text_field( $orderinfo["deposit_total"] ), "$" ), 2 ) );
-update_post_meta( $new_rental_request, 'tekserverentals_request_shipping', round( ltrim( sanitize_text_field( $orderinfo["shipping_total"] ), "$" ), 2 ) );
-update_post_meta( $new_rental_request, 'tekserverentals_request_tax', round( ltrim( sanitize_text_field( $orderinfo["tax_total"] ), "$" ), 2 ) );
-update_post_meta( $new_rental_request, 'tekserverentals_request_total', round( ltrim( sanitize_text_field( $orderinfo["total"] ), "$" ), 2 ) );
+update_post_meta( $new_rental_request, 'tekserverentals_request_deposits', round( str_replace( ',', '', ltrim( sanitize_text_field( $orderinfo["deposit_total"] ), "$" ), 2 ) ) );
+update_post_meta( $new_rental_request, 'tekserverentals_request_shipping', round( str_replace( ',', '', ltrim( sanitize_text_field( $orderinfo["shipping_total"] ), "$" ), 2 ) ) );
+update_post_meta( $new_rental_request, 'tekserverentals_request_tax', round( str_replace( ',', '', ltrim( sanitize_text_field( $orderinfo["tax_total"] ), "$" ), 2 ) ) );
+update_post_meta( $new_rental_request, 'tekserverentals_request_total', floatval( str_replace( ',', '', ltrim( sanitize_text_field( $orderinfo["total"] ), "$" ) ) ) );
 //update_post_meta( $new_rental_request, 'tekserverentals_request_total_wdeposits', round( ltrim( sanitize_text_field( $orderinfo["total_with_deposit"] ), "$" ), 2 ) );
 
 
